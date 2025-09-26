@@ -3,192 +3,198 @@ from flask import Flask, request, jsonify, render_template_string, Response, sen
 app = Flask(__name__)
 
 def getAllData():
-    import requests
-    import json
-    from datetime import datetime, timedelta
-    from zoneinfo import ZoneInfo
-    from datetime import datetime, timedelta, timezone
-    import json
-    import xml.etree.ElementTree as ET
-    import requests
-    from zoneinfo import ZoneInfo
+  import requests
+  import json
+  from datetime import datetime, timedelta
+  from zoneinfo import ZoneInfo
+  from datetime import datetime, timedelta, timezone
+  import json
+  import xml.etree.ElementTree as ET
+  import requests
+  from zoneinfo import ZoneInfo
 
-    headers = {
-        "Content-Type": "application/json"
+  headers = {
+      "Content-Type": "application/json"
+  }
+
+  clientToken = "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D"
+  accessToken = "BEC33DAD4C57410C9E6DB09600C7FB9B-310471532A30162E5B6F0EB4F4AD2BF"
+  client = "Mews Import Application"
+  url = "https://api.mews-demo.com/api/connector/v1/"
+
+  from datetime import datetime, timedelta
+  from zoneinfo import ZoneInfo
+
+  def getUtcMidnights(timezoneName):
+    tz = ZoneInfo(timezoneName)
+    now = datetime.now(tz)
+
+    # Last midnight in local time
+    lastMidnightLocal = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    # Next midnight in local time
+    nextMidnightLocal = lastMidnightLocal + timedelta(days=1)
+
+    # Convert to UTC
+    lastMidnightUtc = lastMidnightLocal.astimezone(ZoneInfo("UTC"))
+    nextMidnightUtc = nextMidnightLocal.astimezone(ZoneInfo("UTC"))
+
+    # Format as ISO 8601 (milliseconds precision, ending with Z)
+    formatIso = lambda dt: dt.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
+
+    return formatIso(lastMidnightUtc), formatIso(nextMidnightUtc)
+
+  # Example usage
+  timezoneName = "Europe/Amsterdam"
+  lastMidnightUtc, nextMidnightUtc = getUtcMidnights(timezoneName)
+
+  payloadReservations = {
+    "ClientToken": clientToken,
+    "AccessToken": accessToken,
+    "Client": client,
+    "ScheduledStartUtc": {
+      "StartUtc": lastMidnightUtc,
+      "EndUtc": nextMidnightUtc
+    },
+    "States": [
+      "Confirmed"
+    ],
+    "Limitation": {
+      "Count": 1000,
     }
+  }
 
-    clientToken = "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D"
-    accessToken = "BEC33DAD4C57410C9E6DB09600C7FB9B-310471532A30162E5B6F0EB4F4AD2BF"
-    client = "Mews Import Application"
-    url = "https://api.mews-demo.com/api/connector/v1/"
+  jsonPayloadReservations = json.dumps(payloadReservations)
+  responseReservations = requests.post(url + "reservations/getAll/2023-06-06", data=jsonPayloadReservations, headers=headers)
+  if responseReservations.status_code != 200:
+    print("Error:", responseReservations.text)
+  json_response_reservations = responseReservations.json()
 
-    from datetime import datetime, timedelta
-    from zoneinfo import ZoneInfo
+  def extractReservationInformation(apiResponse):
+    DataOut = []
+    for reservation in apiResponse.get("Reservations", []):
+      DataOut.append({
+        "number": reservation.get("Number"),
+        "assignedResourceId": reservation.get("AssignedResourceId"),
+        "accountId": reservation.get("AccountId"),
+        "requestedResourceCategoryId": reservation.get("RequestedResourceCategoryId"),
+      })
+    return DataOut
 
-    def getUtcMidnights(timezoneName):
-        tz = ZoneInfo(timezoneName)
-        now = datetime.now(tz)
+  json_response_reservations_extracted = extractReservationInformation(json_response_reservations)
+  #pprint.pprint(json_response_reservations_extracted)
 
-        # Last midnight in local time
-        lastMidnightLocal = now.replace(hour=0, minute=0, second=0, microsecond=0)
-        # Next midnight in local time
-        nextMidnightLocal = lastMidnightLocal + timedelta(days=1)
+  accountIds = list(set([reservation['accountId'] for reservation in json_response_reservations_extracted if reservation['accountId'] is not None]))
 
-        # Convert to UTC
-        lastMidnightUtc = lastMidnightLocal.astimezone(ZoneInfo("UTC"))
-        nextMidnightUtc = nextMidnightLocal.astimezone(ZoneInfo("UTC"))
-
-        # Format as ISO 8601 (milliseconds precision, ending with Z)
-        formatIso = lambda dt: dt.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
-
-        return formatIso(lastMidnightUtc), formatIso(nextMidnightUtc)
-
-    # Example usage
-    timezoneName = "Europe/Amsterdam"
-    lastMidnightUtc, nextMidnightUtc = getUtcMidnights(timezoneName)
-
-    payloadReservations = {
-        "ClientToken": clientToken,
-        "AccessToken": accessToken,
-        "Client": client,
-        "ScheduledStartUtc": {
-            "StartUtc": lastMidnightUtc,
-            "EndUtc": nextMidnightUtc
-        },
-        "States": [
-            "Confirmed"
-        ],
-        "Limitation": {
-            "Count": 1000,
-        }
+  payloadCustomers = {
+    "ClientToken": clientToken,
+    "AccessToken": accessToken,
+    "Client": client,
+    "Extent": {
+      "Customers": True,
+      "Documents": False,
+      "Addresses": False
+    },
+    "CustomerIds": accountIds,
+    "Limitation": {
+      "Count": 1000,
     }
+  }
 
-    jsonPayloadReservations = json.dumps(payloadReservations)
-    responseReservations = requests.post(url + "reservations/getAll/2023-06-06", data=jsonPayloadReservations, headers=headers)
-    if responseReservations.status_code != 200:
-        print("Error:", responseReservations.text)
-    json_response_reservations = responseReservations.json()
+  jsonPayloadCustomers = json.dumps(payloadCustomers)
+  responseCustomers = requests.post(url + "customers/getAll", data=jsonPayloadCustomers, headers=headers)
+  if responseCustomers.status_code != 200:
+    print("Error:", responseCustomers.text)
+  json_response_customers = responseCustomers.json()
 
-    def extractReservationInformation(apiResponse):
-        DataOut = []
-        for reservation in apiResponse.get("Reservations", []):
-            DataOut.append({
-                "number": reservation.get("Number"),
-                "assignedResourceId": reservation.get("AssignedResourceId"),
-                "accountId": reservation.get("AccountId"),
-                "requestedResourceCategoryId": reservation.get("RequestedResourceCategoryId"),
-            })
-        return DataOut
+  def extractCustomerBasics(apiResponse):
+    dataOut = []
+    for customer in apiResponse.get("Customers", []):
+      if "Waiting For Room" not in (customer.get("Classifications") or []):
+        continue
+          
+      fullName = f"{customer.get('FirstName', '')} {customer.get('LastName', '')}".strip()
 
-    json_response_reservations_extracted = extractReservationInformation(json_response_reservations)
-    #pprint.pprint(json_response_reservations_extracted)
+      # Determine contact method
+      phone = customer.get("Phone")
+      email = customer.get("Email")
+      classification = customer.get("Classifications") or "No classification"
+      contactMethod = phone or email or "Not Available"
 
-    accountIds = list(set([reservation['accountId'] for reservation in json_response_reservations_extracted if reservation['accountId'] is not None]))
+      dataOut.append({
+        "fullName": fullName,
+        "id": customer.get("Id"),
+        "contactMethod": contactMethod,
+        "notes": customer.get("Notes"),
+        "classification": classification
+      })
+    return dataOut
 
-    payloadCustomers = {
-        "ClientToken": clientToken,
-        "AccessToken": accessToken,
-        "Client": client,
-        "Extent": {
-            "Customers": True,
-            "Documents": False,
-            "Addresses": False
-        },
-        "CustomerIds": accountIds,
-        "Limitation": {
-            "Count": 1000,
-        }
-    }
+  json_response_customers_extracted = extractCustomerBasics(json_response_customers)
 
-    jsonPayloadCustomers = json.dumps(payloadCustomers)
-    responseCustomers = requests.post(url + "customers/getAll", data=jsonPayloadCustomers, headers=headers)
-    if responseCustomers.status_code != 200:
-        print("Error:", responseCustomers.text)
-    json_response_customers = responseCustomers.json()
+  #filter out the accountids from the reservations that are not in the customers list
+  json_response_reservations_extracted = [reservation for reservation in json_response_reservations_extracted if any(customer.get("id") == reservation.get("accountId") for customer in json_response_customers_extracted)]
 
-    def extractCustomerBasics(apiResponse):
-        dataOut = []
-        for customer in apiResponse.get("Customers", []):
-            fullName = f"{customer.get('FirstName', '')} {customer.get('LastName', '')}".strip()
+  resourceIds = list(set([reservation['assignedResourceId'] for reservation in json_response_reservations_extracted if reservation['assignedResourceId'] is not None]))
 
-            # Determine contact method
-            phone = customer.get("Phone")
-            email = customer.get("Email")
-            classification = customer.get("Classifications") or "Not Classified"
-            contactMethod = phone or email or "Not Available"
+  payloadResources = {
+      "ClientToken": clientToken,
+      "AccessToken": accessToken,
+      "Client": client,
+      "ResourceIds": resourceIds,
+      "Extent": {
+          "Resources": True
+      },
+      "Limitation": {
+          "Count": 100
+      }
+  }
 
-            dataOut.append({
-                "fullName": fullName,
-                "id": customer.get("Id"),
-                "contactMethod": contactMethod,
-                "notes": customer.get("Notes"),
-                "classification": classification
-            })
-        return dataOut
+  jsonPayloadResources = json.dumps(payloadResources)
+  responseResources = requests.post(url + "resources/getAll", data=jsonPayloadResources, headers=headers)
+  if responseResources.status_code != 200:
+      print("Error:", responseResources.text)
+  json_response_resources = responseResources.json()
+  def extractResourceBasics(apiResponse):
+      dataOut = []
+      for resource in apiResponse.get("Resources", []):
+          dataOut.append({
+              "name": resource.get("Name"),
+              "id": resource.get("Id"),
+              "State": resource.get("State"),
+              "ResourceCategoryId": resource.get("ResourceCategoryId")
+          })
+      return dataOut
 
-    json_response_customers_extracted = extractCustomerBasics(json_response_customers)
+  json_response_resources_extracted = extractResourceBasics(json_response_resources)
 
-    resourceIds = list(set([reservation['assignedResourceId'] for reservation in json_response_reservations_extracted if reservation['assignedResourceId'] is not None]))
+  def mergeData(reservationList, customerList, resourceList):
+      # Build lookup dictionaries for fast access
+      customerLookup = {customer["id"]: customer for customer in customerList}
+      resourceLookup = {resource["id"]: resource for resource in resourceList}
 
-    payloadResources = {
-        "ClientToken": clientToken,
-        "AccessToken": accessToken,
-        "Client": client,
-        "ResourceIds": resourceIds,
-        "Extent": {
-            "Resources": True
-        },
-        "Limitation": {
-            "Count": 100
-        }
-    }
+      merged = []
+      for reservation in reservationList:
+          accountId = reservation.get("accountId")
+          assignedResourceId = reservation.get("assignedResourceId")
 
-    jsonPayloadResources = json.dumps(payloadResources)
-    responseResources = requests.post(url + "resources/getAll", data=jsonPayloadResources, headers=headers)
-    if responseResources.status_code != 200:
-        print("Error:", responseResources.text)
-    json_response_resources = responseResources.json()
-    def extractResourceBasics(apiResponse):
-        dataOut = []
-        for resource in apiResponse.get("Resources", []):
-            dataOut.append({
-                "name": resource.get("Name"),
-                "id": resource.get("Id"),
-                "State": resource.get("State"),
-                "ResourceCategoryId": resource.get("ResourceCategoryId")
-            })
-        return dataOut
+          customer = customerLookup.get(accountId, {})
+          resource = resourceLookup.get(assignedResourceId, {})
 
-    json_response_resources_extracted = extractResourceBasics(json_response_resources)
+          merged.append({
+              "number": reservation.get("number"),
+              "fullName": customer.get("fullName"),
+              "Classification": customer.get("classification"),
+              "contactMethod": customer.get("contactMethod"),
+              "notes": customer.get("notes"),
+              "assignedResourceId": assignedResourceId,
+              "assignedResourceName": resource.get("name"),
+              "assignedResourceState": resource.get("State"),
+              "requestedResourceCategoryId": reservation.get("requestedResourceCategoryId")
+          })
+      return merged
 
-    def mergeData(reservationList, customerList, resourceList):
-        # Build lookup dictionaries for fast access
-        customerLookup = {customer["id"]: customer for customer in customerList}
-        resourceLookup = {resource["id"]: resource for resource in resourceList}
-
-        merged = []
-        for reservation in reservationList:
-            accountId = reservation.get("accountId")
-            assignedResourceId = reservation.get("assignedResourceId")
-
-            customer = customerLookup.get(accountId, {})
-            resource = resourceLookup.get(assignedResourceId, {})
-
-            merged.append({
-                "number": reservation.get("number"),
-                "fullName": customer.get("fullName"),
-                "Classification": customer.get("classification"),
-                "contactMethod": customer.get("contactMethod"),
-                "notes": customer.get("notes"),
-                "assignedResourceId": assignedResourceId,
-                "assignedResourceName": resource.get("name"),
-                "assignedResourceState": resource.get("State"),
-                "requestedResourceCategoryId": reservation.get("requestedResourceCategoryId")
-            })
-        return merged
-
-    result = mergeData(json_response_reservations_extracted, json_response_customers_extracted, json_response_resources_extracted)
-    return result
+  result = mergeData(json_response_reservations_extracted, json_response_customers_extracted, json_response_resources_extracted)
+  return result
 
 
 @app.route('/')
@@ -202,7 +208,7 @@ HTML = '''
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Reservation Overview</title>
+  <title>Reservation Queue Overview</title>
   <style>
     :root {
       --bg: #0b1020;
