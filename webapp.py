@@ -109,7 +109,7 @@ def getAllData():
   def extractCustomerBasics(apiResponse):
     dataOut = []
     for customer in apiResponse.get("Customers", []):
-      if "Waiting For Room" not in (customer.get("Classifications") or []):
+      if "WaitingForRoom" not in (customer.get("Classifications") or []):
         continue
           
       fullName = f"{customer.get('FirstName', '')} {customer.get('LastName', '')}".strip()
