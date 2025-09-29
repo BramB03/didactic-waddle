@@ -2,6 +2,12 @@ from flask import Flask, request, jsonify, render_template_string, Response, sen
 
 app = Flask(__name__)
 
+clientToken = "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D"
+accessToken = "BEC33DAD4C57410C9E6DB09600C7FB9B-310471532A30162E5B6F0EB4F4AD2BF"
+client = "Mews Import Application"
+url = "https://api.mews-demo.com/api/connector/v1/"
+
+
 def getAllData():
   import requests
   import json
@@ -16,11 +22,6 @@ def getAllData():
   headers = {
       "Content-Type": "application/json"
   }
-
-  clientToken = "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D"
-  accessToken = "BEC33DAD4C57410C9E6DB09600C7FB9B-310471532A30162E5B6F0EB4F4AD2BF"
-  client = "Mews Import Application"
-  url = "https://api.mews-demo.com/api/connector/v1/"
 
   from datetime import datetime, timedelta
   from zoneinfo import ZoneInfo
@@ -128,7 +129,7 @@ def getAllData():
 
       dataOut.append({
         "fullName": fullName,
-        "id": customer.get("Id"),
+        "customerId": customer.get("Id"),
         "contactMethod": contactMethod,
         "notes": customer.get("Notes"),
         "classification": classification
@@ -138,7 +139,7 @@ def getAllData():
   json_response_customers_extracted = extractCustomerBasics(json_response_customers)
 
   #filter out the accountids from the reservations that are not in the customers list
-  json_response_reservations_extracted = [reservation for reservation in json_response_reservations_extracted if any(customer.get("id") == reservation.get("accountId") for customer in json_response_customers_extracted)]
+  json_response_reservations_extracted = [reservation for reservation in json_response_reservations_extracted if any(customer.get("customerId") == reservation.get("accountId") for customer in json_response_customers_extracted)]
 
   resourceIds = list(set([reservation['assignedResourceId'] for reservation in json_response_reservations_extracted if reservation['assignedResourceId'] is not None]))
   resourceCategoryIds = list(set([reservation['requestedResourceCategoryId'] for reservation in json_response_reservations_extracted if reservation['requestedResourceCategoryId'] is not None]))
@@ -167,7 +168,7 @@ def getAllData():
       for resource in apiResponse.get("Resources", []):
           dataOut.append({
               "name": resource.get("Name"),
-              "id": resource.get("Id"),
+              "resourceId": resource.get("Id"),
               "State": resource.get("State")
           })
       return dataOut
@@ -192,8 +193,8 @@ def getAllData():
 
   def mergeData(reservationList, customerList, resourceList):
       # Build lookup dictionaries for fast access
-      customerLookup = {customer["id"]: customer for customer in customerList}
-      resourceLookup = {resource["id"]: resource for resource in resourceList}
+      customerLookup = {customer["customerId"]: customer for customer in customerList}
+      resourceLookup = {resource["resourceId"]: resource for resource in resourceList}
       occupancyLookup = {}
       for category in json_response_resource_occupancy_states.get("ResourceCategoryOccupancyStates", []):
           for stateItem in category.get("ResourceOccupancyStates", []):
@@ -236,6 +237,7 @@ def getAllData():
               "reservationId": reservation.get("reservationId"),
               "reservationUrl": reservation.get("reservationUrl"),
               "fullName": customer.get("fullName"),
+              "accountId": customer.get("customerId"),
               "Classification": customer.get("classification"),
               "contactMethod": customer.get("contactMethod"),
               "notes": customer.get("notes"),
@@ -312,6 +314,8 @@ HTML = '''
 
     .container{ max-width: 1200px; margin: 32px auto; padding: 0 20px; }
 
+    .btn[data-loading="1"] { opacity: .7; cursor: wait; }
+
     /* Header */
     .header{
       display:flex; align-items:center; justify-content: space-between;
@@ -377,6 +381,14 @@ HTML = '''
       padding: 10px 14px; color: var(--text-muted); font-size: 12px; background:#fff;
     }
 
+    .btn[disabled] {
+      background: #f1f3f5;
+      color: #9ca3af;
+      border-color: #e5e7eb;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
     /* Chips & links */
     .chip{
       display:inline-flex; align-items:center; gap:6px;
@@ -404,6 +416,7 @@ HTML = '''
 
     /* Small helper to space state chips */
     .chips{ display:flex; flex-wrap: wrap; gap:6px; }
+    .btn.small { padding: 6px 10px; font-size: 12px; border-radius: 6px; }
   </style>
 </head>
 <body>
@@ -447,10 +460,40 @@ HTML = '''
                 <td>{{ r.Classification | default('—') }}</td>
                 <td class="mono">{{ r.requestedResourceCategoryId | default('—') }}</td>
                 <td>{{ r.notes if r.notes is not none and r.notes != '' else '—' }}</td>
+                <td>
+                  {% set state = (r.assignedResourceState or '') %}
+                  {% set allowedStates = ['Inspected, Vacant', 'Inspected, Reserved', 'Inspected, Reserved/Vacant'] %}
+                  {% set canCheckIn = state in allowedStates %}
+                  {% set hasPaymaster = r.Classification and 'PaymasterAccount' in r.Classification %}
+
+                  <div class="actions" style="display:flex; gap:8px;">
+                    <button
+                      class="btn small action-checkin"
+                      data-reservation-id="{{ r.reservationId }}"
+                      data-number="{{ r.number }}"
+                      data-full-name="{{ r.fullName }}"
+                      data-assigned-resource-id="{{ r.assignedResourceId }}"
+                      data-requested-category="{{ r.requestedResourceCategoryId }}"
+                      data-account-id="{{ r.accountId }}"
+                      data-classification="{{ r.Classification or '' }}"
+                      {% if not canCheckIn %}disabled style="opacity:0.5; cursor:not-allowed;"{% endif %}
+                    >Check in</button>
+
+                    <button
+                      class="btn small action-paymaster"
+                      data-reservation-id="{{ r.reservationId }}"
+                      data-number="{{ r.number }}"
+                      data-full-name="{{ r.fullName }}"
+                      data-account-id="{{ r.accountId }}"
+                      data-classification="{{ r.Classification or '' }}"
+                      {% if hasPaymaster %}disabled style="opacity:0.5; cursor:not-allowed;"{% endif %}
+                    >Enable roomcharging</button>
+                  </div>
+                </td>
               </tr>
             {% else %}
               <tr>
-                <td colspan="9" class="muted">No data available.</td>
+                <td colspan="10" class="muted">No data available.</td>
               </tr>
             {% endfor %}
           </tbody>
@@ -483,12 +526,152 @@ HTML = '''
 
       document.getElementById('lastSyncBtn').textContent =
         `Last sync: ${formatDateTimeHuman(new Date())}`; 
+    
+      async function postJSON(url, payload, button){
+        try {
+          button?.setAttribute('disabled', 'disabled');
+          button?.setAttribute('data-loading', '1');
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) throw new Error(data.message || `HTTP ${res.status}`);
+          return data;
+        } finally {
+          button?.removeAttribute('data-loading');
+          // laat 'disabled' staan tot reload, dat voorkomt dubbele acties
+        }
+      }
+
+    function gatherPayloadFromButton(btn){
+      const classificationArr = (btn.dataset.classification || '')
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean);
+
+      return {
+        reservationId: btn.dataset.reservationId || null,
+        accountId: btn.dataset.accountId || null,
+        number: btn.dataset.number || null,
+        fullName: btn.dataset.fullName || null,
+        assignedResourceId: btn.dataset.assignedResourceId || null,
+        requestedResourceCategoryId: btn.dataset.requestedCategory || null,
+        classification: classificationArr, // <-- array
+      };
+    }
+
+    function softRefresh(delayMs = 800) {
+      setTimeout(() => window.location.reload(), delayMs);
+    }
+
+    document.addEventListener('click', async (ev) => {
+      const btn = ev.target.closest('button');
+      if (!btn) return;
+
+      if (btn.classList.contains('action-checkin')) {
+        const payload = gatherPayloadFromButton(btn);
+        try {
+          await postJSON('/api/check-in', payload, btn);
+          // Korte bevestiging in de knop
+          const prev = btn.textContent;
+          btn.textContent = '✓ Checked in';
+          softRefresh();
+        } catch (e) {
+          alert(`Check-in failed: ${e.message}`);
+        }
+      }
+
+      if (btn.classList.contains('action-paymaster')) {
+        const payload = gatherPayloadFromButton(btn);
+        try {
+          await postJSON('/api/paymaster', payload, btn);
+          const prev = btn.textContent;
+          btn.textContent = '✓ Enabled';
+          softRefresh();
+        } catch (e) {
+          alert(`Paymaster failed: ${e.message}`);
+        }
+      }
+    });
+            
   </script>
 </body>
 </html>
 '''
 
+@app.post("/api/check-in")
+def api_check_in():
+    import json
+    import requests
+    payload = request.get_json(silent=True) or {}
+    reservation_id = payload.get("reservationId")
+    number = payload.get("number")
+    full_name = payload.get("fullName")
 
+    payloadCheckIn = {
+        "ClientToken": clientToken,
+        "AccessToken": accessToken,
+        "Client": client,
+        "ReservationId": reservation_id,
+    }
+    jsonPayloadCheckIn = json.dumps(payloadCheckIn)
+    responseCheckIn = requests.post(url + "reservations/start", data=jsonPayloadCheckIn, headers={"Content-Type": "application/json"})
+    if responseCheckIn.status_code != 200:
+        return jsonify({
+            "status": "error",
+            "message": f"Check-in failed: {responseCheckIn.text}"
+        }), 500
+    
+    return jsonify({
+        "status": "ok",
+        "reservationId": reservation_id,
+        "message": f"Checked in {number} ({full_name})"
+    }), 200
+
+
+@app.post("/api/paymaster")
+def api_paymaster():
+    import json, requests
+    payload = request.get_json(silent=True) or {}
+    customerId = payload.get("accountId")
+    number = payload.get("number")
+    full_name = payload.get("fullName")
+    classification = payload.get("classification") or []  # should be list
+
+    if isinstance(classification, str):
+        classification = [c.strip() for c in classification.split(",") if c.strip()]
+
+    filtered = [c for c in classification if c not in ("WaitingForRoom",)]
+    for flag in ("PaymasterAccount", "WaitingForRoom"):
+        if flag not in filtered:
+            filtered.append(flag)
+
+    payloadPaymaster = {
+        "ClientToken": clientToken,
+        "AccessToken": accessToken,
+        "Client": client,
+        "CustomerId": customerId,
+        "Classifications": filtered,
+    }
+
+    responsePaymaster = requests.post(
+        url + "customers/update",
+        json=payloadPaymaster,
+        timeout=20
+    )
+    if responsePaymaster.status_code != 200:
+        return jsonify({
+            "status": "error",
+            "message": f"Paymaster creation failed: {responsePaymaster.text}"
+        }), 500
+
+    return jsonify({
+        "status": "ok",
+        "reservationId": number,
+        "message": f"Paymaster created for {number} ({full_name})"
+    }), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
