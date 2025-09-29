@@ -119,7 +119,11 @@ def getAllData():
       # Determine contact method
       phone = customer.get("Phone")
       email = customer.get("Email")
-      classification = ", ".join(customer.get("Classifications") or [])
+      classifications = customer.get("Classifications") or []
+      # Filter out "WaitingForRoom"
+      filteredClassifications = [value for value in classifications if value != "WaitingForRoom"]
+
+      classification = ", ".join(filteredClassifications) if filteredClassifications else None      
       contactMethod = phone or email or "Not Available"
 
       dataOut.append({
@@ -232,7 +236,7 @@ def getAllData():
               "reservationId": reservation.get("reservationId"),
               "reservationUrl": reservation.get("reservationUrl"),
               "fullName": customer.get("fullName"),
-              "Classification": customer.get("classifications"),
+              "Classification": customer.get("classification"),
               "contactMethod": customer.get("contactMethod"),
               "notes": customer.get("notes"),
               "assignedResourceId": assignedResourceId,
