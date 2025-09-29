@@ -66,7 +66,7 @@ def getAllData():
   jsonPayloadReservations = json.dumps(payloadReservations)
   responseReservations = requests.post(url + "reservations/getAll/2023-06-06", data=jsonPayloadReservations, headers=headers)
   if responseReservations.status_code != 200:
-    print("Error:", responseReservations.text)
+    print("Error reservations:", responseReservations.text)
   json_response_reservations = responseReservations.json()
 
   def extractReservationInformation(apiResponse):
@@ -74,6 +74,8 @@ def getAllData():
     for reservation in apiResponse.get("Reservations", []):
       DataOut.append({
         "number": reservation.get("Number"),
+        "reservationId": reservation.get("Id"),
+        "reservationUrl": f"https://app.mews-demo.com/Commander/8dc59049-c9d0-4d08-a489-ae94011b28e5/Reservation/Detail/{reservation.get('Id')}",
         "assignedResourceId": reservation.get("AssignedResourceId"),
         "accountId": reservation.get("AccountId"),
         "requestedResourceCategoryId": reservation.get("RequestedResourceCategoryId"),
@@ -103,7 +105,7 @@ def getAllData():
   jsonPayloadCustomers = json.dumps(payloadCustomers)
   responseCustomers = requests.post(url + "customers/getAll", data=jsonPayloadCustomers, headers=headers)
   if responseCustomers.status_code != 200:
-    print("Error:", responseCustomers.text)
+    print("Error Customers:", responseCustomers.text)
   json_response_customers = responseCustomers.json()
 
   def extractCustomerBasics(apiResponse):
@@ -117,7 +119,7 @@ def getAllData():
       # Determine contact method
       phone = customer.get("Phone")
       email = customer.get("Email")
-      classification = customer.get("Classifications") or "No classification"
+      classification = ", ".join(customer.get("Classifications") or [])
       contactMethod = phone or email or "Not Available"
 
       dataOut.append({
@@ -135,14 +137,16 @@ def getAllData():
   json_response_reservations_extracted = [reservation for reservation in json_response_reservations_extracted if any(customer.get("id") == reservation.get("accountId") for customer in json_response_customers_extracted)]
 
   resourceIds = list(set([reservation['assignedResourceId'] for reservation in json_response_reservations_extracted if reservation['assignedResourceId'] is not None]))
-
+  resourceCategoryIds = list(set([reservation['requestedResourceCategoryId'] for reservation in json_response_reservations_extracted if reservation['requestedResourceCategoryId'] is not None]))
+  
   payloadResources = {
       "ClientToken": clientToken,
       "AccessToken": accessToken,
       "Client": client,
       "ResourceIds": resourceIds,
       "Extent": {
-          "Resources": True
+          "Resources": True,
+          "ResourceCategories": True
       },
       "Limitation": {
           "Count": 100
@@ -152,7 +156,7 @@ def getAllData():
   jsonPayloadResources = json.dumps(payloadResources)
   responseResources = requests.post(url + "resources/getAll", data=jsonPayloadResources, headers=headers)
   if responseResources.status_code != 200:
-      print("Error:", responseResources.text)
+      print("Error Resources:", responseResources.text)
   json_response_resources = responseResources.json()
   def extractResourceBasics(apiResponse):
       dataOut = []
@@ -160,19 +164,44 @@ def getAllData():
           dataOut.append({
               "name": resource.get("Name"),
               "id": resource.get("Id"),
-              "State": resource.get("State"),
-              "ResourceCategoryId": resource.get("ResourceCategoryId")
+              "State": resource.get("State")
           })
       return dataOut
 
   json_response_resources_extracted = extractResourceBasics(json_response_resources)
+  json_response_resource_categories_extracted = json_response_resources.get("ResourceCategories", [])
+
+  payloadResourceStates = {
+      "ClientToken": clientToken,
+      "AccessToken": accessToken,
+      "Client": client,
+      "ResourceCategoryIds": resourceCategoryIds,
+      "Limitation": {
+          "Count": 100
+      }
+  }
+  jsonPayloadResourceStates = json.dumps(payloadResourceStates)
+  responseResourceStates = requests.post(url + "resources/getOccupancyState", data=jsonPayloadResourceStates, headers=headers)
+  if responseResourceStates.status_code != 200:
+      print("Error State:", responseResourceStates.text)
+  json_response_resource_occupancy_states = responseResourceStates.json()
 
   def mergeData(reservationList, customerList, resourceList):
       # Build lookup dictionaries for fast access
       customerLookup = {customer["id"]: customer for customer in customerList}
       resourceLookup = {resource["id"]: resource for resource in resourceList}
+      occupancyLookup = {}
+      for category in json_response_resource_occupancy_states.get("ResourceCategoryOccupancyStates", []):
+          for stateItem in category.get("ResourceOccupancyStates", []):
+              resourceId = stateItem.get("ResourceId")
+              if resourceId:
+                  occupancyLookup[resourceId] = {
+                    "resourceState": stateItem.get("ResourceState"),
+                    "occupancyState": stateItem.get("OccupancyState")
+                  }
 
       merged = []
+
       for reservation in reservationList:
           accountId = reservation.get("accountId")
           assignedResourceId = reservation.get("assignedResourceId")
@@ -180,27 +209,56 @@ def getAllData():
           customer = customerLookup.get(accountId, {})
           resource = resourceLookup.get(assignedResourceId, {})
 
+          # Combine base housekeeping State from `resource` with live OccupancyState
+          stateInfo = occupancyLookup.get(assignedResourceId, {})
+          baseState = resource.get("State")  # e.g. "Dirty"
+          occupancyState = stateInfo.get("occupancyState")  # e.g. "Vacant"
+          if occupancyState == "Unknown":
+              occupancyState = None  # Don't show "Unknown"
+          elif occupancyState == "ReservedLocked":
+              occupancyState = "Occupied"  # More friendly wording
+          elif occupancyState == "Reserved":
+              occupancyState = "Reserved/Vacant"
+          elif occupancyState == "Vacant":
+              occupancyState = "Vacant"
+          elif occupancyState == "InternalUse":
+              occupancyState = "House use"
+          elif occupancyState == "OutOfOrder":
+              occupancyState = "Out of order"
+          combinedState = ", ".join(s for s in [baseState, occupancyState] if s)
+
           merged.append({
               "number": reservation.get("number"),
+              "reservationId": reservation.get("reservationId"),
+              "reservationUrl": reservation.get("reservationUrl"),
               "fullName": customer.get("fullName"),
-              "Classification": customer.get("classification"),
+              "Classification": customer.get("classifications"),
               "contactMethod": customer.get("contactMethod"),
               "notes": customer.get("notes"),
               "assignedResourceId": assignedResourceId,
               "assignedResourceName": resource.get("name"),
-              "assignedResourceState": resource.get("State"),
+              "assignedResourceState": combinedState,  # e.g. "Dirty, Vacant"
               "requestedResourceCategoryId": reservation.get("requestedResourceCategoryId")
-          })
+            })
+          
+      for row in merged:
+         for i in range(len(json_response_resource_categories_extracted)):
+            if row["requestedResourceCategoryId"] == json_response_resource_categories_extracted[i]["Id"]:
+               row["requestedResourceCategoryId"] = json_response_resource_categories_extracted[i]["Names"]["en-GB"]
+               break
       return merged
 
   result = mergeData(json_response_reservations_extracted, json_response_customers_extracted, json_response_resources_extracted)
   return result
 
 
+result = getAllData()
+
 @app.route('/')
 def index():
     result = getAllData()
     return render_template_string(HTML, result=result)
+
 
 HTML = '''
 <!DOCTYPE html>
@@ -209,78 +267,139 @@ HTML = '''
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Reservation Queue Overview</title>
+
+  <!-- Optional: Inter font (nice, neutral SaaS look) -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
-    :root {
-      --bg: #0b1020;
-      --card: #121a33;
-      --muted: #6b7a99;
-      --text: #e8ecf8;
-      --accent: #5b8cff;
-      --border: rgba(255,255,255,0.08);
-      --success: #36d399;
+    :root{
+      /* Light, clean SaaS palette with Mews-like blue accent */
+      --bg: #f7f8fa;
+      --surface: #ffffff;
+      --text: #1a1d29;
+      --text-muted: #6b7280;
+      --border: #e7eaf0;
+      --brand: #1c7ed6;      /* primary blue */
+      --brand-600: #1864ab;
+      --brand-50: #e7f1fb;
+      --chip-bg: #f1f3f5;
+      --chip-text: #343a40;
+      --link: #0b6bcb;
+      --row-hover: #f8fafc;
+      --shadow-sm: 0 1px 2px rgba(16,24,40,.06);
+      --shadow-md: 0 8px 24px rgba(16,24,40,.08);
+      --radius: 10px;
+
+      /* State colors */
+      --ok: #12b886;         /* clean/inspected/ok */
+      --warn: #f59f00;       /* dirty/in-progress */
+      --info: #228be6;       /* reserved/occupied generic */
+      --empty: #adb5bd;      /* vacant/unknown */
     }
+
     html, body { height: 100%; }
-    body {
-      margin: 0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      background:
-        radial-gradient(1200px 800px at 10% -10%, rgba(91,140,255,.15), transparent),
-        radial-gradient(1200px 800px at 90% 10%, rgba(139,91,255,.12), transparent),
-        var(--bg);
+    body{
+      margin:0;
+      background: var(--bg);
       color: var(--text);
-    }
-    .container { max-width: 1100px; margin: 40px auto; padding: 0 16px; }
-
-    .header {
-      display: flex; gap: 12px; align-items: center; justify-content: space-between;
-      margin-bottom: 18px;
-    }
-    .title {
-      font-weight: 700; letter-spacing: .2px; font-size: clamp(20px, 2.4vw, 28px);
-      display:flex; align-items:center; gap:10px;
-    }
-    .title .pill { font-size: 12px; color: var(--muted); border: 1px solid var(--border); padding: 2px 8px; border-radius: 999px; }
-
-    .toolbar { display:flex; gap: 10px; align-items:center; }
-    .btn {
-      appearance: none; border: 1px solid var(--border);
-      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-      color: var(--text); padding: 10px 14px; border-radius: 12px; font-weight: 600; letter-spacing: .2px; cursor: pointer;
-      transition: transform .06s ease, box-shadow .2s ease, border-color .2s ease;
-      box-shadow: 0 6px 16px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,0.05);
-    }
-    .btn:hover { transform: translateY(-1px); border-color: rgba(255,255,255,0.18); }
-    .btn:active { transform: translateY(0); }
-    .btn.primary { border-color: rgba(91,140,255,.45); background: linear-gradient(180deg, rgba(91,140,255,.25), rgba(91,140,255,.15)); }
-    .btn.ghost { background: transparent; }
-    .btn[disabled] { opacity: .7; cursor: default; }
-
-    .card {
-      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
-      border: 1px solid var(--border); border-radius: 18px; padding: 14px; overflow: hidden;
-      box-shadow: 0 12px 24px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,0.04);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
     }
 
-    .table-wrap { overflow:auto; border-radius: 12px; }
-    table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 900px; }
-    thead th {
-      position: sticky; top: 0; z-index: 2; text-align: left; font-weight: 700; color: var(--text);
-      background: linear-gradient(180deg, rgba(18,26,51,.9), rgba(18,26,51,.75));
+    .container{ max-width: 1200px; margin: 32px auto; padding: 0 20px; }
+
+    /* Header */
+    .header{
+      display:flex; align-items:center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .title{
+      display:flex; align-items:baseline; gap:12px;
+    }
+    .title h1{
+      margin:0; font-size: clamp(18px, 2.2vw, 24px); font-weight: 600; letter-spacing:.2px;
+    }
+    .subtitle{
+      color: var(--text-muted); font-size: 13px;
+      padding: 2px 8px; border: 1px solid var(--border); border-radius: 999px; background: #fff;
+    }
+
+    .toolbar{ display:flex; gap:10px; }
+    .btn{
+      appearance:none; border:1px solid var(--border); background:#fff; color: var(--text);
+      padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor:pointer;
+      transition: background .15s ease, border-color .15s ease, transform .04s ease;
+      box-shadow: var(--shadow-sm);
+    }
+    .btn:hover{ background:#f9fafb; border-color:#dde3ea; }
+    .btn:active{ transform: translateY(1px); }
+    .btn.primary{
+      background: var(--brand); border-color: var(--brand);
+      color:#fff; box-shadow: 0 1px 2px rgba(28,126,214,.2);
+    }
+    .btn.primary:hover{ background: var(--brand-600); border-color: var(--brand-600); }
+    .btn.ghost{ background:#fff; }
+    .btn[disabled]{ opacity:.7; cursor: default; }
+
+    /* Card/Table */
+    .card{
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+    .table-wrap{ overflow:auto; }
+    table{
+      width:100%; border-collapse: collapse; font-size: 13.5px;
+      min-width: 960px;
+    }
+    thead th{
+      position: sticky; top:0; z-index:1;
+      text-align:left; font-weight:600;
+      background: #fff;
       border-bottom: 1px solid var(--border);
-      padding: 12px 14px;
+      padding: 12px 14px; color: #111827;
     }
-    tbody td { padding: 12px 14px; border-bottom: 1px solid var(--border); color: #d7def0; }
-    tbody tr:hover { background: rgba(91,140,255,0.06); }
-
-    .badge {
-      display: inline-flex; align-items:center; gap:6px; border:1px solid var(--border); color: #dfe7ff; padding: 6px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+    tbody td{
+      padding: 12px 14px; border-bottom: 1px solid var(--border); color: #283041;
+      vertical-align: middle;
     }
-    .badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 0 3px rgba(54,211,153,.18); }
-    .muted { color: var(--muted); }
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    tbody tr:hover{ background: var(--row-hover); }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
 
-    .footer { margin-top: 12px; display:flex; align-items:center; justify-content: space-between; color: var(--muted); font-size: 12px; }
+    .footer{
+      display:flex; align-items:center; justify-content: space-between;
+      padding: 10px 14px; color: var(--text-muted); font-size: 12px; background:#fff;
+    }
+
+    /* Chips & links */
+    .chip{
+      display:inline-flex; align-items:center; gap:6px;
+      padding: 4px 8px; border-radius: 999px; font-weight: 600; font-size: 12px;
+      background: var(--chip-bg); color: var(--chip-text); border: 1px solid var(--border);
+      line-height: 1;
+    }
+    .chip .dot{ width:8px; height:8px; border-radius: 999px; background: var(--empty); }
+    .chip.ok .dot{ background: var(--ok); }
+    .chip.warn .dot{ background: var(--warn); }
+    .chip.info .dot{ background: var(--info); }
+
+    a.link{
+      color: var(--link); text-decoration: none; font-weight: 600;
+    }
+    a.link:hover{ text-decoration: underline; }
+
+    /* Compact first column button look */
+    .open-link{
+      display:inline-flex; align-items:center; gap:6px;
+      padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border);
+      background:#fff; color: var(--link); font-weight:600; text-decoration:none;
+    }
+    .open-link:hover{ background:#f9fafb; }
+
+    /* Small helper to space state chips */
+    .chips{ display:flex; flex-wrap: wrap; gap:6px; }
   </style>
 </head>
 <body>
@@ -301,11 +420,11 @@ HTML = '''
         <table aria-label="Reservation overview table">
           <thead>
             <tr>
-              <th>No.</th>
+              <th>Mews URL</th>
+              <th>Res No.</th>
               <th>Guest</th>
               <th>Contact</th>
-              <th>Room Name</th>
-              <th>Room Id</th>
+              <th>Room Number</th>
               <th>Room State</th>
               <th>Classification</th>
               <th>Requested Category</th>
@@ -315,11 +434,11 @@ HTML = '''
           <tbody>
             {% for r in result %}
               <tr>
+                <td><a href="{{ r.reservationUrl }}" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">🔗 Link</a></td>
                 <td class="mono">{{ r.number | default('—') }}</td>
                 <td>{{ r.fullName | default('—') }}</td>
                 <td class="mono">{{ r.contactMethod | default('—') }}</td>
                 <td>{{ r.assignedResourceName | default('—') }}</td>
-                <td class="mono">{{ r.assignedResourceId | default('—') }}</td>
                 <td>{{ r.assignedResourceState | default('—') }}</td>
                 <td>{{ r.Classification | default('—') }}</td>
                 <td class="mono">{{ r.requestedResourceCategoryId | default('—') }}</td>
@@ -347,16 +466,24 @@ HTML = '''
     });
 
     // Last sync indicator: use the client's current UTC time in ISO 8601 with ms
-    function formatDateTimeISO(date) {
-      const pad = (n, z=2) => (""+n).padStart(z, '0');
-      const ms = (date.getUTCMilliseconds()+" ").trim().padStart(3, '0');
-      return `${date.getUTCFullYear()}-${pad(date.getUTCMonth()+1)}-${pad(date.getUTCDate())}T${pad(date.getUTCHours())}:${pad(date.getUTCMinutes())}:${pad(date.getUTCSeconds())}.${ms}Z`;
-    }
-    document.getElementById('lastSyncBtn').textContent = `Last sync: ${formatDateTimeISO(new Date())}`;
+    function formatDateTimeHuman(date) {
+        const pad = (n) => String(n).padStart(2, '0');
+        const year = date.getFullYear();
+        const month = pad(date.getMonth() + 1);
+        const day = pad(date.getDate());
+        const hours = pad(date.getHours());
+        const minutes = pad(date.getMinutes());
+        const seconds = pad(date.getSeconds());
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+      }
+
+      document.getElementById('lastSyncBtn').textContent =
+        `Last sync: ${formatDateTimeHuman(new Date())}`; 
   </script>
 </body>
 </html>
 '''
+
 
 
 if __name__ == '__main__':
