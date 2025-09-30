@@ -84,7 +84,6 @@ def getAllData():
     return DataOut
 
   json_response_reservations_extracted = extractReservationInformation(json_response_reservations)
-  #pprint.pprint(json_response_reservations_extracted)
 
   accountIds = list(set([reservation['accountId'] for reservation in json_response_reservations_extracted if reservation['accountId'] is not None]))
 
@@ -137,6 +136,10 @@ def getAllData():
     return dataOut
 
   json_response_customers_extracted = extractCustomerBasics(json_response_customers)
+
+  if not json_response_customers_extracted:
+    print("No customers waiting for room.")
+    return []
 
   #filter out the accountids from the reservations that are not in the customers list
   json_response_reservations_extracted = [reservation for reservation in json_response_reservations_extracted if any(customer.get("customerId") == reservation.get("accountId") for customer in json_response_customers_extracted)]
@@ -218,6 +221,7 @@ def getAllData():
           stateInfo = occupancyLookup.get(assignedResourceId, {})
           baseState = resource.get("State")  # e.g. "Dirty"
           occupancyState = stateInfo.get("occupancyState")  # e.g. "Vacant"
+          print(f"Debug: Resource ID {assignedResourceId} has base state '{baseState}' and occupancy state '{occupancyState}'")
           if occupancyState == "Unknown":
               occupancyState = None  # Don't show "Unknown"
           elif occupancyState == "ReservedLocked":
@@ -274,21 +278,18 @@ HTML = '''
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Reservation Queue Overview</title>
 
-  <!-- Optional: Inter font (nice, neutral SaaS look) -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      /* Light, clean SaaS palette with Mews-like blue accent */
       --bg: #f7f8fa;
       --surface: #ffffff;
       --text: #1a1d29;
       --text-muted: #6b7280;
       --border: #e7eaf0;
-      --brand: #1c7ed6;      /* primary blue */
+      --brand: #1c7ed6;
       --brand-600: #1864ab;
-      --brand-50: #e7f1fb;
       --chip-bg: #f1f3f5;
       --chip-text: #343a40;
       --link: #0b6bcb;
@@ -296,12 +297,6 @@ HTML = '''
       --shadow-sm: 0 1px 2px rgba(16,24,40,.06);
       --shadow-md: 0 8px 24px rgba(16,24,40,.08);
       --radius: 10px;
-
-      /* State colors */
-      --ok: #12b886;         /* clean/inspected/ok */
-      --warn: #f59f00;       /* dirty/in-progress */
-      --info: #228be6;       /* reserved/occupied generic */
-      --empty: #adb5bd;      /* vacant/unknown */
     }
 
     html, body { height: 100%; }
@@ -316,17 +311,9 @@ HTML = '''
 
     .btn[data-loading="1"] { opacity: .7; cursor: wait; }
 
-    /* Header */
-    .header{
-      display:flex; align-items:center; justify-content: space-between;
-      margin-bottom: 16px;
-    }
-    .title{
-      display:flex; align-items:baseline; gap:12px;
-    }
-    .title h1{
-      margin:0; font-size: clamp(18px, 2.2vw, 24px); font-weight: 600; letter-spacing:.2px;
-    }
+    .header{ display:flex; align-items:center; justify-content: space-between; margin-bottom: 16px; }
+    .title{ display:flex; align-items:baseline; gap:12px; }
+    .title h1{ margin:0; font-size: clamp(18px, 2.2vw, 24px); font-weight: 600; }
     .subtitle{
       color: var(--text-muted); font-size: 13px;
       padding: 2px 8px; border: 1px solid var(--border); border-radius: 999px; background: #fff;
@@ -340,16 +327,10 @@ HTML = '''
       box-shadow: var(--shadow-sm);
     }
     .btn:hover{ background:#f9fafb; border-color:#dde3ea; }
-    .btn:active{ transform: translateY(1px); }
-    .btn.primary{
-      background: var(--brand); border-color: var(--brand);
-      color:#fff; box-shadow: 0 1px 2px rgba(28,126,214,.2);
-    }
+    .btn.primary{ background: var(--brand); border-color: var(--brand); color:#fff; }
     .btn.primary:hover{ background: var(--brand-600); border-color: var(--brand-600); }
-    .btn.ghost{ background:#fff; }
-    .btn[disabled]{ opacity:.7; cursor: default; }
+    .btn[disabled]{ opacity:.7; cursor:not-allowed; background:#f1f3f5; color:#9ca3af; border-color:#e5e7eb; }
 
-    /* Card/Table */
     .card{
       background: var(--surface);
       border: 1px solid var(--border);
@@ -358,10 +339,7 @@ HTML = '''
       overflow: hidden;
     }
     .table-wrap{ overflow:auto; }
-    table{
-      width:100%; border-collapse: collapse; font-size: 13.5px;
-      min-width: 960px;
-    }
+    table{ width:100%; border-collapse: collapse; font-size: 13.5px; min-width: 960px; }
     thead th{
       position: sticky; top:0; z-index:1;
       text-align:left; font-weight:600;
@@ -369,53 +347,10 @@ HTML = '''
       border-bottom: 1px solid var(--border);
       padding: 12px 14px; color: #111827;
     }
-    tbody td{
-      padding: 12px 14px; border-bottom: 1px solid var(--border); color: #283041;
-      vertical-align: middle;
-    }
+    tbody td{ padding: 12px 14px; border-bottom: 1px solid var(--border); color: #283041; }
     tbody tr:hover{ background: var(--row-hover); }
-    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-
-    .footer{
-      display:flex; align-items:center; justify-content: space-between;
-      padding: 10px 14px; color: var(--text-muted); font-size: 12px; background:#fff;
-    }
-
-    .btn[disabled] {
-      background: #f1f3f5;
-      color: #9ca3af;
-      border-color: #e5e7eb;
-      cursor: not-allowed;
-      opacity: 0.7;
-    }
-
-    /* Chips & links */
-    .chip{
-      display:inline-flex; align-items:center; gap:6px;
-      padding: 4px 8px; border-radius: 999px; font-weight: 600; font-size: 12px;
-      background: var(--chip-bg); color: var(--chip-text); border: 1px solid var(--border);
-      line-height: 1;
-    }
-    .chip .dot{ width:8px; height:8px; border-radius: 999px; background: var(--empty); }
-    .chip.ok .dot{ background: var(--ok); }
-    .chip.warn .dot{ background: var(--warn); }
-    .chip.info .dot{ background: var(--info); }
-
-    a.link{
-      color: var(--link); text-decoration: none; font-weight: 600;
-    }
-    a.link:hover{ text-decoration: underline; }
-
-    /* Compact first column button look */
-    .open-link{
-      display:inline-flex; align-items:center; gap:6px;
-      padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border);
-      background:#fff; color: var(--link); font-weight:600; text-decoration:none;
-    }
-    .open-link:hover{ background:#f9fafb; }
-
-    /* Small helper to space state chips */
-    .chips{ display:flex; flex-wrap: wrap; gap:6px; }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    .footer{ display:flex; align-items:center; justify-content: space-between; padding: 10px 14px; color: var(--text-muted); font-size: 12px; background:#fff; }
     .btn.small { padding: 6px 10px; font-size: 12px; border-radius: 6px; }
   </style>
 </head>
@@ -423,8 +358,8 @@ HTML = '''
   <div class="container">
     <div class="header">
       <div class="title">
-        Reservation Overview
-        <span class="pill">Live view</span>
+        <h1>Reservation Overview</h1>
+        <span class="subtitle">Live view</span>
       </div>
       <div class="toolbar">
         <button class="btn ghost" id="lastSyncBtn" disabled>Last sync: —</button>
@@ -437,7 +372,6 @@ HTML = '''
         <table aria-label="Reservation overview table">
           <thead>
             <tr>
-              <th>Mews URL</th>
               <th>Res No.</th>
               <th>Guest</th>
               <th>Contact</th>
@@ -446,12 +380,12 @@ HTML = '''
               <th>Classification</th>
               <th>Requested Category</th>
               <th>Notes</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {% for r in result %}
               <tr>
-                <td><a href="{{ r.reservationUrl }}" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">🔗 Link</a></td>
                 <td class="mono">{{ r.number | default('—') }}</td>
                 <td>{{ r.fullName | default('—') }}</td>
                 <td class="mono">{{ r.contactMethod | default('—') }}</td>
@@ -470,13 +404,14 @@ HTML = '''
                     <button
                       class="btn small action-checkin"
                       data-reservation-id="{{ r.reservationId }}"
+                      data-reservation-url="{{ r.reservationUrl }}"
                       data-number="{{ r.number }}"
                       data-full-name="{{ r.fullName }}"
                       data-assigned-resource-id="{{ r.assignedResourceId }}"
                       data-requested-category="{{ r.requestedResourceCategoryId }}"
                       data-account-id="{{ r.accountId }}"
                       data-classification="{{ r.Classification or '' }}"
-                      {% if not canCheckIn %}disabled style="opacity:0.5; cursor:not-allowed;"{% endif %}
+                      {% if not canCheckIn %}disabled{% endif %}
                     >Check in</button>
 
                     <button
@@ -486,14 +421,14 @@ HTML = '''
                       data-full-name="{{ r.fullName }}"
                       data-account-id="{{ r.accountId }}"
                       data-classification="{{ r.Classification or '' }}"
-                      {% if hasPaymaster %}disabled style="opacity:0.5; cursor:not-allowed;"{% endif %}
+                      {% if hasPaymaster %}disabled{% endif %}
                     >Enable roomcharging</button>
                   </div>
                 </td>
               </tr>
             {% else %}
               <tr>
-                <td colspan="10" class="muted">No data available.</td>
+                <td colspan="9" class="muted">No data available.</td>
               </tr>
             {% endfor %}
           </tbody>
@@ -501,49 +436,38 @@ HTML = '''
       </div>
       <div class="footer">
         <span class="muted">Tip: Click Refresh to reload data. The timestamp shows the last load time.</span>
-        <span class="badge"><span class="dot"></span> Status: OK</span>
       </div>
     </div>
   </div>
 
   <script>
-    // Refresh button: simple full reload (your server will rebuild `result`)
     document.getElementById('refreshBtn').addEventListener('click', () => {
       window.location.reload();
     });
 
-    // Last sync indicator: use the client's current UTC time in ISO 8601 with ms
     function formatDateTimeHuman(date) {
-        const pad = (n) => String(n).padStart(2, '0');
-        const year = date.getFullYear();
-        const month = pad(date.getMonth() + 1);
-        const day = pad(date.getDate());
-        const hours = pad(date.getHours());
-        const minutes = pad(date.getMinutes());
-        const seconds = pad(date.getSeconds());
-        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-      }
+      const pad = (n) => String(n).padStart(2, '0');
+      return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+    }
+    document.getElementById('lastSyncBtn').textContent =
+      `Last sync: ${formatDateTimeHuman(new Date())}`;
 
-      document.getElementById('lastSyncBtn').textContent =
-        `Last sync: ${formatDateTimeHuman(new Date())}`; 
-    
-      async function postJSON(url, payload, button){
-        try {
-          button?.setAttribute('disabled', 'disabled');
-          button?.setAttribute('data-loading', '1');
-          const res = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-          });
-          const data = await res.json().catch(() => ({}));
-          if (!res.ok) throw new Error(data.message || `HTTP ${res.status}`);
-          return data;
-        } finally {
-          button?.removeAttribute('data-loading');
-          // laat 'disabled' staan tot reload, dat voorkomt dubbele acties
-        }
+    async function postJSON(url, payload, button){
+      try {
+        button?.setAttribute('disabled', 'disabled');
+        button?.setAttribute('data-loading', '1');
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.message || `HTTP ${res.status}`);
+        return data;
+      } finally {
+        button?.removeAttribute('data-loading');
       }
+    }
 
     function gatherPayloadFromButton(btn){
       const classificationArr = (btn.dataset.classification || '')
@@ -558,12 +482,9 @@ HTML = '''
         fullName: btn.dataset.fullName || null,
         assignedResourceId: btn.dataset.assignedResourceId || null,
         requestedResourceCategoryId: btn.dataset.requestedCategory || null,
-        classification: classificationArr, // <-- array
+        classification: classificationArr,
+        reservationUrl: btn.dataset.reservationUrl || null,
       };
-    }
-
-    function softRefresh(delayMs = 800) {
-      setTimeout(() => window.location.reload(), delayMs);
     }
 
     document.addEventListener('click', async (ev) => {
@@ -574,10 +495,10 @@ HTML = '''
         const payload = gatherPayloadFromButton(btn);
         try {
           await postJSON('/api/check-in', payload, btn);
-          // Korte bevestiging in de knop
-          const prev = btn.textContent;
-          btn.textContent = '✓ Checked in';
-          softRefresh();
+        if (payload.reservationUrl && /^https?:\\/\\//i.test(payload.reservationUrl)) {
+          window.open(payload.reservationUrl, '_blank', 'noopener,noreferrer');
+        }
+          window.location.reload();
         } catch (e) {
           alert(`Check-in failed: ${e.message}`);
         }
@@ -587,15 +508,12 @@ HTML = '''
         const payload = gatherPayloadFromButton(btn);
         try {
           await postJSON('/api/paymaster', payload, btn);
-          const prev = btn.textContent;
-          btn.textContent = '✓ Enabled';
-          softRefresh();
+          window.location.reload();
         } catch (e) {
           alert(`Paymaster failed: ${e.message}`);
         }
       }
     });
-            
   </script>
 </body>
 </html>
