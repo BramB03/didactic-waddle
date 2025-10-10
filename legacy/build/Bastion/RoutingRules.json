@@ -1,0 +1,3961 @@
+{
+  "RoutingRulesVlaardingen": [
+    {
+      "Id": "75a2f08d-8a15-4c65-9419-b29c00bc0e3f",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "e1ffa07a-5475-485f-a20e-b24100dd40dc",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "AllStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": false,
+        "CityTax": false,
+        "ProductCategoryIds": []
+      },
+      "CreatedUtc": "2025-03-10T11:24:41Z",
+      "UpdatedUtc": "2025-05-16T06:58:35Z"
+    },
+    {
+      "Id": "2d0e44e1-04a0-4296-8ef8-b27a008ae3b2",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "79b7b19d-2653-45a2-8aaf-b24100a41f35",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": []
+      },
+      "CreatedUtc": "2025-02-04T08:25:40Z",
+      "UpdatedUtc": "2025-02-04T08:25:40Z"
+    },
+    {
+      "Id": "5aaa580f-e3ab-492c-9db1-b27a008ae2e5",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "abdf3852-d10a-4bb0-9fae-b24100a38d31",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:40Z",
+      "UpdatedUtc": "2025-02-04T08:25:40Z"
+    },
+    {
+      "Id": "f3948966-d3dd-4b15-b464-b27a008ae1db",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "adc9f700-d582-46bf-b27e-b24100d5bef2",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:39Z",
+      "UpdatedUtc": "2025-02-04T08:25:39Z"
+    },
+    {
+      "Id": "da76c9df-8079-4233-8677-b27a008ae17f",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "1d5c4c54-a192-47b6-bd4e-b24100d5bc3d",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:38Z",
+      "UpdatedUtc": "2025-02-04T08:25:38Z"
+    },
+    {
+      "Id": "edcd7261-f370-4d7f-998e-b27a008ae129",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "94822e75-f448-4dc4-bace-b24100d5b4b9",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:38Z",
+      "UpdatedUtc": "2025-02-04T08:25:38Z"
+    },
+    {
+      "Id": "7f8942ad-c4b2-4d62-98da-b27a008ae0ca",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "2f64b119-e7ff-4859-a2a9-b24100a17532",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:38Z",
+      "UpdatedUtc": "2025-02-04T08:25:38Z"
+    },
+    {
+      "Id": "f9608f93-6799-4a38-b622-b27a008ae03c",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "e34b69a8-8c3b-4b05-875d-b24100d76ade",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:37Z",
+      "UpdatedUtc": "2025-02-04T08:25:37Z"
+    },
+    {
+      "Id": "45b4034d-7754-4b4a-b6dc-b27a008adfe4",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "4104fb7c-91de-4af6-972f-b241009f254d",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:37Z",
+      "UpdatedUtc": "2025-02-04T08:25:37Z"
+    },
+    {
+      "Id": "f9dd9f3e-06d6-4cc8-9c58-b27a008adf8f",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "ec479df2-0bbe-4f43-90ad-b24100d757ea",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:37Z",
+      "UpdatedUtc": "2025-02-04T08:25:37Z"
+    },
+    {
+      "Id": "6265ac60-467c-4d21-b712-b27a008adf44",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "b51b7129-8867-40d0-8e40-b241009fe914",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:37Z",
+      "UpdatedUtc": "2025-02-04T08:25:37Z"
+    },
+    {
+      "Id": "af42923d-a8c1-4a39-9dc0-b27a008adee9",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "1b3620f7-7e2c-4f2e-89ee-b24100de22b7",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "4d0e63e8-0257-430d-8b17-b2410079316c",
+          "4d0e63e8-0257-430d-8b17-b2410079316c",
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "4d0e63e8-0257-430d-8b17-b2410079316c",
+          "d4989e10-894d-4d96-b1aa-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:36Z",
+      "UpdatedUtc": "2025-02-04T08:25:36Z"
+    },
+    {
+      "Id": "84e45d69-9efc-4038-bfcb-b27a008ade91",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "334993ee-c5ac-4c01-b10c-b24100de220d",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:36Z",
+      "UpdatedUtc": "2025-02-04T08:25:36Z"
+    },
+    {
+      "Id": "2a928da8-7fca-40a2-ae4a-b27a008ade3c",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "49a005eb-72ac-4df9-a805-b24100de1102",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:36Z",
+      "UpdatedUtc": "2025-02-04T08:25:36Z"
+    },
+    {
+      "Id": "9a67db31-4d26-4e36-9552-b27a008addbc",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "76c94963-a37e-487b-b1dd-b241009f9c0f",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:35Z",
+      "UpdatedUtc": "2025-02-04T08:25:35Z"
+    },
+    {
+      "Id": "cfce32df-0b7a-404a-a41f-b27a008add5e",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "8148f669-bc67-43d0-8ea1-b24100de1d50",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:35Z",
+      "UpdatedUtc": "2025-02-04T08:25:35Z"
+    },
+    {
+      "Id": "260e7ee7-4f0b-4242-bdcf-b27a008add01",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "6d154a4a-41d6-4648-819c-b24100ddf752",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:35Z",
+      "UpdatedUtc": "2025-02-04T08:25:35Z"
+    },
+    {
+      "Id": "931326a5-d954-4e83-8646-b27a008adc54",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "2f85dffc-247d-40dd-99d6-b24100ddf2c0",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:34Z",
+      "UpdatedUtc": "2025-02-04T08:25:34Z"
+    },
+    {
+      "Id": "76e49959-af6d-4686-bc38-b27a008adc02",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "d14ef36d-faab-4e63-982d-b24100dddc77",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "4d0e63e8-0257-430d-8b17-b2410079316c",
+          "4d0e63e8-0257-430d-8b17-b2410079316c",
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:34Z",
+      "UpdatedUtc": "2025-02-04T08:25:34Z"
+    },
+    {
+      "Id": "765bc724-1848-48f9-8536-b27a008adbae",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "b41d07dd-3582-47c0-b0ff-b24100de1508",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:34Z",
+      "UpdatedUtc": "2025-02-04T08:25:34Z"
+    },
+    {
+      "Id": "e56cf269-bca9-4511-8d85-b27a008adb54",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "7485e9f7-4117-4759-a590-b24100ddfe09",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:33Z",
+      "UpdatedUtc": "2025-02-04T08:25:33Z"
+    },
+    {
+      "Id": "3bde0bb2-5fd5-440a-8fe8-b27a008adb06",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "25dae835-d23b-486b-b61e-b24100de12f2",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:33Z",
+      "UpdatedUtc": "2025-02-04T08:25:33Z"
+    },
+    {
+      "Id": "99f8cd80-f18f-499f-83a8-b27a008adab5",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "e420e96f-d315-4406-adba-b241009f4715",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:33Z",
+      "UpdatedUtc": "2025-02-04T08:25:33Z"
+    },
+    {
+      "Id": "ddb977f9-1fce-41d2-9b38-b27a008ada5c",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "05996454-e8a9-46f4-9861-b241009e3058",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:32Z",
+      "UpdatedUtc": "2025-02-04T08:25:32Z"
+    },
+    {
+      "Id": "12504d94-9765-45de-bc9a-b27a008ada11",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "c83ab587-558f-4077-b0a0-b24100dde6b6",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:32Z",
+      "UpdatedUtc": "2025-02-04T08:25:32Z"
+    },
+    {
+      "Id": "24f2e67c-2998-4d2c-8391-b27a008ad9bd",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "ab9c6d0f-6cef-4e58-b804-b241009e3bdc",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:32Z",
+      "UpdatedUtc": "2025-02-04T08:25:32Z"
+    },
+    {
+      "Id": "9c50765d-ba2e-4e37-b6d2-b27a008ad96a",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "06466649-ba13-4fb3-8a4a-b241009e0252",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:32Z",
+      "UpdatedUtc": "2025-02-04T08:25:32Z"
+    },
+    {
+      "Id": "8087be6c-8613-4c10-aee0-b27a008ad905",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "3ce48ded-503e-4eda-9d5a-b24100de1ce2",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:31Z",
+      "UpdatedUtc": "2025-02-19T10:21:43Z"
+    },
+    {
+      "Id": "ab5de67a-412e-492b-91b5-b27a008ad8a3",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "2fc5e28d-a595-4c6e-8e1d-b24100a058df",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:31Z",
+      "UpdatedUtc": "2025-02-04T08:25:31Z"
+    },
+    {
+      "Id": "0222f41e-987b-45d0-b1c0-b27a008ad820",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "0be4a5f4-add2-4bc7-b045-b24100a00491",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:30Z",
+      "UpdatedUtc": "2025-02-04T08:25:30Z"
+    },
+    {
+      "Id": "69b805b3-ce15-4c89-b9a0-b27a008ad7ce",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "0c4e238e-c09c-49d1-ac62-b24100dd8e09",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:30Z",
+      "UpdatedUtc": "2025-02-04T08:25:30Z"
+    },
+    {
+      "Id": "f1fedd6c-fa38-4dcd-b665-b27a008ad777",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "5c6a22d3-7bd6-41e4-8e5b-b24100ddb9c6",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:30Z",
+      "UpdatedUtc": "2025-02-04T08:25:30Z"
+    },
+    {
+      "Id": "a2968861-a27a-4fb8-8484-b27a008ad723",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "fdbfbaee-74b9-4afb-a23e-b24100a03441",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:30Z",
+      "UpdatedUtc": "2025-02-04T08:25:30Z"
+    },
+    {
+      "Id": "518f7b07-0ed1-4531-a4dc-b27a008ad6c6",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "4749c616-0fd0-4dd9-ad13-b241009de634",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:29Z",
+      "UpdatedUtc": "2025-02-04T08:25:29Z"
+    },
+    {
+      "Id": "a2ab59ff-5a86-424e-a5b6-b27a008ad671",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "f2ca46c3-b7b3-483a-94c6-b24100dd7377",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:29Z",
+      "UpdatedUtc": "2025-02-04T08:25:29Z"
+    },
+    {
+      "Id": "643a8ceb-996c-4dc8-b634-b27a008ad61b",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "cebd38b5-fa65-4ae4-94b9-b24100d7698b",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "d4989e10-894d-4d96-b1aa-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:29Z",
+      "UpdatedUtc": "2025-02-04T08:25:29Z"
+    },
+    {
+      "Id": "5eafaccb-6677-4640-a8e5-b27a008ad5c2",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "a10ab349-c4a6-4fc6-91dd-b24100dd94fa",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:28Z",
+      "UpdatedUtc": "2025-02-04T08:25:28Z"
+    },
+    {
+      "Id": "1d67b60f-cb98-4240-8fd9-b27a008ad572",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "0c0ce4b6-1564-4025-ae09-b241009fd8c3",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:28Z",
+      "UpdatedUtc": "2025-02-04T08:25:28Z"
+    },
+    {
+      "Id": "aa7142b9-0fd9-4538-8d6d-b27a008ad518",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "d9fc7430-153e-48b5-8b47-b24100dd4634",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "d4989e10-894d-4d96-b1aa-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:28Z",
+      "UpdatedUtc": "2025-02-04T08:25:28Z"
+    },
+    {
+      "Id": "92927e13-cfa5-4f79-88de-b27a008ad4c4",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "b82b48a7-a358-40ee-9673-b24100dd4bdb",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "d4989e10-894d-4d96-b1aa-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:28Z",
+      "UpdatedUtc": "2025-02-04T08:25:28Z"
+    },
+    {
+      "Id": "7d6889be-8306-461f-9cd1-b27a008ad404",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "119ae51d-a1ad-46aa-9eb3-b24100dd2064",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:27Z",
+      "UpdatedUtc": "2025-02-04T08:25:27Z"
+    },
+    {
+      "Id": "5821debd-ce46-45d5-96e0-b27a008ad39a",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "3a97328a-37d2-4ac9-a23d-b241009fdac4",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:27Z",
+      "UpdatedUtc": "2025-02-04T08:25:27Z"
+    },
+    {
+      "Id": "7100188f-5fbc-4fda-be73-b27a008ad31a",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "dabb316b-4594-449c-aca0-b24100dd4379",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "4d0e63e8-0257-430d-8b17-b2410079316c",
+          "4d0e63e8-0257-430d-8b17-b2410079316c",
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "d4989e10-894d-4d96-b1aa-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:26Z",
+      "UpdatedUtc": "2025-02-04T08:25:26Z"
+    },
+    {
+      "Id": "37a317b8-8be4-49e0-b2fb-b27a008ad2c3",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "0552b6b6-34ee-4170-b8a7-b24100dd176e",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:26Z",
+      "UpdatedUtc": "2025-02-04T08:25:26Z"
+    },
+    {
+      "Id": "41001c6b-7a50-4b72-bc0b-b27a008ad257",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "e1ee6d28-3e97-4837-b3be-b24100dd3c5e",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "4d0e63e8-0257-430d-8b17-b2410079316c",
+          "4d0e63e8-0257-430d-8b17-b2410079316c"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:26Z",
+      "UpdatedUtc": "2025-02-04T08:25:26Z"
+    },
+    {
+      "Id": "f17a798a-a7dd-4c1d-bb85-b27a008ad1d1",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "ea6cb8e1-197d-4213-ac22-b24100dd3af9",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:25Z",
+      "UpdatedUtc": "2025-02-04T08:25:25Z"
+    },
+    {
+      "Id": "5163692f-e233-410d-aa5a-b27a008ad175",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "796285af-be78-4a9b-b4d3-b241009f3dae",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:25Z",
+      "UpdatedUtc": "2025-02-04T08:25:25Z"
+    },
+    {
+      "Id": "b5dbc461-b835-427c-9f75-b27a008ad119",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "1af57f27-0c15-4348-b170-b24100dd39bf",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": false,
+        "CityTax": true,
+        "ProductCategoryIds": []
+      },
+      "CreatedUtc": "2025-02-04T08:25:24Z",
+      "UpdatedUtc": "2025-02-04T08:25:24Z"
+    },
+    {
+      "Id": "55d0be00-b43c-43e1-bb27-b27a008ad0d2",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "b5875b4d-8ddc-4afc-99b2-b241009f9cd6",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:24Z",
+      "UpdatedUtc": "2025-02-04T08:25:24Z"
+    },
+    {
+      "Id": "3553a2bc-6963-4bcf-84b3-b27a008ad080",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "87ca4418-3d76-4d48-b857-b241009f270d",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:24Z",
+      "UpdatedUtc": "2025-02-04T08:25:24Z"
+    },
+    {
+      "Id": "72b49a2c-55bf-4865-868e-b27a008acfa9",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "2d744fc9-fd69-41ac-9cd7-b24100dce9f4",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:23Z",
+      "UpdatedUtc": "2025-02-04T08:25:23Z"
+    },
+    {
+      "Id": "6c5b7137-1f32-4a46-956f-b27a008acf44",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "d54a2f67-a25d-49f1-9c8d-b24100dcd591",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "4d0e63e8-0257-430d-8b17-b2410079316c",
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "4d0e63e8-0257-430d-8b17-b2410079316c",
+          "d4989e10-894d-4d96-b1aa-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:23Z",
+      "UpdatedUtc": "2025-02-04T08:25:23Z"
+    },
+    {
+      "Id": "c468eda6-3984-46d0-9c33-b27a008acef1",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "2e32f092-7f64-47cd-9157-b24100dcec19",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:23Z",
+      "UpdatedUtc": "2025-02-04T08:25:23Z"
+    },
+    {
+      "Id": "d9d504ca-e76c-4345-afa5-b27a008acea4",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "7fd68dcd-d953-49ca-90e4-b241009fbd5b",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:22Z",
+      "UpdatedUtc": "2025-02-04T08:25:22Z"
+    },
+    {
+      "Id": "3646049f-d93d-411c-a174-b27a008ace4a",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "080c0cb6-8253-45c6-a7e9-b24100dcde39",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:22Z",
+      "UpdatedUtc": "2025-02-04T08:25:22Z"
+    },
+    {
+      "Id": "162e773f-d751-4d57-912c-b27a008acdf0",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "de42e301-cd25-42f8-8d28-b24100dcdd67",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:22Z",
+      "UpdatedUtc": "2025-02-04T08:25:22Z"
+    },
+    {
+      "Id": "788aab8c-b0a1-4913-b7f5-b27a008acd8a",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "4be95065-5f5e-415b-be63-b241009fbbf0",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:21Z",
+      "UpdatedUtc": "2025-02-04T08:25:21Z"
+    },
+    {
+      "Id": "0e7ecdc1-cbba-4466-8e49-b27a008acd1c",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "b97e1170-f85f-4aba-93b4-b241009f144c",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:21Z",
+      "UpdatedUtc": "2025-02-04T08:25:21Z"
+    },
+    {
+      "Id": "1188de8b-00c3-4753-8dc5-b27a008accd6",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "e4f0fdb5-0a92-42dd-b94e-b241009f88d7",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:21Z",
+      "UpdatedUtc": "2025-02-04T08:25:21Z"
+    },
+    {
+      "Id": "5ec46f43-9295-4796-9c28-b27a008acc88",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "20c2070d-4859-40e8-8187-b24100dcb9eb",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:21Z",
+      "UpdatedUtc": "2025-02-04T08:25:21Z"
+    },
+    {
+      "Id": "5ea39fdc-8c8d-49a0-a83b-b27a008acc36",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "6d3689a3-0f48-4c50-b622-b241009f1d22",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:20Z",
+      "UpdatedUtc": "2025-02-04T08:25:20Z"
+    },
+    {
+      "Id": "7661e296-7f4d-4f15-9c93-b27a008acbe8",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "c98c9338-0151-489a-bf2b-b24100dccc86",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:20Z",
+      "UpdatedUtc": "2025-02-04T08:25:20Z"
+    },
+    {
+      "Id": "db97d7ff-bb6a-42de-8434-b27a008acb96",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "d2303fc3-2e8b-4a60-ab20-b24100dcfe8f",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:20Z",
+      "UpdatedUtc": "2025-02-04T08:25:20Z"
+    },
+    {
+      "Id": "e253ce33-eb35-48d6-9330-b27a008acb4a",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "0ab8e2c4-5bb1-46d7-a9dd-b241009f7c8f",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:20Z",
+      "UpdatedUtc": "2025-02-04T08:25:20Z"
+    },
+    {
+      "Id": "6dd41b57-46f9-42bb-9bcf-b27a008acafb",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "e3266804-83ac-4649-9e74-b24100dca1c6",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:19Z",
+      "UpdatedUtc": "2025-02-04T08:25:19Z"
+    },
+    {
+      "Id": "6ada469c-08f1-4153-bf9b-b27a008acab3",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "4a1ed03d-401b-44af-8de2-b24100dc9f1c",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:19Z",
+      "UpdatedUtc": "2025-02-04T08:25:19Z"
+    },
+    {
+      "Id": "eab63c47-fb4f-4182-845a-b27a008aca69",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "3a843b66-dec6-4eac-8c07-b241009f01b2",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:19Z",
+      "UpdatedUtc": "2025-02-04T08:25:19Z"
+    },
+    {
+      "Id": "f4083c9b-2fca-405c-9b04-b27a008aca0c",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "b5106187-2bfe-4b51-96bd-b24100dc9853",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:18Z",
+      "UpdatedUtc": "2025-02-04T08:25:18Z"
+    },
+    {
+      "Id": "ddf32d4e-0d40-47ec-8879-b27a008ac9b9",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "4bce1652-bd62-4768-ba86-b24100dc8712",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:18Z",
+      "UpdatedUtc": "2025-02-04T08:25:18Z"
+    },
+    {
+      "Id": "b368c000-1fd6-439a-9941-b27a008ac960",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "ac89af87-b68a-4963-b255-b24100dc5782",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:18Z",
+      "UpdatedUtc": "2025-02-04T08:25:18Z"
+    },
+    {
+      "Id": "7dced062-e9df-46f6-ab7c-b27a008ac90e",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "deabcdb6-3fd8-46c3-b91b-b24100dc7f98",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:18Z",
+      "UpdatedUtc": "2025-02-04T08:25:18Z"
+    },
+    {
+      "Id": "76b3c4f0-60db-466a-956b-b27a008ac8c5",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "90649c5d-c677-45a7-b8c5-b24100dc6dfb",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:17Z",
+      "UpdatedUtc": "2025-02-04T08:25:17Z"
+    },
+    {
+      "Id": "04c6f0f8-c2df-4509-801a-b27a008ac87b",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "3c4be7e5-e679-48c8-b6e9-b24100dc588d",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:17Z",
+      "UpdatedUtc": "2025-02-04T08:25:17Z"
+    },
+    {
+      "Id": "1e41f3a6-fa4a-4bdc-b5d6-b27a008ac82e",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "dd0aea2c-a5f8-4153-9e90-b24100dc56ee",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:17Z",
+      "UpdatedUtc": "2025-02-04T08:25:17Z"
+    },
+    {
+      "Id": "ee6474db-12a0-4141-8cb1-b27a008ac7e3",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "f9ba4874-9825-466a-91ac-b24100dc816a",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:17Z",
+      "UpdatedUtc": "2025-02-04T08:25:17Z"
+    },
+    {
+      "Id": "88d4d3cb-d014-4782-8a31-b27a008ac78b",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "0309d792-758b-468b-bb4e-b241009e5609",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:16Z",
+      "UpdatedUtc": "2025-02-04T08:25:16Z"
+    },
+    {
+      "Id": "2bbe02a9-ba7c-4a50-8b67-b27a008ac73a",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "b87787cc-27b1-436f-b329-b24100d78033",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:16Z",
+      "UpdatedUtc": "2025-02-04T08:25:16Z"
+    },
+    {
+      "Id": "75c7e8a1-b773-4a72-8fcf-b27a008ac6f1",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "1fca1a0f-660c-4b02-85b7-b241009eb0ba",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:16Z",
+      "UpdatedUtc": "2025-02-04T08:25:16Z"
+    },
+    {
+      "Id": "038c02c7-4cb6-49c5-add9-b27a008ac696",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "7dc513cd-e542-411b-8b00-b241009e07ad",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:16Z",
+      "UpdatedUtc": "2025-02-04T08:25:16Z"
+    },
+    {
+      "Id": "728b5d8a-36e9-4859-ae00-b27a008ac5f8",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "69be95e2-acd0-4107-9f14-b24100d76b48",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:15Z",
+      "UpdatedUtc": "2025-02-04T08:25:15Z"
+    },
+    {
+      "Id": "1664d668-8338-4661-9555-b27a008ac592",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "d5a20d3d-8562-4ce3-8ddf-b24100d7693d",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:15Z",
+      "UpdatedUtc": "2025-02-04T08:25:15Z"
+    },
+    {
+      "Id": "5b60775c-ee01-4874-92cb-b27a008ac51b",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "fc65b5a3-4ad5-4b78-9fc0-b24100a18257",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:14Z",
+      "UpdatedUtc": "2025-02-04T08:25:14Z"
+    },
+    {
+      "Id": "0d54bcf1-b02d-4044-b668-b27a008ac4c9",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "d3d836b4-1c09-4df8-bdc0-b24100d7747f",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:14Z",
+      "UpdatedUtc": "2025-02-04T08:25:14Z"
+    },
+    {
+      "Id": "9b84b147-b03b-4ad8-ad51-b27a008ac47d",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "84cea8d1-e839-4518-96d0-b24100d7685b",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:14Z",
+      "UpdatedUtc": "2025-02-04T08:25:14Z"
+    },
+    {
+      "Id": "9c6ab8fc-84a6-49a3-80ad-b27a008ac429",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "c8ccbea1-4dfb-49d7-969f-b24100dc5fc8",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:13Z",
+      "UpdatedUtc": "2025-02-04T08:25:13Z"
+    },
+    {
+      "Id": "e842c694-9f01-4d7b-adf4-b27a008ac3e0",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "a3dc4456-f72f-4362-b2a3-b241009e2062",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:13Z",
+      "UpdatedUtc": "2025-02-04T08:25:13Z"
+    },
+    {
+      "Id": "81ff944f-0963-468f-81a8-b27a008ac39e",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "ccef0aa6-b4e3-4de9-8167-b24100d7657a",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "4d0e63e8-0257-430d-8b17-b2410079316c",
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:13Z",
+      "UpdatedUtc": "2025-02-04T08:25:13Z"
+    },
+    {
+      "Id": "2961205b-2d98-4f82-bc7c-b27a008ac350",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "2fa43772-d7bd-4e9e-a01e-b24100d7724b",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:13Z",
+      "UpdatedUtc": "2025-02-04T08:25:13Z"
+    },
+    {
+      "Id": "b30ec8e2-abe4-4ba2-a453-b27a008ac304",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "2389fd0f-d037-4b89-a031-b24100dc5bc8",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:12Z",
+      "UpdatedUtc": "2025-02-04T08:25:12Z"
+    },
+    {
+      "Id": "a7f278bb-9b4f-44e9-9c6b-b27a008ac2b0",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "87899bd3-e1a0-466b-aa5a-b24100d76221",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "4d0e63e8-0257-430d-8b17-b2410079316c",
+          "4d0e63e8-0257-430d-8b17-b2410079316c",
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "4d0e63e8-0257-430d-8b17-b2410079316c",
+          "d4989e10-894d-4d96-b1aa-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:12Z",
+      "UpdatedUtc": "2025-02-04T08:25:12Z"
+    },
+    {
+      "Id": "a99a7829-387c-47d0-9ed2-b27a008ac26a",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "a1471b21-a617-4ed6-a734-b24100d76643",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:12Z",
+      "UpdatedUtc": "2025-02-04T08:25:12Z"
+    },
+    {
+      "Id": "08f23168-3848-4ce3-95ad-b27a008ac215",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "b2c063c5-7532-416b-b2c9-b24100db82a7",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:12Z",
+      "UpdatedUtc": "2025-02-04T08:25:12Z"
+    },
+    {
+      "Id": "bd95259f-a4c3-4d52-aba0-b27a008ac1be",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "5c6a5984-6d68-4141-8f93-b241009eaf87",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:11Z",
+      "UpdatedUtc": "2025-02-04T08:25:11Z"
+    },
+    {
+      "Id": "3bc1e941-6363-4de1-8d54-b27a008ac173",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "f3ce7e99-d7d1-452d-a009-b24100db7c00",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:11Z",
+      "UpdatedUtc": "2025-02-04T08:25:11Z"
+    },
+    {
+      "Id": "1c870c01-576c-4c07-ba05-b27a008ac0db",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "91a7ce45-979d-474e-aa5d-b24100dba604",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "4d0e63e8-0257-430d-8b17-b2410079316c",
+          "4d0e63e8-0257-430d-8b17-b2410079316c",
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "4d0e63e8-0257-430d-8b17-b2410079316c"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:11Z",
+      "UpdatedUtc": "2025-02-04T08:25:11Z"
+    },
+    {
+      "Id": "1b4b5294-a9ab-4e97-9d0a-b27a008ac082",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "4cef41ab-e185-43ad-a6ae-b24100dbd2d7",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:10Z",
+      "UpdatedUtc": "2025-02-04T08:25:10Z"
+    },
+    {
+      "Id": "d4f76b20-60d3-4eb1-a6bd-b27a008abfed",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "71f1b84e-b93a-44bb-a566-b24100db9f19",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:10Z",
+      "UpdatedUtc": "2025-02-04T08:25:10Z"
+    },
+    {
+      "Id": "9c864944-327f-402b-befe-b27a008abf95",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "765a487c-7a92-49c8-90df-b241009f104f",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:10Z",
+      "UpdatedUtc": "2025-02-04T08:25:10Z"
+    },
+    {
+      "Id": "b57a7810-3f81-4b28-9a30-b27a008abf3f",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "07f182f7-90d9-4646-ad43-b24100db8057",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:09Z",
+      "UpdatedUtc": "2025-02-04T08:25:09Z"
+    },
+    {
+      "Id": "b337dbaa-f5dd-4ab4-aee9-b27a008abeec",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "7a6abd1e-1012-4d18-81d1-b24100dbbe24",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:09Z",
+      "UpdatedUtc": "2025-02-04T08:25:09Z"
+    },
+    {
+      "Id": "f57c5bb9-4271-4752-b18b-b27a008abe20",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "f10b3894-8f9b-4950-b714-b24100dbbb54",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:08Z",
+      "UpdatedUtc": "2025-02-04T08:25:08Z"
+    },
+    {
+      "Id": "d00aea10-7bd3-4dc3-9fef-b27a008abdc3",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "0ab6962f-c578-4867-8fc2-b241009e60cd",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:08Z",
+      "UpdatedUtc": "2025-02-04T08:25:08Z"
+    },
+    {
+      "Id": "813ba58c-39b5-47d5-9380-b27a008abd75",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "8c918bcd-dc67-4fc1-95f6-b241009e7bd7",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:08Z",
+      "UpdatedUtc": "2025-02-04T08:25:08Z"
+    },
+    {
+      "Id": "b806aab6-6fac-4475-bb60-b27a008abd20",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "0db6132b-e75a-40be-910c-b24100dbb962",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:07Z",
+      "UpdatedUtc": "2025-02-04T08:25:07Z"
+    },
+    {
+      "Id": "00b96db7-2283-4474-a51e-b27a008abc76",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "be1c911d-36ea-45da-9f92-b241009e54c8",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:07Z",
+      "UpdatedUtc": "2025-02-04T08:25:07Z"
+    },
+    {
+      "Id": "f7bcb4ea-128d-4a49-9852-b27a008abc02",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "4ee9ff14-4273-4feb-b8ca-b24100db797f",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:06Z",
+      "UpdatedUtc": "2025-02-04T08:25:06Z"
+    },
+    {
+      "Id": "63f02e91-9824-4606-898a-b27a008abb96",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "3e4910f2-430e-4399-884d-b24100dbc654",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:06Z",
+      "UpdatedUtc": "2025-02-04T08:25:06Z"
+    },
+    {
+      "Id": "d40234cb-9345-417e-bde3-b27a008abb42",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "af4e743d-ffa4-4336-b954-b24100dbc5b8",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "d4989e10-894d-4d96-b1aa-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:06Z",
+      "UpdatedUtc": "2025-02-04T08:25:06Z"
+    },
+    {
+      "Id": "b4ac4717-3d60-42b4-88e0-b27a008abab5",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "0d8d517c-b3bd-4218-a394-b241009e7f60",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:05Z",
+      "UpdatedUtc": "2025-02-04T08:25:05Z"
+    },
+    {
+      "Id": "555f95e6-36f5-40e6-b98e-b27a008aba2a",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "0bc35c6b-d945-4446-9fca-b24100db9899",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:05Z",
+      "UpdatedUtc": "2025-02-04T08:25:05Z"
+    },
+    {
+      "Id": "673b6ed9-a485-4543-8aaa-b27a008ab9de",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "77144e50-7fd0-4356-8c26-b241009e87e0",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:05Z",
+      "UpdatedUtc": "2025-02-04T08:25:05Z"
+    },
+    {
+      "Id": "f4f73480-4030-44f9-96de-b27a008ab989",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "9f8077cb-4b93-4576-835b-b24100db6526",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:04Z",
+      "UpdatedUtc": "2025-02-04T08:25:04Z"
+    },
+    {
+      "Id": "6383403a-4ee8-4322-8d47-b27a008ab8f0",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "998b80bb-02da-4f22-8de5-b241009f4211",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:04Z",
+      "UpdatedUtc": "2025-02-04T08:25:04Z"
+    },
+    {
+      "Id": "fd8e36d2-95d0-4e7d-a1f2-b27a008ab885",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "54961d09-e65b-42f3-bb08-b24100db732f",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:04Z",
+      "UpdatedUtc": "2025-02-04T08:25:04Z"
+    },
+    {
+      "Id": "567f7b5f-0503-46f1-bb94-b27a008ab7e4",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "a3f781dd-5fc8-4280-ba04-b24100db912a",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:03Z",
+      "UpdatedUtc": "2025-02-04T08:25:03Z"
+    },
+    {
+      "Id": "b28ce823-452f-42de-834b-b27a008ab78e",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "a281be40-f76b-4e6e-8e12-b24100db7218",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:03Z",
+      "UpdatedUtc": "2025-02-04T08:25:03Z"
+    },
+    {
+      "Id": "2eafff5f-28e2-4e4f-9eb5-b27a008ab6fd",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "d9e7c9f2-1964-4339-b547-b24100dbb78d",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:02Z",
+      "UpdatedUtc": "2025-02-04T08:25:02Z"
+    },
+    {
+      "Id": "df30ecf3-a6da-4898-943b-b27a008ab6b1",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "e77c46cb-11e3-4679-be8e-b24100dbb669",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:02Z",
+      "UpdatedUtc": "2025-02-04T08:25:02Z"
+    },
+    {
+      "Id": "8d6b1578-b84a-4da0-bc08-b27a008ab648",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "c5626750-4136-41d8-8d7e-b241009e4ca0",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:02Z",
+      "UpdatedUtc": "2025-02-04T08:25:02Z"
+    },
+    {
+      "Id": "a8f38743-d22e-4a2b-81a7-b27a008ab5d4",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "5a5f308f-7bdf-4873-b448-b24100db9d7d",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:01Z",
+      "UpdatedUtc": "2025-02-04T08:25:01Z"
+    },
+    {
+      "Id": "9053f057-e3aa-46e5-8f7b-b27a008ab53b",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "bc2f7b89-8b81-4280-8de1-b24100db6062",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:01Z",
+      "UpdatedUtc": "2025-02-04T08:25:01Z"
+    },
+    {
+      "Id": "c8375e21-4277-42de-94ec-b27a008ab4ec",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "05ddd503-6a0b-452a-9fd1-b24100db543c",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:00Z",
+      "UpdatedUtc": "2025-02-04T08:25:00Z"
+    },
+    {
+      "Id": "65c70f78-a729-4235-abbf-b27a008ab4a3",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "4c5583b1-248b-4116-892f-b24100db8f3b",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:00Z",
+      "UpdatedUtc": "2025-02-04T08:25:00Z"
+    },
+    {
+      "Id": "40d9a344-a02c-45d8-ba3a-b27a008ab458",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "1dfd2781-e2bb-47f7-871a-b24100db8e6f",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:00Z",
+      "UpdatedUtc": "2025-02-04T08:25:00Z"
+    },
+    {
+      "Id": "d44ceae3-cef5-4a6b-bcf1-b27a008ab403",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "d0930221-1235-4ad6-ba33-b24100dba81a",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:25:00Z",
+      "UpdatedUtc": "2025-02-04T08:25:00Z"
+    },
+    {
+      "Id": "8dfdc9f2-ec73-4934-9b5c-b27a008ab3b0",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "cd2a72de-5706-4582-89d2-b24100db2b8d",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:59Z",
+      "UpdatedUtc": "2025-02-04T08:24:59Z"
+    },
+    {
+      "Id": "6efed06d-99f1-4824-97d3-b27a008ab368",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "5aee5133-c43a-445c-afb8-b24100db8d78",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:59Z",
+      "UpdatedUtc": "2025-02-04T08:24:59Z"
+    },
+    {
+      "Id": "167ba95a-b2a8-4187-a8d4-b27a008ab31d",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "b9940d3d-25c0-4e95-bb8a-b24100d77845",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:59Z",
+      "UpdatedUtc": "2025-02-04T08:24:59Z"
+    },
+    {
+      "Id": "a48a4ecc-4ef0-4cd7-b622-b27a008ab2bf",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "4467e4bc-5a71-43f9-a945-b24100db17bc",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:59Z",
+      "UpdatedUtc": "2025-02-04T08:24:59Z"
+    },
+    {
+      "Id": "eb9e4d6c-e65e-4624-9a61-b27a008ab26e",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "0ee198f9-45ba-47f2-b031-b24100d77683",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:58Z",
+      "UpdatedUtc": "2025-02-04T08:24:58Z"
+    },
+    {
+      "Id": "9dfbafe9-a608-408c-8ded-b27a008ab21f",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "dccd24e2-129c-40b8-a0d7-b241009e3f50",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:58Z",
+      "UpdatedUtc": "2025-02-04T08:24:58Z"
+    },
+    {
+      "Id": "1b98b1a4-ddf2-4952-9cac-b27a008ab1d1",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "2ec8600b-0890-4e32-ae72-b24100db8c47",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:58Z",
+      "UpdatedUtc": "2025-02-04T08:24:58Z"
+    },
+    {
+      "Id": "eca72c13-9cc7-450d-bc07-b27a008ab189",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "534c680b-1f01-4209-a325-b24100dba100",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:58Z",
+      "UpdatedUtc": "2025-02-04T08:24:58Z"
+    },
+    {
+      "Id": "188716b6-3cb1-497e-91f5-b27a008ab13d",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "f5afc5d2-095e-4153-8d73-b241009e0674",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:57Z",
+      "UpdatedUtc": "2025-02-04T08:24:57Z"
+    },
+    {
+      "Id": "ac95e530-67e8-4014-a767-b27a008ab088",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "219d6239-efb9-44ac-b872-b24100db1281",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:57Z",
+      "UpdatedUtc": "2025-02-19T10:21:26Z"
+    },
+    {
+      "Id": "5a506681-100a-4edc-966e-b27a008ab03e",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "f9b0dd80-0681-4db0-a532-b24100db5e6c",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:56Z",
+      "UpdatedUtc": "2025-02-04T08:24:56Z"
+    },
+    {
+      "Id": "4a5f80aa-bd5a-4d2e-80b6-b27a008aaffc",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "4c2fc4d7-12b2-41b0-a225-b24100db58a1",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:56Z",
+      "UpdatedUtc": "2025-02-04T08:24:56Z"
+    },
+    {
+      "Id": "09384a46-7502-4d58-b8ca-b27a008aafb7",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "14d0bfeb-6958-4925-b056-b24100db5816",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:56Z",
+      "UpdatedUtc": "2025-02-04T08:24:56Z"
+    },
+    {
+      "Id": "3d029233-d8bb-4486-b12e-b27a008aaf71",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "0e50c38f-8fda-4fda-b470-b24100d774d0",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:56Z",
+      "UpdatedUtc": "2025-02-04T08:24:56Z"
+    },
+    {
+      "Id": "3c12ab4a-6a2f-4177-bf12-b27a008aaf2f",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "aeb6eae6-a4e3-473d-b1c0-b24100db853f",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "d4989e10-894d-4d96-b1aa-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:56Z",
+      "UpdatedUtc": "2025-02-04T08:24:56Z"
+    },
+    {
+      "Id": "e53b931e-3640-4dbf-b8ad-b27a008aaee2",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "a0240141-2029-4fcf-bc4c-b24100db6b5e",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:55Z",
+      "UpdatedUtc": "2025-02-04T08:24:55Z"
+    },
+    {
+      "Id": "ddaac451-aa5b-4f2f-872a-b27a008aae92",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "da82b492-d732-4e2f-ad3d-b24100db86d4",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:55Z",
+      "UpdatedUtc": "2025-02-04T08:24:55Z"
+    },
+    {
+      "Id": "6891932d-fea2-474c-b85d-b27a008aadbe",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "9f2c4c4b-7cb1-43a0-80b0-b24100db4fff",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:54Z",
+      "UpdatedUtc": "2025-02-04T08:24:54Z"
+    },
+    {
+      "Id": "1ebf0270-b0e8-4a37-ae82-b27a008aacdd",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "6950c0b7-8a20-418f-b72a-b24100db25e4",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:54Z",
+      "UpdatedUtc": "2025-02-04T08:24:54Z"
+    },
+    {
+      "Id": "825cf648-3268-4731-b27c-b27a008aac47",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "4addf24c-bd52-4cf5-ba05-b24100db4ee9",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "d4989e10-894d-4d96-b1aa-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:53Z",
+      "UpdatedUtc": "2025-02-04T08:24:53Z"
+    },
+    {
+      "Id": "413f80ed-647a-4686-8b51-b27a008aaba8",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "cd19f0b0-aeea-40d8-8d8a-b241009e1795",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:53Z",
+      "UpdatedUtc": "2025-02-04T08:24:53Z"
+    },
+    {
+      "Id": "0f899f7c-e452-4b76-a525-b27a008aaae8",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "790f9634-d103-44bd-8d94-b241009e109a",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "4d0e63e8-0257-430d-8b17-b2410079316c",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:52Z",
+      "UpdatedUtc": "2025-02-04T08:24:52Z"
+    },
+    {
+      "Id": "276543d7-d390-4679-a8da-b27a008aaa6e",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "aecba304-6926-45d9-b8b2-b241009e3c0b",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:51Z",
+      "UpdatedUtc": "2025-02-04T08:24:51Z"
+    },
+    {
+      "Id": "76b4b2cf-e0f9-493b-918b-b27a008aa9b7",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "09a94dcf-1e49-4339-bb46-b24100db49ce",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:51Z",
+      "UpdatedUtc": "2025-02-04T08:24:51Z"
+    },
+    {
+      "Id": "87fb0d45-d6ec-438a-b592-b27a008aa938",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "aeaacbb8-c35f-4b98-8830-b24100d779f0",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:50Z",
+      "UpdatedUtc": "2025-02-04T08:24:50Z"
+    },
+    {
+      "Id": "af246239-8b84-4974-8e7b-b27a008aa881",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "026b84ee-2e47-4729-9a0e-b24100d76d9d",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:50Z",
+      "UpdatedUtc": "2025-02-04T08:24:50Z"
+    },
+    {
+      "Id": "14321621-addc-48f1-bba6-b27a008aa7f8",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "a45d9474-75eb-4aed-9e0f-b241009df925",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:49Z",
+      "UpdatedUtc": "2025-02-04T08:24:49Z"
+    },
+    {
+      "Id": "bc67b92e-36cc-4786-958b-b27a008aa743",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "408938e0-e4d6-415d-b1a7-b24100db4b7e",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:49Z",
+      "UpdatedUtc": "2025-02-04T08:24:49Z"
+    },
+    {
+      "Id": "7e74ad66-ca2e-4249-b592-b27a008aa6aa",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "2e5e2189-0869-47f2-be15-b241009dea3a",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:48Z",
+      "UpdatedUtc": "2025-02-04T08:24:48Z"
+    },
+    {
+      "Id": "505c4826-cc94-45f5-9e6b-b27a008aa631",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "0def4a5d-6e91-44da-aea7-b24100db3d2c",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:48Z",
+      "UpdatedUtc": "2025-02-04T08:24:48Z"
+    },
+    {
+      "Id": "359ecc5e-3b18-47ef-b161-b27a008aa5bf",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "0bfca9db-b2e9-4f9d-b8fe-b241009de8bc",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:47Z",
+      "UpdatedUtc": "2025-02-04T08:24:47Z"
+    },
+    {
+      "Id": "506d9162-3b22-43e3-bcdf-b27a008aa51a",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "c03d91ac-6215-45e6-aad3-b241009e35ac",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "4d0e63e8-0257-430d-8b17-b2410079316c",
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "4d0e63e8-0257-430d-8b17-b2410079316c"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:47Z",
+      "UpdatedUtc": "2025-02-04T08:24:47Z"
+    },
+    {
+      "Id": "cb8e7365-a0e4-43c5-88df-b27a008aa489",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "52ef1360-34b8-4ae9-bf19-b241009debac",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:46Z",
+      "UpdatedUtc": "2025-02-04T08:24:46Z"
+    },
+    {
+      "Id": "d362cea6-a5a6-4de3-8bd3-b27a008aa3c5",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "b52fbcf3-56db-4bc6-a096-b24100db3b70",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "4d0e63e8-0257-430d-8b17-b2410079316c",
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:46Z",
+      "UpdatedUtc": "2025-02-04T08:24:46Z"
+    },
+    {
+      "Id": "43d59934-7b6a-4984-9969-b27a008aa357",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "d6e6ed0c-f8bc-4322-ba94-b241009de801",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:45Z",
+      "UpdatedUtc": "2025-02-04T08:24:45Z"
+    },
+    {
+      "Id": "d94402ee-deec-4d3e-a407-b27a008aa2f4",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "f7343a9a-e4e1-45a1-8548-b241009de751",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:45Z",
+      "UpdatedUtc": "2025-02-04T08:24:45Z"
+    },
+    {
+      "Id": "2675790c-f83b-46bc-b691-b27a008aa297",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "ad48fc29-efed-42a4-9512-b24100db4646",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:45Z",
+      "UpdatedUtc": "2025-02-04T08:24:45Z"
+    },
+    {
+      "Id": "6aca6a76-2f47-42d4-a0b8-b27a008aa234",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "b7c2ea30-31e2-4fc3-8177-b24100d76a3e",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "d4989e10-894d-4d96-b1aa-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:44Z",
+      "UpdatedUtc": "2025-02-04T08:24:44Z"
+    },
+    {
+      "Id": "74959c38-6ab7-4865-8382-b27a008aa1bb",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "7c668fc6-d0fb-4c6a-8d42-b24100db4442",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:44Z",
+      "UpdatedUtc": "2025-02-04T08:24:44Z"
+    },
+    {
+      "Id": "4bfc216e-b0d8-494b-8df3-b27a008aa15a",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "28c43e67-161d-4772-8b88-b24100d77131",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "d4989e10-894d-4d96-b1aa-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:44Z",
+      "UpdatedUtc": "2025-02-04T08:24:44Z"
+    },
+    {
+      "Id": "492ab5b9-a5a7-4919-a4ab-b27a008aa0f1",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "084fb6c0-a2c4-48a9-b6c4-b241009e3850",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:43Z",
+      "UpdatedUtc": "2025-02-04T08:24:43Z"
+    },
+    {
+      "Id": "100c4c91-7f10-4765-8bb4-b27a008aa085",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "11903d9a-229d-4374-95de-b24100db434a",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:43Z",
+      "UpdatedUtc": "2025-02-04T08:24:43Z"
+    },
+    {
+      "Id": "1e012a69-264d-4657-862e-b27a008aa00d",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "b77495f7-4f8a-443e-9a75-b24100db420f",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "4d0e63e8-0257-430d-8b17-b2410079316c",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:43Z",
+      "UpdatedUtc": "2025-02-04T08:24:43Z"
+    },
+    {
+      "Id": "591b48cb-7b77-4175-98e1-b27a008a9fa8",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "fcfa1bd9-feaf-4f07-824c-b24100d76bdd",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:42Z",
+      "UpdatedUtc": "2025-02-04T08:24:42Z"
+    },
+    {
+      "Id": "0df6010e-c9f8-442d-a47d-b27a008a9ebc",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "cfb6f507-0bf0-4592-982c-b24100dafdee",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:42Z",
+      "UpdatedUtc": "2025-02-04T08:24:42Z"
+    },
+    {
+      "Id": "7a00fd6a-57b1-455f-b9bd-b27a008a9e45",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "9b24e315-114e-49d3-9eb0-b24100d7595e",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:41Z",
+      "UpdatedUtc": "2025-02-04T08:24:41Z"
+    },
+    {
+      "Id": "d59ad542-d70a-4848-9285-b27a008a9dbe",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "ccc5886e-a29c-4d75-ab52-b24100d763a3",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:41Z",
+      "UpdatedUtc": "2025-02-04T08:24:41Z"
+    },
+    {
+      "Id": "b73c6119-44a1-4170-8c73-b27a008a9c8d",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "3cb15f32-b086-4f48-bcca-b24100d76cd2",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:40Z",
+      "UpdatedUtc": "2025-02-04T08:24:40Z"
+    },
+    {
+      "Id": "d3ab866c-9c00-47fa-aa22-b27a008a9c18",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "972c6e0a-a878-4e23-9225-b24100a185ea",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:39Z",
+      "UpdatedUtc": "2025-02-04T08:24:39Z"
+    },
+    {
+      "Id": "09be35ad-02b3-44e8-8b2e-b27a008a9ba9",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "b9d5af33-d36c-4143-97a3-b24100a184cf",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:39Z",
+      "UpdatedUtc": "2025-02-04T08:24:39Z"
+    },
+    {
+      "Id": "73bb696d-d057-4f0f-b943-b27a008a9b49",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "435d624b-f9d9-45c0-b755-b24100db01cb",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:39Z",
+      "UpdatedUtc": "2025-02-04T08:24:39Z"
+    },
+    {
+      "Id": "985853ab-3c2d-43aa-8f67-b27a008a9aa1",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "3ac5525c-b36e-4bf4-b600-b24100a182a2",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:38Z",
+      "UpdatedUtc": "2025-02-04T08:24:38Z"
+    },
+    {
+      "Id": "5ba16681-9d81-47d3-bfc4-b27a008a9a38",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "f9cc335b-9cb2-4694-9bf4-b24100db3881",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "d4989e10-894d-4d96-b1aa-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:38Z",
+      "UpdatedUtc": "2025-02-04T08:24:38Z"
+    },
+    {
+      "Id": "27fdced4-5fd8-45a3-88a2-b27a008a999b",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "c4385588-7f68-438f-849d-b24100dafc77",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:37Z",
+      "UpdatedUtc": "2025-02-04T08:24:37Z"
+    },
+    {
+      "Id": "add997f6-97f9-42d0-a3f5-b27a008a991c",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "4270afa1-0644-4cb0-b823-b24100db0439",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:37Z",
+      "UpdatedUtc": "2025-02-04T08:24:37Z"
+    },
+    {
+      "Id": "f5869927-0e62-4284-8191-b27a008a98be",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "b4654019-68ed-46bf-8fb3-b24100d75e2e",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:36Z",
+      "UpdatedUtc": "2025-02-04T08:24:36Z"
+    },
+    {
+      "Id": "1904d174-1801-4546-88e6-b27a008a9870",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "21726bbc-7eda-44c7-8fe1-b24100a0584f",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:36Z",
+      "UpdatedUtc": "2025-02-04T08:24:36Z"
+    },
+    {
+      "Id": "35a77a17-8664-483e-9bad-b27a008a97d1",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "da59adc2-2cf7-4869-a695-b24100db2e8d",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:36Z",
+      "UpdatedUtc": "2025-02-04T08:24:36Z"
+    },
+    {
+      "Id": "195807ff-cabc-4a51-a365-b27a008a976c",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "d9f8eb1d-a43b-4090-aca2-b24100d77606",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:35Z",
+      "UpdatedUtc": "2025-02-04T08:24:35Z"
+    },
+    {
+      "Id": "f10e781d-b839-4da0-a127-b27a008a96d9",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "4da25944-c24d-4726-980d-b24100a0a196",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:35Z",
+      "UpdatedUtc": "2025-02-04T08:24:35Z"
+    },
+    {
+      "Id": "d4513cda-1d08-4205-a7cc-b27a008a966b",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "49ef06ff-fcbb-49fb-a298-b24100a14d9b",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:34Z",
+      "UpdatedUtc": "2025-02-04T08:24:34Z"
+    },
+    {
+      "Id": "bcc4f21f-b4d2-4550-84b0-b27a008a9609",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "bdfae2e5-369a-49b3-b42f-b24100d77401",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:34Z",
+      "UpdatedUtc": "2025-02-04T08:24:34Z"
+    },
+    {
+      "Id": "58d12a0b-c4c1-465a-8e41-b27a008a95b8",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "4e203a25-eace-47f9-87ab-b24100da1166",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "4d0e63e8-0257-430d-8b17-b2410079316c",
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:34Z",
+      "UpdatedUtc": "2025-02-04T08:24:34Z"
+    },
+    {
+      "Id": "f7378566-a34a-4587-9d84-b27a008a9558",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "01284fee-8d0f-43ba-959e-b24100dac429",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:34Z",
+      "UpdatedUtc": "2025-02-04T08:24:34Z"
+    },
+    {
+      "Id": "8efdca7b-6554-4fa9-a2cc-b27a008a94c8",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "295a12a9-ff33-4caf-9459-b24100d776a0",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:33Z",
+      "UpdatedUtc": "2025-02-04T08:24:33Z"
+    },
+    {
+      "Id": "161ea7ae-9ff8-48cb-be18-b27a008a9455",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "9c4f7616-746c-4901-99de-b24100da8e3a",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:33Z",
+      "UpdatedUtc": "2025-02-04T08:24:33Z"
+    },
+    {
+      "Id": "a12c9435-869c-4492-becb-b27a008a9403",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "d3fcdd6e-5087-4ec7-b61a-b24100ac8f8f",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:32Z",
+      "UpdatedUtc": "2025-02-04T08:24:32Z"
+    },
+    {
+      "Id": "14c655ac-0e8b-42be-ba76-b27a008a9384",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "caee36b5-8923-46cf-ae7c-b24100da8bc9",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:32Z",
+      "UpdatedUtc": "2025-02-04T08:24:32Z"
+    },
+    {
+      "Id": "13ca76c1-05a6-4f9b-b406-b27a008a92ec",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "a7a9e223-f42b-4136-8eb6-b24100da8331",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:31Z",
+      "UpdatedUtc": "2025-02-04T08:24:31Z"
+    },
+    {
+      "Id": "66d24a15-dddb-4557-9824-b27a008a9294",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "6199f816-0d17-4262-9a86-b24100da89a8",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:31Z",
+      "UpdatedUtc": "2025-02-04T08:24:31Z"
+    },
+    {
+      "Id": "2e0f2299-e743-47cf-ad41-b27a008a9206",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "499bac9e-5298-4dd5-8595-b24100da85fb",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:31Z",
+      "UpdatedUtc": "2025-02-04T08:24:31Z"
+    },
+    {
+      "Id": "432fa39c-e5ec-40b2-a68a-b27a008a9179",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "63b21288-8072-4ea6-93d3-b24100da86b7",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:30Z",
+      "UpdatedUtc": "2025-02-04T08:24:30Z"
+    },
+    {
+      "Id": "c206e552-9052-44ac-94c9-b27a008a90c1",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "409a2b47-2858-4c7d-8457-b24100da895f",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:30Z",
+      "UpdatedUtc": "2025-02-04T08:24:30Z"
+    },
+    {
+      "Id": "2a4a70bf-4ebc-4d83-89fe-b27a008a904f",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "f1e7b788-fa5f-4897-9339-b24100da73dd",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:29Z",
+      "UpdatedUtc": "2025-02-04T08:24:29Z"
+    },
+    {
+      "Id": "4b63f96d-ed92-4e53-a6e7-b27a008a8fab",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "5b3a4473-a54b-457b-a2d7-b24100da77c3",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "d4989e10-894d-4d96-b1aa-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:29Z",
+      "UpdatedUtc": "2025-02-04T08:24:29Z"
+    },
+    {
+      "Id": "a35405d1-dd24-42ab-9e87-b27a008a8ee8",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "932121f8-b739-4e8a-97ba-b24100ada6a8",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:28Z",
+      "UpdatedUtc": "2025-02-04T08:24:28Z"
+    },
+    {
+      "Id": "1c561db4-48c6-46b6-9efb-b27a008a8e34",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "2b50a059-3160-468f-a195-b24100aba713",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "d4989e10-894d-4d96-b1aa-b24100793163",
+          "4d0e63e8-0257-430d-8b17-b2410079316c",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:27Z",
+      "UpdatedUtc": "2025-02-04T08:24:27Z"
+    },
+    {
+      "Id": "58d567aa-5f7b-4416-bfe1-b27a008a8d8b",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "8f4604b4-e982-40e2-b2dc-b24100da7de1",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:27Z",
+      "UpdatedUtc": "2025-02-04T08:24:27Z"
+    },
+    {
+      "Id": "48a96f4a-3cd9-4892-8aee-b27a008a8d30",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "7b1572ac-e574-42ae-a7ee-b24100ab2d05",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "65724c9e-b589-47e8-915f-b24100793163",
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:27Z",
+      "UpdatedUtc": "2025-02-04T08:24:27Z"
+    },
+    {
+      "Id": "14008cf2-4a95-4035-83b4-b27a008a8c54",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "0746846d-3ea5-4463-889d-b24100da7973",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:26Z",
+      "UpdatedUtc": "2025-02-04T08:24:26Z"
+    },
+    {
+      "Id": "f1ba1e0b-215e-47a1-9ca4-b27a008a8bbf",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "7f680b5a-2409-4350-a0eb-b24100aaae73",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163",
+          "65724c9e-b589-47e8-915f-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:25Z",
+      "UpdatedUtc": "2025-02-04T08:24:25Z"
+    },
+    {
+      "Id": "ba23f5b2-ed85-4dbf-93f2-b27a008a8b15",
+      "EnterpriseId": "b39f196c-ca0d-429d-9db4-b24100791ff2",
+      "CompanyId": "cc10b9dc-2211-4a91-8b98-b24100aa865e",
+      "CompanyRelation": "PartnerCompany",
+      "Applicability": "Always",
+      "RouteType": "SelectedStayItems",
+      "ServiceId": "039aca0a-e0f3-4723-a48e-b24100792b2d",
+      "SelectedStayItems": {
+        "Nights": true,
+        "CityTax": true,
+        "ProductCategoryIds": [
+          "248e1d0c-96a8-439e-a6ce-b24100793163"
+        ]
+      },
+      "CreatedUtc": "2025-02-04T08:24:25Z",
+      "UpdatedUtc": "2025-02-04T08:24:25Z"
+    }
+  ],
+  "Cursor": "ba23f5b2-ed85-4dbf-93f2-b27a008a8b15"
+}

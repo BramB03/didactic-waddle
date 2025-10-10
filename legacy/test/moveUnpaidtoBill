@@ -1,0 +1,136 @@
+import sys
+import requests
+import json
+from datetime import datetime, timedelta, timezone
+import random
+import math
+import pytz
+import time
+import pprint
+
+startTime = time.time()
+print("Start time: ", startTime)
+
+logMessages = []
+
+now_utc = datetime.now(timezone.utc)
+now_utc_iso8601 = now_utc.strftime('%Y-%m-%dT%H:%M:%SZ')
+now_utc_datetime = datetime.strptime(now_utc_iso8601, "%Y-%m-%dT%H:%M:%SZ")
+nowUpdate = now_utc_datetime.replace(hour=10, minute=0, second=0)
+
+headers = {
+"Content-Type": "application/json"
+}
+URL = "https://api.mews-demo.com/api/connector/v1/"
+
+ClientToken = "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D"
+AccessToken = "BEC33DAD4C57410C9E6DB09600C7FB9B-310471532A30162E5B6F0EB4F4AD2BF"
+Client = "Demo - Bram"
+
+delta = -700
+
+for i in range(0, 4):
+    payloadBillAdd = {
+        "ClientToken": ClientToken,
+        "AccessToken": AccessToken,
+        "Client": Client,
+        "Bills": [
+            {
+                "AccountId": "7bdf3c58-f21f-45ac-9ac3-b2f000f78db7",
+                "Name": "Unpaid Bill"
+            }
+        ]
+    }
+    json_payloadBillAdd = json.dumps(payloadBillAdd)  # Convert the payload to JSON format
+    addBill = requests.post(URL + "bills/add", data=json_payloadBillAdd, headers=headers)  # Send the POST request
+    if addBill.status_code != 200:
+        Error = "AddBill" + str(addBill)
+        logMessages.append(str(Error))
+        continue
+    addBill_data = addBill.json()
+    billId = addBill_data["Bills"][0]["Id"]
+
+    DeltaTwo = delta + 85
+    start_day_delta = timedelta(days=delta)
+    end_day_delta = timedelta(days=DeltaTwo)
+    start_utc_datetime = nowUpdate + start_day_delta
+    end_utc_datetime = nowUpdate + end_day_delta
+    startFormatted = start_utc_datetime.strftime("%Y-%m-%dT%H:%M:%SZ")
+    print(startFormatted)
+    endFormatted = end_utc_datetime.strftime("%Y-%m-%dT%H:%M:%SZ")
+    print(endFormatted)
+    for j in range(0, 20):
+        payloadBillGetOrderItems = {
+            "ClientToken": ClientToken,
+            "AccessToken": AccessToken,
+            "Client": Client,
+            "CreatedUtc": {
+                "StartUtc": startFormatted,
+                "EndUtc": endFormatted
+            },
+            "AccountingStates": [
+                "Open",
+            ],
+            "Limitation": {
+                "Count": 1000
+            }
+        }
+
+        json_payloadBillGetOrderItems = json.dumps(payloadBillGetOrderItems)  # Convert the payload to JSON format
+        getOrderItems = requests.post(URL + "payments/getAll", data=json_payloadBillGetOrderItems, headers=headers)  # Send the POST request
+        if getOrderItems.status_code != 200:
+            Error = "GetOrderItems" + str(getOrderItems)
+            logMessages.append(str(Error))
+            print(Error)
+            continue
+        getOrderItems_data = getOrderItems.json()  # Parse the JSON response
+        orderItemsTotal = 0
+        if getOrderItems_data['Payments'] is None:
+            print("Order Items: ", orderItemIds)
+            continue
+
+        orderItemIds = [orderItem['Id'] for orderItem in getOrderItems_data['Payments'] if orderItem['AccountId'] != "7bdf3c58-f21f-45ac-9ac3-b2f000f78db7"]
+        countOrderItems = len(orderItemIds)
+        print(f"Count: {countOrderItems}, Order Items: {orderItemIds}")
+        if not orderItemIds:
+            print("No open order items found for the given date range.")
+            payloadDeleteBill = {
+                "ClientToken": ClientToken,
+                "AccessToken": AccessToken,
+                "Client": Client,
+                "BillIds": [billId]
+            }
+            json_payloadDeleteBill = json.dumps(payloadDeleteBill)  # Convert the payload to JSON format
+            deleteBillResponse = requests.post(URL + "bills/delete", data=json_payloadDeleteBill, headers=headers)  # Send the POST request
+            break
+
+        loadItems = []
+        for orderItemId in orderItemIds:
+            loadItem = {
+                "AccountingItemId": orderItemId,
+                "AccountId": {
+                    "Value": "7bdf3c58-f21f-45ac-9ac3-b2f000f78db7"
+                },
+                "BillId": {
+                    "Value": billId
+                }
+            }
+            loadItems.append(loadItem)
+        
+        payloadUpdateOrderItems = {
+            "ClientToken": ClientToken,
+            "AccessToken": AccessToken,
+            "Client": Client,
+            "AccountingItemUpdates": loadItems
+        }
+        json_payloadUpdateOrderItems = json.dumps(payloadUpdateOrderItems)  # Convert the payload to JSON format
+        #print(json_payloadUpdateOrderItems)
+        updateOrderItems = requests.post(URL + "accountingItems/update", data=json_payloadUpdateOrderItems, headers=headers)  # Send the POST request
+        if updateOrderItems.status_code != 200:
+            Error = "UpdateOrderItems" + str(updateOrderItems)
+            print(f"Count: {countOrderItems}, Response: {updateOrderItems.text}")
+            logMessages.append(str(Error))
+        updateOrderItems_data = updateOrderItems.json()  # Parse the JSON response
+        #print(f"Count: {countOrderItems}, Response: {updateOrderItems.text}")
+        time.sleep(2)
+    delta = delta - 85

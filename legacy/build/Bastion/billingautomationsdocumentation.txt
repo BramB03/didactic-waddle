@@ -1,0 +1,21 @@
+Required per property:
+Production token - which integration?
+Client
+EnterpriseId
+ProductCategories - Requires mapping it seems.
+
+
+To do:
+Review company codes / ID's
+ServiceId's - Mapping?
+
+
+New info:
+Name
+Description
+Company relation: from 1 to 2 options
+Prepayment
+AssignmentTargettype
+Triggertype
+Billaggregationtype
+Assignments

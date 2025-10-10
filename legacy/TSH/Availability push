@@ -1,0 +1,92 @@
+import subprocess
+import sys
+import requests
+import json
+from datetime import datetime, timedelta, timezone
+import random
+import pprint
+
+headers = {
+    "Content-Type": "application/json"
+}
+
+clientToken = "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D"
+accessToken = "1E338DE5B1574A7AA69CB14900944A81-9A9848C981545BF61055DB1219495DA"
+client = "Mews Import Application"
+url = "https://api.mews-demo.com/api/connector/v1/"
+
+serviceStay = "3080a911-df89-488e-a3ef-af02007dad8a"
+resourceCategory = "088e115f-30b0-4ff8-aaba-af0300d3a187"
+
+payload = {
+    "ClientToken": clientToken,
+    "AccessToken": accessToken,
+    "Client": client,
+    "ServiceId": serviceStay,
+    "AvailabilityUpdates": [
+        {
+            "FirstTimeUnitStartUtc": "2025-09-27T22:00:00Z",
+            "LastTimeUnitStartUtc": "2025-09-27T22:00:00Z",
+            "AvailabilityBlockId": None,
+            "ResourceCategoryId": resourceCategory,
+            "UnitCountAdjustment": {
+                "Value": 0
+            }
+        }
+    ]
+}
+
+jsonPayload = json.dumps(payload)
+response = requests.post(url + "services/updateAvailability", data=jsonPayload, headers=headers)
+print(response.status_code)
+json_response = response.json()
+print(json_response)
+
+payloadGetUpdated = {
+    "ClientToken": clientToken,
+    "AccessToken": accessToken,
+    "Client": client, 
+    "ServiceId": serviceStay,
+    "FirstTimeUnitStartUtc": "2025-09-27T22:00:00Z",
+    "LastTimeUnitStartUtc": "2025-09-27T22:00:00Z",
+    "Metrics": [
+        "PublicAvailabilityAdjustment",
+        "OtherServiceReservationCount",
+        "BlockAvailability",
+        "AllocatedBlockAvailability",
+        "UsableResources",
+        "Occupied",
+        "ConfirmedReservations",
+    ]
+}
+
+jsonPayloadGetUpdated = json.dumps(payloadGetUpdated)
+getUpdated = requests.post(url + "services/getAvailability/2024-01-22", data=jsonPayloadGetUpdated, headers=headers)
+print(getUpdated.status_code)
+json_getUpdated = getUpdated.json()
+
+
+def filter_resource_categories(node):
+    if isinstance(node, dict):
+        if 'ResourceCategoryAvailabilities' in node:
+            node['ResourceCategoryAvailabilities'] = [
+                category
+                for category in node['ResourceCategoryAvailabilities']
+                if category.get('ResourceCategoryId') == resourceCategory
+            ]
+        for value in node.values():
+            filter_resource_categories(value)
+    elif isinstance(node, list):
+        filtered_items = []
+        for item in node:
+            filter_resource_categories(item)
+            if isinstance(item, dict):
+                if item.get('ResourceCategoryAvailabilities', [None]) != []:
+                    filtered_items.append(item)
+            else:
+                filtered_items.append(item)
+        node[:] = filtered_items
+
+
+filter_resource_categories(json_getUpdated)
+pprint.pprint(json_getUpdated)
