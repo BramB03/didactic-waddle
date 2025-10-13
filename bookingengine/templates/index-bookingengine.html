@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Booking Engine — Date Picker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .thin-scrollbar::-webkit-scrollbar{height:6px;width:6px}
+    .thin-scrollbar::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:999px}
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <div class="max-w-5xl mx-auto px-4 py-10">
+    <header class="mb-8">
+      <h1 class="text-3xl font-bold">Booking Engine — Date Picker</h1>
+      <p class="text-slate-600">Choose dates and filters, then search.</p>
+    </header>
+
+    <form id="searchForm" class="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 space-y-6">
+      <!-- Dates -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label for="startDate" class="block text-sm font-medium mb-1">Start date</label>
+          <input id="startDate" name="startDate" type="date" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white" required />
+        </div>
+        <div>
+          <label for="endDate" class="block text-sm font-medium mb-1">End date</label>
+          <input id="endDate" name="endDate" type="date" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white" required />
+        </div>
+      </div>
+
+      <!-- Location / Hotels -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+        <div>
+          <label for="citySelect" class="block text-sm font-medium mb-1">City</label>
+          <select id="citySelect" name="city" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white">
+            <option value="">All cities</option>
+          </select>
+        </div>
+        <div>
+          <label for="hotelSelect" class="block text-sm font-medium mb-1">Hotel</label>
+          <div class="flex gap-3 items-center">
+            <select id="hotelSelect" name="hotel" class="flex-1 px-3 py-2 rounded-xl border border-slate-300 bg-white" aria-describedby="hotelHelp"></select>
+            <label class="inline-flex items-center gap-2 text-sm text-slate-600">
+              <input id="allHotels" type="checkbox" class="rounded"> All hotels
+            </label>
+          </div>
+          <p id="hotelHelp" class="mt-1 text-xs text-slate-500">Room is disabled when “All hotels” is selected.</p>
+        </div>
+      </div>
+
+      <!-- Room & Voucher -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label for="roomTypeSelect" class="block text-sm font-medium mb-1">Room type</label>
+          <select id="roomTypeSelect" name="roomType" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white">
+            <option value="">Select room type</option>
+          </select>
+        </div>
+        <div>
+          <label for="voucherInput" class="block text-sm font-medium mb-1">Voucher</label>
+          <input
+            type="text"
+            id="voucherInput"
+            name="voucher"
+            placeholder="Enter voucher code"
+            class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white"
+          />
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex flex-wrap gap-3 pt-2">
+        <button type="submit" class="px-4 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700">Search</button>
+        <button type="button" id="resetBtn" class="px-4 py-2 rounded-xl border border-slate-300">Reset</button>
+      </div>
+    </form>
+
+    <!-- Output / Debug -->
+    <section class="mt-8">
+      <h2 class="text-lg font-semibold mb-2">Result</h2>
+      <pre id="result" class="bg-white border border-slate-200 rounded-2xl shadow-sm p-4 text-sm thin-scrollbar overflow-auto">(submit the form to see output)</pre>
+    </section>
+
+    <section class="mt-6">
+      <h2 class="text-lg font-semibold mb-2">Widget API preview</h2>
+      <pre id="apiPreview" class="bg-white border border-amber-200 rounded-2xl shadow-sm p-4 text-sm thin-scrollbar overflow-auto text-amber-900">(select filters to preview API calls)</pre>
+    </section>
+    </div>
+
+  <script>
+    // ======= Example data (replace with real data or fetch from API) =======
+    const CONFIGURATION_IDS = [
+      "2c4db986-fc87-4857-afaa-affe00a583dd",
+      "1667c6ff-9fb6-4511-9997-adb900bef863",
+      "8077aee8-f5a5-4643-bc1f-ae94011b36bd",
+      "86b3239f-2d15-43f9-936b-af02007db567"
+    ];
+
+    const cities = [
+      { id: "ams", UUID: "a93009d7-aef9-4889-bfca-5f22ae909e6b", name: "Amsterdam"},
+      { id: "ldn", UUID: "d3e92e26-4fca-43c7-90aa-d854ca810eda", name: "London" },
+      { id: "stk", UUID: "e2506a44-773e-4630-8e2d-43f1c51203f7", name: "Stockholm" }
+    ];
+
+    // Hotels link to cityId
+    const hotels = [
+      { id: "tda", UUID: "8dc59049-c9d0-4d08-a489-ae94011b28e5", name: "The David Amsterdam", cityId: "ams" },
+      { id: "tdw", UUID: "f582ceff-1bf0-4a20-bc39-af02007da559", name: "The David Westerpark", cityId: "ams" },
+      { id: "mlo", UUID: "4c000a28-e0cb-4cb4-bba3-adb900beda1b", name: "Mews London", cityId: "ldn" },
+      { id: "mst", UUID: "ec0be015-3e1e-4b91-b0f0-affe00a564e8",name: "Mews Stockholm", cityId: "stk" }
+    ];
+
+    const roomsByHotel = {
+      "tda": [
+        // VERVANG door echte spaceCategory UUID’s; anders skippen we de filter.
+        { id: "std", UUID: "01d9c47b-2dea-4e3f-b87e-ae94011b33bb", name: "Standard" },
+        { id: "dlx", UUID: "185695d6-ab95-4416-bd3d-b30c00f0a37f", name: "Deluxe" },
+        { id: "sui", UUID: "14bd53d1-3058-49cc-84b9-ae94011b33bb", name: "Suite" }
+      ],
+      "tdw": [
+        { id: "std", UUID: "088e115f-30b0-4ff8-aaba-af0300d3a187", name: "Standard" },
+        { id: "dlx", UUID: "58a0d7e8-b535-4ea4-9532-af0300d3a187", name: "Deluxe" }
+      ],
+      "mlo": [
+        { id: "std", UUID: "da3de7e5-1766-467d-aca1-b23400aa895c", name: "Standard" }
+      ],
+      "mst": [
+        { id: "std", UUID: "4083606c-2a80-4027-886f-affe00a59a4d", name: "Standard" },
+        { id: "dlx", UUID: "0349fd3e-91b4-4743-93be-affe00a59a4d", name: "Deluxe" }
+      ]
+    };
+
+    const voucherEl = document.getElementById('voucherInput');
+    const voucher = voucherEl.value.trim();
+    if (voucher) params.set('voucher', voucher);
+
+    // ======= Elements =======
+    const startDateEl = document.getElementById('startDate');
+    const endDateEl = document.getElementById('endDate');
+    const citySelect = document.getElementById('citySelect');
+    const hotelSelect = document.getElementById('hotelSelect');
+    const allHotelsEl = document.getElementById('allHotels');
+    const roomTypeSelect = document.getElementById('roomTypeSelect');
+    const searchForm = document.getElementById('searchForm');
+    const resultEl = document.getElementById('result');
+    const resetBtn = document.getElementById('resetBtn');
+    const apiPreviewEl = document.getElementById('apiPreview');
+
+    // ======= Helpers =======
+    function parseDateParts(value) {
+      if (!value) return null;
+      const [y, m, d] = value.split('-').map(Number);
+      if (!y || !m || !d) return null;
+      return { y, m, d };
+    }
+
+    function validateDates() {
+      const s = parseDateParts(startDateEl.value);
+      const e = parseDateParts(endDateEl.value);
+
+      if (s && e) {
+        const startDate = new Date(s.y, s.m - 1, s.d);
+        const endDate = new Date(e.y, e.m - 1, e.d);
+        if (endDate < startDate) {
+          endDateEl.setCustomValidity('End date must be after start date');
+        } else {
+          endDateEl.setCustomValidity('');
+        }
+      } else {
+        endDateEl.setCustomValidity('');
+      }
+    }
+
+    function populateCityOptions() {
+      cities.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id; opt.textContent = c.name;
+        citySelect.appendChild(opt);
+      });
+    }
+
+    function populateHotelOptions(filterCityId = "") {
+      hotelSelect.innerHTML = '';
+      const placeholder = document.createElement('option');
+      placeholder.value = '';
+      placeholder.textContent = filterCityId
+        ? `All hotels in ${cities.find(c => c.id === filterCityId)?.name || ''}`
+        : 'All hotels';
+      hotelSelect.appendChild(placeholder);
+
+      hotels
+        .filter(h => !filterCityId || h.cityId === filterCityId)
+        .forEach(h => {
+          const opt = document.createElement('option');
+          const cityName = cities.find(c => c.id === h.cityId)?.name || '';
+          opt.value = h.id;
+          opt.textContent = `${h.name} — ${cityName}`;
+          hotelSelect.appendChild(opt);
+        });
+    }
+
+    function populateRoomOptionsForHotel(hotelId) {
+      const select = roomTypeSelect;
+      select.innerHTML = '';
+      const ph = document.createElement('option');
+      ph.value = ''; ph.textContent = 'Select room type';
+      select.appendChild(ph);
+
+      const list = hotelId ? (roomsByHotel[hotelId] || []) : [];
+      for (const r of list) {
+        const opt = document.createElement('option');
+        opt.value = r.id;
+        opt.textContent = r.name;
+        select.appendChild(opt);
+      }
+    }
+
+    function setEnableState() {
+      const allHotels = allHotelsEl.checked;
+      const hotelId = hotelSelect.value || '';
+      const roomId = roomTypeSelect.value || '';
+
+      // City & Hotel always selectable
+      citySelect.disabled = false;
+      hotelSelect.disabled = false;
+
+      // Room only when a specific hotel is selected and not "all hotels"
+      const roomEnabled = !allHotels && !!hotelId;
+      roomTypeSelect.disabled = !roomEnabled;
+    }
+
+    function pickHotel(hotelId) {
+      if (!hotelId) return { hotelId: "", hotelName: "" };
+      const h = hotels.find(x => x.id === hotelId);
+      return { hotelId: h?.id || "", hotelName: h?.name || "" };
+    }
+
+    function buildQuery() {
+      const s = parseDateParts(startDateEl.value);
+      const e = parseDateParts(endDateEl.value);
+
+      const cityId = citySelect.value || "";
+      const cityName = cityId ? (cities.find(c => c.id === cityId)?.name || "") : "";
+
+      const allHotels = !!allHotelsEl.checked;
+      const baseHotelId = hotelSelect.value || "";
+      const { hotelId, hotelName } = pickHotel(baseHotelId);
+
+      const roomTypeId = (!allHotels && hotelId) ? (roomTypeSelect.value || "") : "";
+      const roomTypeName = roomTypeId ? (roomsByHotel[hotelId] || []).find(r => r.id === roomTypeId)?.name || "" : "";
+
+      const payload = {
+        // dates
+        startDateIso: startDateEl.value || "",
+        endDateIso: endDateEl.value || "",
+        // location
+        cityId,
+
+        // hotel (always selectable)
+        allHotels,
+        hotelId: hotelId || undefined,
+
+        // room (only when hotel selected & not allHotels)
+        roomTypeId: roomTypeId || undefined,
+      };
+
+      const params = new URLSearchParams();
+      Object.entries(payload).forEach(([k, v]) => {
+        if (v !== undefined && v !== "") params.set(k, String(v));
+      });
+
+      return { payload, queryString: params.toString() };
+    }
+
+    function updateResultPreview() {
+      const params = new URLSearchParams();
+
+      const s = startDateEl.value || "";
+      const e = endDateEl.value || "";
+      if (s) params.set('startDateIso', s);
+      if (e) params.set('endDateIso', e);
+
+      const cityId = citySelect.value || "";
+      const allHotels = allHotelsEl.checked;
+      const hotelId = hotelSelect.value || "";
+      const roomTypeId = (!allHotels && hotelId) ? (roomTypeSelect.value || "") : "";
+      const voucher = (document.getElementById('voucherInput').value || "").trim();
+
+      if (cityId) params.set('cityId', cityId);
+      if (allHotels) params.set('allHotels', 'true');
+      if (hotelId) params.set('hotelId', hotelId);
+      if (roomTypeId) params.set('roomTypeId', roomTypeId);
+      if (voucher) params.set('voucher', voucher);
+
+      const url = location.origin + '/search?' + params.toString();
+      const payload = Object.fromEntries(params.entries());
+
+      resultEl.textContent = url + "\n\n" + JSON.stringify(payload, null, 2);
+
+      // >>> NIEUW: API preview bijwerken
+      apiPreviewEl.textContent = buildApiPreview();
+    }
+
+    function findCityUuid(cityId) {
+      if (!cityId) return null;
+      return (cities.find(c => c.id === cityId) || {}).UUID || null;
+    }
+
+    function findRoomUuid(hotelId, roomTypeId) {
+      if (!hotelId || !roomTypeId) return null;
+      const list = roomsByHotel[hotelId] || [];
+      const rec = list.find(r => r.id === roomTypeId);
+      return rec ? rec.UUID : null;
+    }
+
+    function pickHotel(hotelId) {
+      if (!hotelId) return { hotelId: "", hotelName: "", hotelUuid: null, cityId: "" };
+      const h = hotels.find(x => x.id === hotelId);
+      return { hotelId: h?.id || "", hotelName: h?.name || "", hotelUuid: h?.UUID || null, cityId: h?.cityId || "" };
+    }
+
+    function buildApiPreview() {
+      const lines = [];
+
+      // Altijd config IDs tonen
+      lines.push(
+        "Mews.Distributor({ configurationIds: [",
+        "  " + CONFIGURATION_IDS.map(id => `"${id}"`).join(",\n  "),
+        "] })"
+      );
+
+      // Datums
+      if (startDateEl.value) lines.push(`api.setStartDate("${startDateEl.value}")`);
+      if (endDateEl.value)   lines.push(`api.setEndDate("${endDateEl.value}")`);
+
+      // Afleiden van UUID's o.b.v. huidige selectie
+      const allHotels = allHotelsEl.checked;
+      const selectedHotelId = hotelSelect.value || "";
+      const { hotelUuid, cityId: hotelCityId } = pickHotel(selectedHotelId);
+
+      const selectedCityId = citySelect.value || "";
+      const effectiveCityId = selectedHotelId ? hotelCityId : selectedCityId;
+      const cityUuid = findCityUuid(effectiveCityId);
+
+      const selectedRoomId = (!allHotels && selectedHotelId) ? (roomTypeSelect.value || "") : "";
+      const roomUuid = selectedRoomId ? findRoomUuid(selectedHotelId, selectedRoomId) : null;
+
+      // Volgorde: HOTEL > CITY
+      if (hotelUuid) {
+        lines.push(`api.showRooms("${hotelUuid}")`);
+      } else if (cityUuid) {
+        lines.push(`api.setCity("${cityUuid}")`);
+        lines.push("api.showHotels()");
+      }
+
+      // Kamer alleen als hotel + kamer gekozen
+      if (hotelUuid && roomUuid) {
+        lines.push(`api.showRates("${roomUuid}")`);
+      }
+
+      // Voucher (optioneel)
+      const voucher = (document.getElementById('voucherInput').value || "").trim();
+      if (voucher) lines.push(`api.setVoucherCode("${voucher}")`);
+
+      return lines.join("\n");
+    }
+
+    // ======= Events =======
+    startDateEl.addEventListener('change', () => { validateDates(); updateResultPreview(); });
+    endDateEl.addEventListener('change', () => { validateDates(); updateResultPreview(); });
+
+    citySelect.addEventListener('change', () => {
+      const selectedCityId = citySelect.value || "";
+      populateHotelOptions(selectedCityId);
+
+      // reset dependent selects
+      roomTypeSelect.innerHTML = '<option value="">Select room type</option>';
+      setEnableState();
+      updateResultPreview();
+    });
+
+    allHotelsEl.addEventListener('change', () => {
+      populateRoomOptionsForHotel('');
+      setEnableState();
+      updateResultPreview();
+    });
+
+    hotelSelect.addEventListener('change', () => {
+      const hotelId = hotelSelect.value || "";
+
+      // Auto-sync city to hotel's city
+      const h = hotels.find(x => x.id === hotelId);
+      if (h && citySelect.value !== h.cityId) {
+        citySelect.value = h.cityId;
+        populateHotelOptions(h.cityId);      // rebuild list for that city
+        hotelSelect.value = hotelId;         // keep chosen hotel selected
+      }
+
+      populateRoomOptionsForHotel(hotelId);
+      setEnableState();
+      updateResultPreview();
+    });
+
+    roomTypeSelect.addEventListener('change', () => {
+      const hotelId = hotelSelect.value || "";
+      setEnableState();
+      updateResultPreview();
+    });
+
+    searchForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      validateDates();
+      if (!searchForm.reportValidity()) return;
+
+      const { queryString } = buildQuery();
+      // Open the loader page in a new tab with the payload
+      const url = '/bookingengine/widget?' + queryString;
+      window.open(url, '_blank'); // make sure pop-ups are allowed for your site
+    });
+
+    resetBtn.addEventListener('click', () => {
+      searchForm.reset();
+      populateHotelOptions("");
+      populateRoomOptionsForHotel("");
+      validateDates();
+      setEnableState();
+      updateResultPreview();
+    });
+
+    // ======= Boot =======
+    (function boot(){
+      // Default dates: today + 1 night
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth()+1).padStart(2,'0');
+      const dd = String(today.getDate()).padStart(2,'0');
+      const tomorrow = new Date(today.getTime()+86400000);
+      const yyyy2 = tomorrow.getFullYear();
+      const mm2 = String(tomorrow.getMonth()+1).padStart(2,'0');
+      const dd2 = String(tomorrow.getDate()).padStart(2,'0');
+      startDateEl.value = `${yyyy}-${mm}-${dd}`;
+      endDateEl.value = `${yyyy2}-${mm2}-${dd2}`;
+
+      populateCityOptions();
+      populateHotelOptions(""); // all hotels by default
+      populateRoomOptionsForHotel("");
+      validateDates();
+      setEnableState();
+      updateResultPreview();
+    })();
+  </script>
+</body>
+</html>
