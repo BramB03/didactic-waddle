@@ -328,7 +328,7 @@
       lines.push(
         "Mews.Distributor({ configurationIds: [",
         "  " + CONFIGURATION_IDS.map(id => `"${id}"`).join(",\n  "),
-        "] })"
+        "] }) // Your Booking Engine IDs, found under Booking Engine Settings",
       );
 
       // Datums
@@ -349,10 +349,10 @@
 
       // Volgorde: HOTEL > CITY
       if (hotelUuid) {
-        lines.push(`api.showRooms("${hotelUuid}")`);
+        lines.push(`api.showRooms("${hotelUuid}") // Property ID, found under General Settings`);
       } else if (cityUuid) {
-        lines.push(`api.setCity("${cityUuid}")`);
-        lines.push("api.showHotels()");
+        lines.push(`api.setCity("${cityUuid}") // City ID, found under Booking Engine Settings`);
+        lines.push("api.showHotels() // Shows all hotels in the selected city");
       }
 
       // Kamer alleen als hotel + kamer gekozen
