@@ -8,7 +8,7 @@ def getAllData():
   from datetime import datetime, timedelta
   from zoneinfo import ZoneInfo
   from datetime import datetime, timedelta, timezone
-  import json
+  import json, os
   import xml.etree.ElementTree as ET
   import requests
   from zoneinfo import ZoneInfo
@@ -17,8 +17,8 @@ def getAllData():
       "Content-Type": "application/json"
   }
 
-  clientToken = "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D"
-  accessToken = "BEC33DAD4C57410C9E6DB09600C7FB9B-310471532A30162E5B6F0EB4F4AD2BF"
+  clientToken = os.getenv("DEMO_CLIENTTOKEN")
+  accessToken = os.getenv("DAVID_ACCESSTOKEN")
   client = "Mews Import Application"
   url = "https://api.mews-demo.com/api/connector/v1/"
 

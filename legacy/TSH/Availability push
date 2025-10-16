@@ -1,7 +1,7 @@
 import subprocess
 import sys
 import requests
-import json
+import json, os
 from datetime import datetime, timedelta, timezone
 import random
 import pprint
@@ -10,8 +10,8 @@ headers = {
     "Content-Type": "application/json"
 }
 
-clientToken = "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D"
-accessToken = "1E338DE5B1574A7AA69CB14900944A81-9A9848C981545BF61055DB1219495DA"
+clientToken = os.getenv("DEMO_CLIENTTOKEN")
+accessToken = os.getenv("DAVID_ACCESSTOKEN")
 client = "Mews Import Application"
 url = "https://api.mews-demo.com/api/connector/v1/"
 

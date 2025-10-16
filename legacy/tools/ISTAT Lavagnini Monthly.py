@@ -2,7 +2,7 @@ from tshDefs import get_utc_time, parse_xml_to_dict, split_data_by_day, dict_to_
 
 def process_files():    # Assign variables as needed
     import sys
-    import json
+    import json, os
     input_data = json.loads(sys.stdin.read())
     dailyEntries1 = input_data.get("dailyEntries1", {})
     dailyEntries2 = input_data.get("dailyEntries2", {})
@@ -24,8 +24,8 @@ def process_files():    # Assign variables as needed
     FamilyStudioFour = ["86680094-6e7c-427c-9ead-ab440002f082", 4, 4]
 
     # Define the API credentials
-    ClientToken = "5634361153F846C59A90AA8000AD91D2-B5F40C389667E8484CE2486E50F9E67"
-    AccessToken = "C6F98D02CB9442A1A2E6B0C900A4954F-DF4A51EB872FD5DD79EA9E003645AAC"
+    ClientToken = os.getenv("ZAP_PROD_CLIENTTOKEN")
+    AccessToken = os.getenv("ZAP_LAV_ACCESSTOKEN")
 
     import requests
     import json

@@ -6,7 +6,7 @@ import pytz
 from pprint import pprint
 import xml.dom.minidom
 import xml.etree.ElementTree as ET
-import subprocess
+import subprocess, os
 
 # Define name of the file to be created
 FileOutputName = 'ISTAT Belfiore'
@@ -33,8 +33,8 @@ DeluxeStudioPriv = ["aeae9ec7-cc68-444a-b88e-b26500b009ef", 2, 2]
 OneBed = ["91d7b0a1-b95c-48cf-8e35-b26500b02c8d", 4, 4]
 
 # Define the API credentials
-ClientToken = "5634361153F846C59A90AA8000AD91D2-B5F40C389667E8484CE2486E50F9E67"
-AccessToken = "8EA64B47C20E4922A106B23600EF4B8C-B4A8DEEA01AD8DC4517BDB7B8AE7EAB"
+ClientToken = os.getenv("ZAP_PROD_CLIENTTOKEN")
+AccessToken = os.getenv("ZAP_ROMA_ACCESSTOKEN")
 
 def get_utc_time(timezoneName, date):
     tz = ZoneInfo(timezoneName)

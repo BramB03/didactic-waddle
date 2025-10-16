@@ -10,24 +10,7 @@ import pytz
 import time
 
 credentialOptions = [
-    {
-        "label": "The David AZ - Demo",
-        "clientToken": "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D",
-        "accessToken": "BEC33DAD4C57410C9E6DB09600C7FB9B-310471532A30162E5B6F0EB4F4AD2BF",
-        "clientId": "prod_client_id"
-    },
-    {
-        "label": "Efteling Hotel - Demo",
-        "clientToken": "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D",
-        "accessToken": "D546E3C64E3640D1AEA2B1C50094DCEF-999B7AA0C1471EBC8D7140DBAD8232A",
-        "clientId": "sandbox_client_id"
-    },
-    {
-        "label": "St Clement - Demo",
-        "clientToken": "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D",
-        "accessToken": "FA313B35B0AA44F9A985B2DE0076DC0D-B2ED620854C06E840EA6857E5306661",
-        "clientId": "dev_client_id"
-    }
+
 ]
 
 # Prompt the user to choose

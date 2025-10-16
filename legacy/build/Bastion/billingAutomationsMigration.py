@@ -2,7 +2,7 @@ import sys
 import requests
 import json
 from datetime import datetime, timedelta
-import pprint
+import pprint, os
 from BastionDef import save_json_response
 
 headers = {
@@ -12,8 +12,8 @@ URLDEMO = "https://api.mews-demo.com/api/connector/v1/"
 URLPROD = "https://api.mews.com/api/connector/v1/"
 
 '''
-OMNIBOOSTMIGRATIONTOOLCLIENTTOKEN = "6C48A901D7FE4ECCA9D6B21B00E814BD-6B1D6681DD9CE79DAD2D4AA872E28E2"
-OMNIBOOSTMIGRATIONTOOLACCESSTOKEN = "F701D71C43FD433F8622B248010C2CD1-0D1DA92277284F2FE6F78EC2DE64964"
+OMNIBOOSTMIGRATIONTOOLCLIENTTOKEN = os.getenv("OMNI_CLIENTTOKEN")
+OMNIBOOSTMIGRATIONTOOLACCESSTOKEN = os.getenv("OMNI_BAST_ACCESSTOKEN")
 
 '''
 '''

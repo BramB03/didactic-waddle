@@ -1,6 +1,6 @@
 import sys
 import requests
-import json
+import json, os
 from datetime import datetime, timedelta, timezone
 import random
 import math
@@ -9,13 +9,13 @@ import time
 import pytz
 
 #prem onboarding tool
-ClientToken = "83C9ED289A8D4E29823BB17F00F944FD-54EF3E61C88BBEA362EB90C2CC0BC80"
+ClientToken = os.getenv("DEMO_CLIENTTOKEN")
 Client = "Mews Import Application"
 
 #TheDavidTokenZuid
-AccessTokenOne = "3865AA3369A24F18A95AB23300F4485B-4771FB299B0C950D7EA9CDE78F891D5"
+AccessTokenOne = os.getenv("DAVID_ACCESSTOKEN")
 #theDavidTokenSouth
-AccessTokenTwo = "BB06E1EEA5AC40C792CAB23300F4CD77-04FFDDF48B0EB1D61A110EBCD728D80"
+AccessTokenTwo = os.getenv("DAVID_ACCESSTOKEN_SOUTH")
 AccessTokens = [AccessTokenOne, AccessTokenTwo]
 
 headers = {

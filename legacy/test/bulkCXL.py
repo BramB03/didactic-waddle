@@ -1,24 +1,14 @@
 import subprocess
 import sys
 import requests
-import json
+import json, os
 from datetime import datetime, timedelta, timezone
 import random
-'''
-ClientToken = "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D"
-AccessToken = "C2FFDD8B9DAA4458BF9CB09E00C1A82D-1FC86D9F087CC822F96527F1E6B1102"
-Client = "Demo - Quentin"
-'''
 
 headers = {
     "Content-Type": "application/json"
 }
 
-#RIA
-#ClientToken = "8A63FE45937F4FD6B797B10800EBBCDC-BB365A9A28E91ECC0F6F461336D6AAF"
-#AccessToken = "F387FDEDEA8F4F9E8496B177008FF20D-02211951E4196B37560F023E4B97533"
-#Solvang
-#AccessToken = "FCF0D6ED13CA4C22863EB20900BE02BB-B7B8D228A4959E33689610F0AA9048C"
 Client = "Mews Import Application"
 
 now_utc = datetime.now(timezone.utc)
@@ -28,9 +18,8 @@ nowUpdate = now_utc_datetime.replace(hour=10, minute=0, second=0)
 
 cancelledReservations = 0
 
-ClientToken = "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D"
-AccessToken = "FA313B35B0AA44F9A985B2DE0076DC0D-B2ED620854C06E840EA6857E5306661"
-Client = "St Clement - Demo"
+ClientToken = os.getenv("DEMO_CLIENTTOKEN")
+AccessToken = os.getenv("DAVID_ACCESSTOKEN")
 
 payload1 = {
     "ClientToken": ClientToken,

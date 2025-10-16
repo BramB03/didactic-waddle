@@ -1,11 +1,11 @@
 import sys
 import requests
-import json
+import json, os
 from datetime import datetime, timedelta, timezone
 import random
 from collections import defaultdict
 
-ClientToken = "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D"
+ClientToken = os.getenv("DEMO_CLIENTTOKEN")
 AccessToken = "XXX-XXX"
 Client = 'Missing'
 

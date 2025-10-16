@@ -1,5 +1,5 @@
 import requests
-import json
+import json, os
 import random
 import time
 
@@ -50,8 +50,8 @@ data = {
 if spaceCatId in data and spaceId in data[spaceCatId]:
     #Update reservation to lock into place
     payloadLock = {
-        "ClientToken": "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D",
-        "AccessToken": "72F803B0D4EA4C37BBE2B26600D44497-40F049BD7BB3EC38403847226D8BC38",
+        "ClientToken": os.getenv("DEMO_CLIENTTOKEN"),
+        "AccessToken": os.getenv("MAR_DUSS_ACCESSTOKEN"),
         "Client": "Zapier",
         "Reason": "Pet Room Lock",
         "CheckOverbooking": False,
@@ -70,8 +70,8 @@ else:
     #Request space category availability for spaces.
     if spaceCatId not in data:
         payloadTask = {
-            "ClientToken": "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D",
-            "AccessToken": "72F803B0D4EA4C37BBE2B26600D44497-40F049BD7BB3EC38403847226D8BC38",
+            "ClientToken": os.getenv("DEMO_CLIENTTOKEN"),
+            "AccessToken": os.getenv("MAR_DUSS_ACCESSTOKEN"),
             "Client": "Zapier",
             "Name": "Petroom not available",
             "Description": "Please review room assignment. Guest booked roomtype where pets are not allowed",
@@ -84,8 +84,8 @@ else:
     else:
         SpaceList = data[spaceCatId]
         payloadAssignedResource = {
-            "ClientToken": "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D",
-            "AccessToken": "72F803B0D4EA4C37BBE2B26600D44497-40F049BD7BB3EC38403847226D8BC38",
+            "ClientToken": os.getenv("DEMO_CLIENTTOKEN"),
+            "AccessToken": os.getenv("MAR_DUSS_ACCESSTOKEN"),
             "Client": "Zapier",
             "AssignedResourceIds": SpaceList,
             "CollidingUtc": {
@@ -116,8 +116,8 @@ else:
         unassignedResources = [resource for resource in SpaceList if resource not in assignedResources]
         if unassignedResources != []:
             payloadUpdateLock = {
-                "ClientToken": "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D",
-                "AccessToken": "72F803B0D4EA4C37BBE2B26600D44497-40F049BD7BB3EC38403847226D8BC38",
+                "ClientToken": os.getenv("DEMO_CLIENTTOKEN"),
+                "AccessToken": os.getenv("MAR_DUSS_ACCESSTOKEN"),
                 "Client": "Zapier",
                 "Reason": "Pet Room Lock",
                 "CheckOverbooking": False,
@@ -134,8 +134,8 @@ else:
             time.sleep(3)
             responsePayloadUpdateLockJson = requests.post(URL + "reservations/update", data=payloadUpdateLockJson, headers=headers)
             payloadUpdateLock = {
-                "ClientToken": "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D",
-                "AccessToken": "72F803B0D4EA4C37BBE2B26600D44497-40F049BD7BB3EC38403847226D8BC38",
+                "ClientToken": os.getenv("DEMO_CLIENTTOKEN"),
+                "AccessToken": os.getenv("MAR_DUSS_ACCESSTOKEN"),
                 "Client": "Zapier",
                 "Reason": "Pet Room Lock",
                 "CheckOverbooking": False,
@@ -152,8 +152,8 @@ else:
             responsePayloadUpdateLockJson = requests.post(URL + "reservations/update", data=payloadUpdateLockJson, headers=headers)
         elif assignedUnlockedResources != []:
             payloadUpdateLock = {
-                "ClientToken": "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D",
-                "AccessToken": "72F803B0D4EA4C37BBE2B26600D44497-40F049BD7BB3EC38403847226D8BC38",
+                "ClientToken": os.getenv("DEMO_CLIENTTOKEN"),
+                "AccessToken": os.getenv("MAR_DUSS_ACCESSTOKEN"),
                 "Client": "Zapier",
                 "Reason": "Pet Room Lock",
                 "CheckOverbooking": False,
@@ -170,8 +170,8 @@ else:
             responsePayloadUpdateLockJson = requests.post(URL + "reservations/update", data=payloadUpdateLockJson, headers=headers)
             time.sleep(3)
             payloadUpdateLock = {
-                "ClientToken": "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D",
-                "AccessToken": "72F803B0D4EA4C37BBE2B26600D44497-40F049BD7BB3EC38403847226D8BC38",
+                "ClientToken": os.getenv("DEMO_CLIENTTOKEN"),
+                "AccessToken": os.getenv("MAR_DUSS_ACCESSTOKEN"),
                 "Client": "Zapier",
                 "Reason": "Pet Room Lock",
                 "CheckOverbooking": False,
@@ -188,8 +188,8 @@ else:
             responsePayloadUpdateLockJson = requests.post(URL + "reservations/update", data=payloadUpdateLockJson, headers=headers)
         else:
             payloadTask = {
-                "ClientToken": "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D",
-                "AccessToken": "72F803B0D4EA4C37BBE2B26600D44497-40F049BD7BB3EC38403847226D8BC38",
+                "ClientToken": os.getenv("DEMO_CLIENTTOKEN"),
+                "AccessToken": os.getenv("MAR_DUSS_ACCESSTOKEN"),
                 "Client": "Zapier",
                 "Name": "Petroom not available",
                 "Description": "Please review room assignment. No pet room is available.",

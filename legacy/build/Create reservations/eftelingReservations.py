@@ -1,3 +1,4 @@
+import os
 from randomNames import firstName
 from randomNames import lastName
 import sys
@@ -14,13 +15,13 @@ headers = {
 }
 
 '''
-ClientToken = "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D"
-Efteling hotel test = "D546E3C64E3640D1AEA2B1C50094DCEF-999B7AA0C1471EBC8D7140DBAD8232A"
+ClientToken = os.getenv("DEMO_CLIENTTOKEN")
+Efteling hotel test =  ""
 '''
 
 
-ClientToken = "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D"
-AccessToken = "D546E3C64E3640D1AEA2B1C50094DCEF-999B7AA0C1471EBC8D7140DBAD8232A"
+ClientToken = os.getenv("DEMO_CLIENTTOKEN")
+AccessToken = os.getenv("DAVID_ACCESSTOKEN")
 Client = "Test"
 
 payloadBase = {

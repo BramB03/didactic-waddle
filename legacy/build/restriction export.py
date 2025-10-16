@@ -1,6 +1,6 @@
 import sys
 import requests
-import json
+import json, os
 from datetime import datetime, timedelta, timezone
 import random
 import math
@@ -8,11 +8,11 @@ import subprocess
 import time
 import pytz
 
-ClientToken = "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D"
+ClientToken = os.getenv("DEMO_CLIENTTOKEN")
 Client = "Mews Import Application"
 
-AccessTokenOne = "EFF440D9CDC84A53ABE0B31D00B8D303-80DD033F6D392808E44EE2B850F7E81"
-AccessTokenTwo = "33472F793A6649CF8F2FB31D00B818EE-0544379D66C3C48DEEB40BC6EB03E73"
+AccessTokenOne = os.getenv("DAVID_ACCESSTOKEN")
+AccessTokenTwo = os.getenv("DAVID_ACCESSTOKEN_SOUTH")
 
 headers = {
     "Content-Type": "application/json"

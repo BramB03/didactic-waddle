@@ -1,6 +1,6 @@
 from randomNames import firstName
 from randomNames import lastName
-import sys
+import sys, os
 import requests
 import json
 from datetime import datetime, timedelta
@@ -9,19 +9,10 @@ import math
 import pytz
 import time
 
-'''
-ClientToken = "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D"
-Efteling hotel test = "D546E3C64E3640D1AEA2B1C50094DCEF-999B7AA0C1471EBC8D7140DBAD8232A"
 
-ClientToken = "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D"
-AccessToken = "BEC33DAD4C57410C9E6DB09600C7FB9B-310471532A30162E5B6F0EB4F4AD2BF"
-Client = "Demo - Bram"
-'''
-
-
-ClientToken = "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D"
-AccessToken = "FA313B35B0AA44F9A985B2DE0076DC0D-B2ED620854C06E840EA6857E5306661"
-Client = "St Clement - Demo"
+ClientToken = os.getenv("DEMO_CLIENTTOKEN")
+AccessToken = os.getenv("DAVID_ACCESSTOKEN")
+Client = "Demo"
 
 ExtraDays = 13
 time.sleep(900)

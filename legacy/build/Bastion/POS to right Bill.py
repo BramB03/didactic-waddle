@@ -1,4 +1,4 @@
-import sys
+import sys, os
 import requests
 import json
 from datetime import datetime, timedelta, timezone
@@ -17,8 +17,8 @@ headers = {
 GuestName = input("What is the guest's name?: ")
 
 payloadSearch = {
-    "ClientToken": "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D",
-    "AccessToken": "09F06C1C4CE647A188BEB0AF00DF31C0-D4D577EA8CD15235D7089D89375312B",
+    "ClientToken": os.getenv("DEMO_CLIENTTOKEN"),
+    "AccessToken": os.getenv("DAVID_ACCESSTOKEN"),
     "Client": "Mews Client",
     "Name": GuestName,
     "ResourceId": None,
@@ -60,8 +60,8 @@ else:
         for guestOption in GuestOptions:
             if guestOption[1] == CorrectGuest:           
                 payloadBill = {
-                    "ClientToken": "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D",
-                    "AccessToken": "09F06C1C4CE647A188BEB0AF00DF31C0-D4D577EA8CD15235D7089D89375312B",
+                    "ClientToken": os.getenv("DEMO_CLIENTTOKEN"),
+                    "AccessToken": os.getenv("DAVID_ACCESSTOKEN"),
                     "Client": "Mews Client",
                     "CustomerIds": [
                         guestOption[2]
@@ -79,8 +79,8 @@ else:
                     if billName == guestOption[3]:
                         billId = getBills_data['id']
                         payloadOrder = {
-                            "ClientToken": "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D",
-                            "AccessToken": "09F06C1C4CE647A188BEB0AF00DF31C0-D4D577EA8CD15235D7089D89375312B",
+                            "ClientToken": os.getenv("DEMO_CLIENTTOKEN"),
+                            "AccessToken": os.getenv("DAVID_ACCESSTOKEN"),
                             "ServiceId": "4d039787-d220-4929-af42-afcb0140c022",
                             "AccountId": GuestOptions[2],
                             "BillId": billId,
@@ -107,8 +107,8 @@ else:
     else:
         GuestOptions = GuestOptions[0]
         payloadBill = {
-            "ClientToken": "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D",
-            "AccessToken": "09F06C1C4CE647A188BEB0AF00DF31C0-D4D577EA8CD15235D7089D89375312B",
+            "ClientToken": os.getenv("DEMO_CLIENTTOKEN"),
+            "AccessToken": os.getenv("DAVID_ACCESSTOKEN"),
             "Client": "Mews Client",
             "CustomerIds": [
                 GuestOptions[2]
@@ -127,8 +127,8 @@ else:
                 print('Bill name used: ', billName)
                 billId = bill['Id']
                 payloadOrder = {
-                    "ClientToken": "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D",
-                    "AccessToken": "09F06C1C4CE647A188BEB0AF00DF31C0-D4D577EA8CD15235D7089D89375312B",
+                    "ClientToken": os.getenv("DEMO_CLIENTTOKEN"),
+                    "AccessToken": os.getenv("DAVID_ACCESSTOKEN"),
                     "ServiceId": "4d039787-d220-4929-af42-afcb0140c022",
                     "AccountId": GuestOptions[2],
                     "BillId": billId,

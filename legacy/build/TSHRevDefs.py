@@ -3,19 +3,20 @@ headers = {
 }
 URL = "https://api.mews-demo.com/api/connector/v1/"
 
+import os
 
 def enterpriseSelection():
     credentialOptions = [
         {
             "label": "The David AZ - Demo",
-            "clientToken": "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D",
-            "accessToken": "BEC33DAD4C57410C9E6DB09600C7FB9B-310471532A30162E5B6F0EB4F4AD2BF",
+            "clientToken": os.getenv("DEMO_CLIENTTOKEN"),
+            "accessToken": os.getenv("DAVID_ACCESSTOKEN"),
             "clientId": "prod_client_id"
         },
         {
             "label": "The David Westerpark - Demo",
-            "clientToken": "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D",
-            "accessToken": "1E338DE5B1574A7AA69CB14900944A81-9A9848C981545BF61055DB1219495DA",
+            "clientToken": os.getenv("DEMO_CLIENTTOKEN"),
+            "accessToken": os.getenv("DAVID_ACCESSTOKEN_SOUTH"),
             "serviceOneId": "78825e4d-c115-4954-9cfb-b12b008f0a0b",
             "serviceTwoId": "218a3e81-26a2-495c-88bb-b2fb00af5a67",
             "serviceThreeId": "12b84ca9-9103-429a-b38e-b2fb00af678c",
