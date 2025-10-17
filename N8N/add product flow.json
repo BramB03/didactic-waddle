@@ -1,0 +1,206 @@
+{
+  "name": "subFlowAddBreakfast",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.mews-demo.com/api/connector/v1/reservations/addProduct",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"ClientToken\": \"E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D\",\n  \"AccessToken\": \"BEC33DAD4C57410C9E6DB09600C7FB9B-310471532A30162E5B6F0EB4F4AD2BF\",\n  \"Client\": \"N8N\",\n  \"ReservationId\": \"{{ $json.reservationId }}\",\n \"ProductId\": \"b9019f38-9bd3-4b56-b69f-b36d010eb7b1\",\n  \"Count\": 1\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -176,
+        16
+      ],
+      "id": "f5fd5ca4-3849-4f49-b04b-52be186582c4",
+      "name": "searchReservation"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "166fa59a-a7cd-4f70-a181-1ab8f4ab36f1",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        32,
+        16
+      ],
+      "id": "7461f4f1-b5b2-490c-b413-a92e42dc1e52",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d446a478-6191-4589-81a2-e5ac63d5e142",
+              "name": "Reservations[0].Id",
+              "value": "={{ $('searchReservation').item.json.Reservations[0].Id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        176
+      ],
+      "id": "0fb2414f-dc13-4e5a-b7f0-743b63eea70e",
+      "name": "Edit Fields",
+      "executeOnce": true,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        0
+      ],
+      "id": "cb9d144d-f51b-41c3-90ab-564967f66f36",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "reservationId"
+            },
+            {
+              "name": "productType"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -592,
+        16
+      ],
+      "id": "4f7d09e7-e892-4c65-acc0-6c06e0a7dc70",
+      "name": "addUpsell",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "productMap = {\n  \"Breakfast\": \"\",\n  \"Bottle of Champagne\": \"\",\n  \"Flowers\": \"\",\n  \"Whatever\": \"\"\n}\n\nproductType = _input.first().json.productType\n\nproductId = \"\"\n\nfor item in productMap:\n  if item[0] == productType:\n    productId = item[1]\nreturn productId"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -384,
+        16
+      ],
+      "id": "bf4438e1-e40c-4a87-85c8-737af8622792",
+      "name": "Code in Python (Beta)"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "searchReservation": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "addUpsell": {
+      "main": [
+        [
+          {
+            "node": "Code in Python (Beta)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in Python (Beta)": {
+      "main": [
+        [
+          {
+            "node": "searchReservation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6a532ae5-f689-47a1-a05c-ef564ee32aff",
+  "meta": {
+    "instanceId": "17c79acfc27f601a024271092e518f03dcf19653eed348a01603ee18efb982e0"
+  },
+  "id": "rFqbZihtA1saAl53",
+  "tags": []
+}

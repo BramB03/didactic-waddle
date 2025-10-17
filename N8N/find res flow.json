@@ -1,0 +1,316 @@
+{
+  "name": "subFlowFindReservationId",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "guestName"
+            },
+            {
+              "name": "reservationNumber",
+              "type": "number"
+            },
+            {
+              "name": "startDate"
+            },
+            {
+              "name": "endDate"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        32
+      ],
+      "id": "047c8939-af9d-4f5e-827e-4505693f3d17",
+      "name": "reservationSearchTrigger",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "166fa59a-a7cd-4f70-a181-1ab8f4ab36f1",
+              "leftValue": "={{ $json.Reservations[0].Id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        880,
+        32
+      ],
+      "id": "5620ac5f-ba4e-4061-be1f-3c618037c1d2",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d446a478-6191-4589-81a2-e5ac63d5e142",
+              "name": "Reservations[0].Id",
+              "value": "={{ $('Search reservation').item.json.Reservations[0].Id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1104,
+        128
+      ],
+      "id": "824c620c-ecb9-4dae-8729-f9bace1324f4",
+      "name": "Edit Fields",
+      "executeOnce": true,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "content": "Add channel number in here or add another flow to search 1 after the other for example.",
+        "height": 224,
+        "width": 256
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        576,
+        -32
+      ],
+      "typeVersion": 1,
+      "id": "1609befe-26f4-439b-88b1-130d1b264690",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.mews-demo.com/api/connector/v1/reservations/getAll/2023-06-06",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"ClientToken\": \"E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D\",\n  \"AccessToken\": \"BEC33DAD4C57410C9E6DB09600C7FB9B-310471532A30162E5B6F0EB4F4AD2BF\",\n  \"Client\": \"N8N\",\n  \"Numbers\": [\n      {{ $('reservationSearchTrigger').item.json.reservationNumber }}\n  ],\n  \"ScheduledStartUtc\": {\n    \"StartUtc\": \"{{ $json.UtcCheckInStart }}\",\n    \"EndUtc\": \"{{ $json.UtcCheckInEnd }}\"\n  },\n  \"ScheduledEndUtc\": {\n    \"StartUtc\": \"{{ $json.UtcCheckOutStart }}\",\n    \"EndUtc\": \"{{ $json.UtcCheckOutEnd }}\"\n  },\n  \"States\": [\n    \"Confirmed\"\n  ],\n  \"Limitation\": {\n    \"Count\": 10\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        656,
+        32
+      ],
+      "id": "54653a42-d9f6-497c-99f6-4e705882fc59",
+      "name": "Search reservation"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.mews-demo.com/api/connector/v1/customers/getAll",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"ClientToken\": \"E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D\",\n  \"AccessToken\": \"BEC33DAD4C57410C9E6DB09600C7FB9B-310471532A30162E5B6F0EB4F4AD2BF\",\n  \"Client\": \"N8N\",\n  \"Extent\": {\n    \"Customers\": true,\n    \"Documents\": false,\n    \"Addresses\": false\n  },\n  \"ActivityStates\": [\n    \"Active\"\n  ],\n  \"CustomerIds\": [\n    \"{{ $json.Reservations[0].AccountId }}\"\n  ],\n  \"Limitation\": {\n    \"Count\": 1\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1104,
+        -64
+      ],
+      "id": "f6ae034f-c393-4e77-8486-765c863d4295",
+      "name": "Search customer"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.mews-demo.com/api/connector/v1/orderItems/getAll",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"ClientToken\": \"E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D\",\n  \"AccessToken\": \"BEC33DAD4C57410C9E6DB09600C7FB9B-310471532A30162E5B6F0EB4F4AD2BF\",\n  \"Client\": \"N8N\",\n  \"ServiceOrderIds\": [\n    \"{{ $('Search reservation').item.json.Reservations[0].Id }}\"\n  ],\n  \"Limitation\": {\n    \"Count\": 50\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1328,
+        -64
+      ],
+      "id": "e596a6e8-b7ca-4f0a-a2f9-5e67eadd6fcf",
+      "name": "Get orderItems"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "from datetime import datetime\n\nguestInputNumber = _('reservationSearchTrigger').first().json.reservationNumber\nguestInputName = _('reservationSearchTrigger').first().json.guestName\n\nmewsNumber = _('Search reservation').first().json.Reservations[0].Number\nmewsName = _('Search customer').first().json.Customers[0].LastName\nmewsReservationId = _('Search reservation').first().json.Reservations[0].Id\nbreakfastIncluded = False\norderItems = _input.first().json.OrderItems\npersonCount = _('Search reservation').first().json.Reservations[0].PersonCounts[0].get(\"Count\") # Hier kan gespecificeerd worden op volwassenen en kind door Id te mappen!!\ntotalPrice = 0\nfor item in orderItems:\n  itemPrice = item.get(\"UnitCount\") * item.get(\"UnitAmount\").get(\"GrossValue\")\n  totalPrice = totalPrice + itemPrice\n  if item.get(\"Type\") == \"ProductOrder\" and item.get(\"Data\").get(\"Product\").get(\"ProductId\") == \"b9019f38-9bd3-4b56-b69f-b36d010eb7b1\": \n      breakfastIncluded = True\n\nspaceCategoryMappingList = {\n  \"01d9c47b-2dea-4e3f-b87e-ae94011b33bb\": \"Standard Double\",\n  \"185695d6-ab95-4416-bd3d-b30c00f0a37f\": \"Standard Deluxe\",\n  \"a42186d8-9b8d-4d00-ab1b-ae94011b33bb\": \"Deluxe Double\",\n  \"14bd53d1-3058-49cc-84b9-ae94011b33bb\": \"Family Room\"\n}\n\nif mewsName == guestInputName:\n  arrivalDate = datetime.fromisoformat(_('Search reservation').first().json.Reservations[0].ScheduledStartUtc.replace(\"Z\", \"+00:00\")).date()\n  departureDate = datetime.fromisoformat(_('Search reservation').first().json.Reservations[0].ScheduledEndUtc.replace(\"Z\", \"+00:00\")).date()\n  LOS = (departureDate - arrivalDate).days\n  reservationId = mewsReservationId\n  spaceCategory = _('Search reservation').first().json.Reservations[0].RequestedResourceCategoryId\n  spaceCategory = spaceCategoryMappingList.get(spaceCategory, \"Unknown Category\")\n  output = {\n    \"SuccessValue\": f\"Your reservation is found with id {reservationId}!\",\n    \"ReservationId\": reservationId,\n    \"SpaceCategory\": spaceCategory,\n    \"ArrivalDate\": arrivalDate.strftime(\"%Y-%m-%d\"),\n    \"DepartureDate\": departureDate.strftime(\"%Y-%m-%d\"),\n    \"LenghtOfStay\": LOS,\n    \"BreakfastIncluded\": breakfastIncluded,\n    \"personCount\": personCount,\n    \"totalPrice\": totalPrice\n  }\nelif not output:\n  output = \"Your reservation is not found!\"\nelse:\n  output = \"There is an error!\"\n\nreturn [{\"json\": output}]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1552,
+        -64
+      ],
+      "id": "6303a4c1-c437-47de-9225-d4d86df4c550",
+      "name": "Create output"
+    },
+    {
+      "parameters": {
+        "jsCode": "const checkInDateStart = $json.date || $input.first().json.startDate\nconst checkOutDateStart = $json.date || $input.first().json.endDate\n\n// Create Date at Amsterdam midnight\nconst dtAmsterdamStart = new Date(`${checkInDateStart}T00:00:00+02:00`) // CEST (approx)\nconst dtUtcCheckInStart = new Date(dtAmsterdamStart.getTime() - (dtAmsterdamStart.getTimezoneOffset() * 60000))\nconst dtUtcCheckInEnd = new Date(dtUtcCheckInStart.getTime() + (24 * 60 * 60 * 1000))\n\nconst dtAmsterdamEnd = new Date(`${checkOutDateStart}T00:00:00+02:00`) // CEST (approx)\nconst dtUtcCheckOutStart = new Date(dtAmsterdamEnd.getTime() - (dtAmsterdamEnd.getTimezoneOffset() * 60000))\nconst dtUtcCheckOutEnd = new Date(dtUtcCheckOutStart.getTime() + (24 * 60 * 60 * 1000))\n\nreturn [{\n  json: {\n    UtcCheckInStart: dtUtcCheckInStart.toISOString(),\n    UtcCheckInEnd: dtUtcCheckInEnd.toISOString(),\n    UtcCheckOutStart: dtUtcCheckOutStart.toISOString(),\n    UtcCheckOutEnd: dtUtcCheckOutEnd.toISOString()\n  }\n}]\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        432,
+        32
+      ],
+      "id": "745623df-4092-44ee-bb57-02d45bc8eae7",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "pinData": {
+    "reservationSearchTrigger": [
+      {
+        "json": {
+          "guestName": "Test",
+          "reservationNumber": 1877,
+          "startDate": "2025-10-08",
+          "endDate": "2025-10-10"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "reservationSearchTrigger": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Search customer",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search reservation": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search customer": {
+      "main": [
+        [
+          {
+            "node": "Get orderItems",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get orderItems": {
+      "main": [
+        [
+          {
+            "node": "Create output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Search reservation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "cd08da5a-5060-4df0-bfa0-f7e440fc5fe3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "17c79acfc27f601a024271092e518f03dcf19653eed348a01603ee18efb982e0"
+  },
+  "id": "41ui8NCNeZPCSlp6",
+  "tags": []
+}

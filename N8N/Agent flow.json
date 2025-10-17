@@ -1,0 +1,361 @@
+{
+  "name": "ChatBotTest",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "54546e04-5122-4f6e-9064-2f0bade69ba4",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "position": [
+        576,
+        944
+      ],
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "model": "gpt-4.1-mini",
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "id": "d680ff91-2020-4a32-a9c9-6815917d2789",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        -272,
+        1056
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "openAiApi": {
+          "id": "lOWfxJ5So19FRmrd",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Hi there! 👋\nI am your digital assistant, how can I help you today? Please provide your reservation number and last name.",
+        "options": {}
+      },
+      "id": "2112a208-f483-4f08-9c3e-eb39ae3a3c01",
+      "name": "Chat Trigger",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "position": [
+        -704,
+        848
+      ],
+      "webhookId": "f406671e-c954-4691-b39a-66c90aa2f103",
+      "typeVersion": 1,
+      "alwaysOutputData": true,
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are a hotel assistant.\nOBJECTIVE: Verify the reservation and then offer breakfast.\n\nStep 1: Ask the guest for their reservation information: number, start, end. Assume the reservation is in the future unless the guest specified otherwise.\n\nThen call the `findReservationId` tool with { reservationNumber, startDate, endDate }.\nSave the `reservationId, startDate, endDate` response.\n\nStep 2: If a reservation is found, Confirm to the guest that we have the correct reservation (display the number, not id, briefly)\n\nStep 3: Offer the guest the these upsells:\n- Breakfast for 15 euro per person per night\n- Flowers for 35 euro\n- Bottle of Champagne for 90 euro\n\nIf the guest wants to purchase an item provide the total cost for the item. For breakfast by multiplying `LenghtOfStay` with `personCount` times 15. Confirm price to the user.\nIf they confirm then call the `addProduct` tool with {reservationId, productType}.\nDo not offer breakfast if it already is booked.\n\nRules:\n- Only ask for missing mandatory fields.\n- Use the tool descriptions and diagrams to correctly fill in parameters.\n- Report the results concisely and clearly.\n- If the provided information cannot be validated by the user, ask the user to reach out to reception@thedavid.com."
+        }
+      },
+      "id": "9bdd8edf-a40f-4a80-ac08-e17282a72e15",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        -32,
+        832
+      ],
+      "typeVersion": 1.6,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "158a0b91-534d-4745-b10e-8a7c97050861",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              },
+              "leftValue": "={{ $json.chatInput }}",
+              "rightValue": ""
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7459fa44-398c-4620-bcc8-a11176a22b7e",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        -496,
+        848
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"output\": \"Hi, how can I help you today?\"\n}",
+        "options": {}
+      },
+      "id": "6e33f214-4474-4b74-a7bb-ba58ab45118b",
+      "name": "Respond With Initial Message",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "position": [
+        -496,
+        1104
+      ],
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -144,
+        1056
+      ],
+      "id": "9fe2c69a-57ca-4b06-bfdd-aa5c7b5fd827",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to find the reservation. You require the `guestName`, `reservationNumber`, `startDate`, `endDate`.",
+        "workflowId": {
+          "__rl": true,
+          "value": "41ui8NCNeZPCSlp6",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/41ui8NCNeZPCSlp6",
+          "cachedResultName": "subFlowFindReservationId"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "reservationNumber": "={{ $fromAI('reservationNumber', `The reservation number the user provided.`, 'number') }}",
+            "guestName": "={{ $fromAI('guestName', `The last name the user provides.`, 'string') }}",
+            "startDate": "={{ $fromAI('startDate', `The start date or check in date the user provides.`, 'string') }}",
+            "endDate": "={{ $fromAI('endDate', `The end date or check out date the user provides.`, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "guestName",
+              "displayName": "guestName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "reservationNumber",
+              "displayName": "reservationNumber",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number"
+            },
+            {
+              "id": "startDate",
+              "displayName": "startDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "endDate",
+              "displayName": "endDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        -16,
+        1168
+      ],
+      "id": "1e09389b-b092-49d7-b30a-736dca728456",
+      "name": "Find reservation"
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to add products to a reservation. When added the reservationId and type is required.",
+        "workflowId": {
+          "__rl": true,
+          "value": "rFqbZihtA1saAl53",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/rFqbZihtA1saAl53",
+          "cachedResultName": "subFlowAddBreakfast"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "reservationId": "={{ $fromAI('reservationId', `The reservationId from the reservationSearch sub workflow.`, 'string') }}",
+            "productType": "={{ $fromAI('productType', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "reservationId"
+          ],
+          "schema": [
+            {
+              "id": "reservationId",
+              "displayName": "reservationId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "productType",
+              "displayName": "productType",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        144,
+        1168
+      ],
+      "id": "e29d209f-cc52-4611-93dc-125c4481d9ba",
+      "name": "Add Product"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "If": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond With Initial Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find reservation": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Product": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b6643054-808b-47d3-8c27-280347b3f163",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "17c79acfc27f601a024271092e518f03dcf19653eed348a01603ee18efb982e0"
+  },
+  "id": "nDAHR7KNTTp2i1t9",
+  "tags": []
+}

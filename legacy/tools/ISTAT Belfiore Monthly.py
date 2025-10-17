@@ -190,6 +190,13 @@ def process_files():    # Assign variables as needed
             'cameredisponibili': str(cameredisponibili),
             'lettidisponibili': str(lettidisponibiliPerDate)
         }
+
+        print(
+            f"Date: {dailyEntries1[i].get('data', 'N/A')}, Total Beds: {totalBedsNightly[i][1]}, Occupied Beds Service 1: {occupiedBedsServiceOne}, "
+            f"Occupied Beds Service 2: {occupiedBedsServiceTwo}, Occupied Beds Service 3: {occupiedBedsServiceThree}, Total Occupied Beds: {totalOccupiedBeds}, "
+            f"Available Beds: {lettidisponibiliPerDate}, Occupied Rooms: {camereoccupate}, Available Rooms: {cameredisponibili}"
+        )
+
         child = mergeDays(dailyEntries1[i], dailyEntries2[i], dailyEntries3[i], struttura)
         finalRoot.append(child)
         index = index + 1
