@@ -215,6 +215,7 @@ def process():
         dailyEntries3 = parsedData3
         
     temp_file = None
+    temp_file_path = None
     try:
         # Serialize each dictionary separately
         serialized_dict1 = json.dumps(dailyEntries1)
@@ -226,7 +227,7 @@ def process():
         
         if selection == "Bologna Monthly":
             result = subprocess.run(
-                ["python3", "/workspaces/Work/tools/ISTAT Bologna Monthly.py"],
+                ["python3", "legacy/tools/ISTAT Bologna Monthly.py"],
                 input=dataSend,
                 text=True,
                 capture_output=True
@@ -235,7 +236,7 @@ def process():
         elif selection == "Belfiore Monthly":
             print("Belfiore Monthly")
             result = subprocess.run(
-                ["python3", "tools/ISTAT Belfiore Monthly.py"],
+                ["python3", "-u", "legacy/tools/ISTAT Belfiore Monthly.py"],
                 input=dataSend,
                 text=True,
                 capture_output=True
@@ -244,7 +245,7 @@ def process():
         elif selection == "Spain police":
             print("Spain police")
             result = subprocess.run(
-                ["python3", "tools/Spain police.py", city],
+                ["python3", "legacy/tools/Spain police.py", city],
                 input=dataSend,
                 text=True,
                 capture_output=True
@@ -253,7 +254,7 @@ def process():
         elif selection == "Lavagnini Monthly":
             print("Spain police")
             result = subprocess.run(
-                ["python3", "/workspaces/Work/tools/ISTAT Lavagnini Monthly.py", city],
+                ["python3", "legacy/tools/ISTAT Lavagnini Monthly.py", city],
                 input=dataSend,
                 text=True,
                 capture_output=True
@@ -264,10 +265,19 @@ def process():
         else:
             return jsonify({"status": "error", "message": "Invalid selection."})
         
-        # Capture the output from script2.py
+        # Capture the output from the subprocess and map it to a temp file
         if result.returncode == 0:
-            temp_file_path = result.stdout.strip()
-            if os.path.exists(temp_file_path):
+            stdout_lines = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+            if not stdout_lines:
+                return jsonify({"status": "error", "message": "No output returned from subprocess."})
+
+            temp_file_path = None
+            for candidate in reversed(stdout_lines):
+                if os.path.exists(candidate):
+                    temp_file_path = candidate
+                    break
+
+            if temp_file_path:
                 import calendar
                 from datetime import datetime
                 # Return the file as a downloadable response
@@ -301,6 +311,7 @@ def process():
                         download_name="ISTAT Belfiore " + last_month_name +".xml"
                     )
             else:
+                print(f"Unexpected subprocess stdout: {stdout_lines}")
                 return jsonify({"status": "error", "message": "File not found."})
 
         else:
@@ -320,4 +331,3 @@ def process():
                 
 if __name__ == '__main__':
     app.run(debug=True)
-

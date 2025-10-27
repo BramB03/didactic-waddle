@@ -3,20 +3,20 @@ import json, os
 from tshDefs import get_utc_time, parse_xml_to_dict, split_data_by_day, dict_to_xml, mergeDays, format_element
 
 
-'''
+
 input_data = json.loads(sys.stdin.read())
 dailyEntries1 = input_data.get("dailyEntries1", {})
 dailyEntries2 = input_data.get("dailyEntries2", {})
 dailyEntries3 = input_data.get("dailyEntries3", {})
-'''
+
 # Define hotel specific data
 EnterpriseID = "b6e93fb5-9158-42d3-bfc1-b1570071ced3"
 HotelServiceID = "03508fe8-48cc-4d7b-956f-b1570071dd4b"
 StandardDouble = ["bb0a910c-097c-4261-b6f1-b1570071f376", 2, 2]
-ExecutiveQueen = ["3363ce4d-364d-4366-aa14-b18000fcf725", 2, 2]
+ExecutiveQueen = ["3363ce4d-364d-4366-aa14-b18000fcf725", 2, 1]
 StandardSingle = ["f328b8b9-aed1-40a9-98dc-b17000d59a92", 1, 1]
 ExecutiveDouble = ["4c32b8b6-4189-4b13-a21f-b1570071f376", 2, 2]
-StandardQueen = ["48448d88-dbc6-41c9-8ba1-b18000e6450f", 2, 2]
+StandardQueen = ["48448d88-dbc6-41c9-8ba1-b18000e6450f", 2, 1]
 DeluxeDouble = ["5ad72872-25c2-410e-9967-b1570071f376", 2, 2]
 ExecutiveStudio = ["b3115cb7-737a-4e55-ac74-b1a100c3e2fc", 2, 2]
 DeluxeTwin = ["d687b505-593b-411a-95a2-b17000a23516", 2, 2]
@@ -45,13 +45,23 @@ headers = {
     "Content-Type": "application/json"
 }
 
-roomtypes = {StandardDouble[0], ExecutiveQueen[0], StandardSingle[0], ExecutiveDouble[0], StandardQueen[0], DeluxeDouble[0], ExecutiveStudio[0], DeluxeStudio[0], DeluxeTwin[0], Penthouse[0]}
-
+roomConfig = {
+    StandardDouble[0]: StandardDouble[1],
+    ExecutiveQueen[0]: ExecutiveQueen[1],
+    StandardSingle[0]: StandardSingle[1],
+    ExecutiveDouble[0]: ExecutiveDouble[1],
+    StandardQueen[0]: StandardQueen[1],
+    DeluxeDouble[0]: DeluxeDouble[1],
+    ExecutiveStudio[0]: ExecutiveStudio[1],
+    DeluxeTwin[0]: DeluxeTwin[1],
+    DeluxeStudio[0]: DeluxeStudio[1],
+    Penthouse[0]: Penthouse[1]
+}
 utcTimeStart = get_utc_time(timezoneName, currentDate)
 utcTimeFinish = get_utc_time(timezoneName, nextMonth)
 
-utcTimeStart = "2025-08-30T22:00:00Z"  # Example static value for testing
-utcTimeFinish = "2025-09-01T22:00:00Z"  # Example static value for testing
+utcTimeStart = "2025-08-31T22:00:00Z"  # Example static value for testing
+utcTimeFinish = "2025-09-30T22:00:00Z"  # Example static value for testing
 
 PayloadGetAvailability = {
     "ClientToken": ClientToken,
@@ -63,7 +73,7 @@ PayloadGetAvailability = {
     "LastTimeUnitStartUtc": utcTimeFinish,
     "Metrics": [
         "UsableResources",
-        "Occupied",
+        "ConfirmedReservations",
         "OtherServiceReservationCount"
     ]
 }
@@ -82,13 +92,50 @@ filteredDataUsableResources = {
             }
         }
         for availability in GetAvailability['ResourceCategoryAvailabilities']
-        if availability['ResourceCategoryId'] in roomtypes
+        if availability['ResourceCategoryId'] in roomConfig
     ]
 }
 # Create a list of the number of beds within each resource category
 roomsPerCategory = [
     sum(values) for values in zip(*(item['Metrics']['UsableResources'] for item in filteredDataUsableResources['ResourceCategoryAvailabilities']))
 ]
+import pprint
+
+bedsCalculation = {
+    'TimeUnitStartsUtc': GetAvailability['TimeUnitStartsUtc'],
+    'ResourceCategoryAvailabilities': [
+        {
+            'Metrics': {
+                'UsableMinusOccupiedBeds': [
+                    (u - o - s) * roomConfig[availability['ResourceCategoryId']]
+                    for u, o, s in zip(
+                        availability['Metrics']['UsableResources'],
+                        availability['Metrics']['ConfirmedReservations'],
+                        availability['Metrics']['OtherServiceReservationCount']
+                    )
+                ]
+            }
+            
+        }
+        for availability in GetAvailability['ResourceCategoryAvailabilities']
+        if availability['ResourceCategoryId'] in roomConfig
+    ]
+}
+
+listsToSum = [
+    x['Metrics']['UsableMinusOccupiedBeds']
+    for x in bedsCalculation['ResourceCategoryAvailabilities']
+]
+
+totalBedsPerDay = [sum(values) for values in zip(*listsToSum)]
+
+bedsCalculation['TotalBedsAvailable'] = totalBedsPerDay
+availableBedsPerDay = {
+    'TimeUnitStartsUtc': bedsCalculation['TimeUnitStartsUtc'],
+    'TotalBedsAvailable':bedsCalculation['TotalBedsAvailable']
+}
+pprint.pprint(bedsCalculation)
+
 
 filteredDataOccupiedResources = {
     'TimeUnitStartsUtc': GetAvailability['TimeUnitStartsUtc'],
@@ -101,7 +148,7 @@ filteredDataOccupiedResources = {
             }
         }
         for availability in GetAvailability['ResourceCategoryAvailabilities']
-        if availability['ResourceCategoryId'] in roomtypes
+        if availability['ResourceCategoryId'] in roomConfig
     ]
 }
 
@@ -171,7 +218,7 @@ finalRoot = ET.Element("movimenti", {
 
 # Add the additional data elements
 codiceElement = ET.SubElement(finalRoot, "codice")
-codiceElement.text = "FI38054"
+codiceElement.text = "048017ALB0579"
 
 prodottoElement = ET.SubElement(finalRoot, "prodotto")
 prodottoElement.text = "Mews"
@@ -183,13 +230,8 @@ serviceTwoBedsFree = 653
 serviceThreeBedsFree = 629
 
 index = 0
-for i in range(len(1)):
-    occupiedBedsServiceOne = totalBedsNightly[i][1] -  serviceOneBedsFree
-    occupiedBedsServiceTwo = totalBedsNightlyStudent[i][1] -  serviceTwoBedsFree
-    occupiedBedsServiceThree = totalBedsNightly[i][1] -  serviceThreeBedsFree
-    totalOccupiedBeds = occupiedBedsServiceOne + occupiedBedsServiceTwo + occupiedBedsServiceThree
-
-    lettidisponibiliPerDate = totalBedsNightly[i][1] - totalOccupiedBeds
+for i in range(30):
+    lettidisponibiliPerDate = availableBedsPerDay['TotalBedsAvailable'][i]
     camereoccupate = occupiedRooms[i]
     cameredisponibili = roomsPerCategory[i] - camereoccupate
     
@@ -199,6 +241,8 @@ for i in range(len(1)):
         'cameredisponibili': str(cameredisponibili),
         'lettidisponibili': str(lettidisponibiliPerDate)
     }
+    print(struttura)
+    
     child = mergeDays(dailyEntries1[i], dailyEntries2[i], dailyEntries3[i], struttura)
     finalRoot.append(child)
     index = index + 1
@@ -206,5 +250,3 @@ for i in range(len(1)):
 raw_xml = ET.tostring(finalRoot, encoding="utf-8")
 dom = xml.dom.minidom.parseString(raw_xml)
 formatted_xml = dom.toprettyxml(indent="  ", encoding="utf-8")
-
-'''
