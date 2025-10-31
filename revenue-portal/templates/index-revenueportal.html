@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Revenue Availability Portal</title>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: #111a2b;
+      --muted: #6c7a91;
+      --text: #e7edf8;
+      --accent: #4f8cff;
+      --accent-2: #9ad97a;
+      --danger: #ff6b6b;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: linear-gradient(180deg, #0a1120, #0b1426 40%, #0a0f1c);
+      color: var(--text);
+    }
+    .topbar {
+      position: sticky; top: 0; z-index: 50;
+      display: flex; align-items: center; gap: 12px; justify-content: space-between;
+      padding: 14px 18px; background: rgba(9, 15, 28, 0.75); backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .brand { font-weight: 700; letter-spacing: 0.3px; }
+    .controls { display: flex; gap: 10px; align-items: center; }
+    .card {
+      background: var(--panel); border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px; padding: 16px; box-shadow: 0 6px 24px rgba(0,0,0,0.25);
+    }
+    .container { max-width: 1200px; margin: 24px auto; padding: 0 16px; }
+    label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; }
+    input[type="month"], select { 
+      background: #0e1626; color: var(--text); border: 1px solid rgba(255,255,255,0.12);
+      padding: 10px 12px; border-radius: 10px; outline: none; min-width: 180px;
+    }
+    button { 
+      background: var(--accent); color: #071222; border: none; padding: 10px 14px; border-radius: 10px;
+      cursor: pointer; font-weight: 600;
+    }
+    button.secondary { background: #17233a; color: var(--text); }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 10px 12px; text-align: right; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    th:first-child, td:first-child { text-align: left; }
+    thead th { position: sticky; top: 58px; background: #11192d; z-index: 1; }
+    caption { text-align: left; color: var(--muted); margin-bottom: 8px; font-size: 13px; }
+
+    .meta { font-size: 12px; color: var(--muted); display: flex; gap: 16px; align-items: center; }
+    .dot { width: 8px; height: 8px; border-radius: 999px; display: inline-block; margin-right: 6px; }
+    .dot.ok { background: var(--accent-2); }
+    .dot.err { background: var(--danger); }
+    .pill { font-size: 12px; padding: 4px 8px; border-radius: 999px; background: #17233a; color: var(--text); }
+    .grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+
+    @media (min-width: 960px) {
+      .grid { grid-template-columns: 1.2fr 0.8fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Revenue Availability Portal</div>
+    <div class="controls">
+      <div>
+        <label for="monthInput">Maand</label>
+        <input type="month" id="monthInput" />
+      </div>
+      <button id="refreshBtn">Vernieuwen</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="grid">
+      <div class="card">
+        <div class="meta" style="margin-bottom: 10px;">
+          <span><span id="statusDot" class="dot"></span><span id="statusText">Gereed</span></span>
+          <span class="pill" id="selectedMonthPill">—</span>
+          <span id="lastUpdated" class="meta"></span>
+        </div>
+        <div style="overflow: auto;">
+          <table id="availabilityTable" aria-describedby="tableCaption">
+            <caption id="tableCaption">Beschikbaarheid per kamertype</caption>
+            <thead id="tableHead"></thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <aside class="card">
+        <h3 style="margin-top: 0;">Opzet & API</h3>
+        <p style="color: var(--muted);">Dit is een voorbeeld. Vervang de <code>fetchAvailability()</code> functie met echte API‑calls. Voorbeeld structuur die de tabel verwacht:</p>
+        <pre style="white-space: pre-wrap; background:#0e1626; padding: 12px; border-radius: 12px; border:1px solid rgba(255,255,255,0.06);">{
+  "month": "2025-11",
+  "roomTypes": ["Classic", "Deluxe", "Suite"],
+  "metrics": {
+    "Classic": {
+      "totalRooms": 30,
+      "freeRooms": 12,
+      "services": { "hotel": 8, "student": 3, "longStay": 1 }
+    }
+  }
+}</pre>
+        <p class="meta">Rijen: <strong>Totaal kamers</strong>, <strong>Vrije kamers</strong>, <strong>Hotel</strong>, <strong>Student</strong>, <strong>Langverblijf</strong>. Kolommen: kamertypes.</p>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    // ===== Utilities =====
+    const pad = (n) => String(n).padStart(2, '0');
+    const now = new Date();
+
+    // Set default month to current (Amsterdam TZ not required for visual only)
+    const defaultMonthValue = `${now.getFullYear()}-${pad(now.getMonth() + 1)}`;
+
+    const monthInput = document.getElementById('monthInput');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+    const lastUpdated = document.getElementById('lastUpdated');
+    const selectedMonthPill = document.getElementById('selectedMonthPill');
+
+    const tableHead = document.getElementById('tableHead');
+    const tableBody = document.getElementById('tableBody');
+
+    monthInput.value = defaultMonthValue;
+    selectedMonthPill.textContent = defaultMonthValue;
+
+    // ===== Fake API layer (replace with real fetch) =====
+    async function fetchAvailability(month) {
+      // Example: replace this with your real API calls
+      // - Do parallel fetches for multiple endpoints if needed
+      // - Combine results into the schema below
+      await new Promise(r => setTimeout(r, 500)); // simulate latency
+
+      const roomTypes = ["Classic", "Deluxe", "Suite", "Studio"]; // dynamic in real world
+
+      // generate mock numbers to show dynamics per month
+      const seed = Number(month.replace('-', '')) % 97;
+      const rnd = (base, i) => Math.max(0, Math.round(base + (seed % 7) - 3 + i));
+
+      const metrics = {};
+      roomTypes.forEach((rt, i) => {
+        const totalRooms = rnd(20 + i * 5, i) + 10;
+        const freeRooms = Math.min(totalRooms, rnd(8 + i *

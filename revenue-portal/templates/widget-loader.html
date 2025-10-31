@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Booking Widget</title>
+  <script src="https://api.mews.com/distributor/distributor.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html, body { height: 100%; }
+    .thin-scrollbar::-webkit-scrollbar{height:6px;width:6px}
+    .thin-scrollbar::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:999px}
+    .mono{font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <div class="max-w-4xl mx-auto p-6 space-y-6">
+    <h1 class="text-2xl font-bold">Booking Widget</h1>
+
+    <details class="bg-white border border-slate-200 rounded-2xl shadow-sm p-4">
+      <summary class="cursor-pointer text-sm text-slate-600">Toon ruwe querystring</summary>
+      <pre id="payloadOut" class="mono text-sm mt-3 thin-scrollbar overflow-auto"></pre>
+    </details>
+
+    <details class="bg-white border border-slate-200 rounded-2xl shadow-sm p-4">
+      <summary class="cursor-pointer text-sm text-slate-600">Toon resolutie (UUID’s & keuzes)</summary>
+      <pre id="resolvedOut" class="mono text-sm mt-3 thin-scrollbar overflow-auto"></pre>
+    </details>
+
+    <details open class="bg-white border border-slate-200 rounded-2xl shadow-sm p-4">
+      <summary class="cursor-pointer text-sm text-slate-600">Uitvoeringslog</summary>
+      <pre id="execLog" class="mono text-sm mt-3 thin-scrollbar overflow-auto"></pre>
+    </details>
+
+    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm p-6">
+      <p class="text-slate-600">De Mews Distributor opent als overlay na initialisatie…</p>
+    </div>
+
+    <p>
+      <a href="/bookingengine/" class="text-blue-600 underline">← Terug</a>
+    </p>
+  </div>
+
+  <script>
+    // ======= ALTIJD VASTE CONFIGURATION IDS =======
+    const CONFIGURATION_IDS = [
+      "2c4db986-fc87-4857-afaa-affe00a583dd",
+      "1667c6ff-9fb6-4511-9997-adb900bef863",
+      "8077aee8-f5a5-4643-bc1f-ae94011b36bd",
+      "86b3239f-2d15-43f9-936b-af02007db567"
+    ];
+
+    // ======= DATA =======
+    const cityMap = [
+      { id: "ams", UUID: "a93009d7-aef9-4889-bfca-5f22ae909e6b", name: "Amsterdam"},
+      { id: "ldn", UUID: "d3e92e26-4fca-43c7-90aa-d854ca810eda", name: "London" },
+      { id: "stk", UUID: "e2506a44-773e-4630-8e2d-43f1c51203f7", name: "Stockholm" }
+    ];
+
+    const hotelMap = [
+      { id: "tda", UUID: "8dc59049-c9d0-4d08-a489-ae94011b28e5", name: "The David Amsterdam",  cityId: "ams" },
+      { id: "tdw", UUID: "f582ceff-1bf0-4a20-bc39-af02007da559", name: "The David Westerpark", cityId: "ams" },
+      { id: "mlo", UUID: "4c000a28-e0cb-4cb4-bba3-adb900beda1b", name: "Mews London",          cityId: "ldn" },
+      { id: "mst", UUID: "ec0be015-3e1e-4b91-b0f0-affe00a564e8", name: "Mews Stockholm",        cityId: "stk" }
+    ];
+
+    // (Rooms voorlopig optioneel – we filteren alleen als er één expliciet is gekozen)
+    const roomMap = {
+      "tda": [
+        // VERVANG door echte spaceCategory UUID’s; anders skippen we de filter.
+        { id: "std", UUID: "01d9c47b-2dea-4e3f-b87e-ae94011b33bb", name: "Standard" },
+        { id: "dlx", UUID: "185695d6-ab95-4416-bd3d-b30c00f0a37f", name: "Deluxe" },
+        { id: "sui", UUID: "14bd53d1-3058-49cc-84b9-ae94011b33bb", name: "Suite" }
+      ],
+      "tdw": [
+        { id: "std", UUID: "088e115f-30b0-4ff8-aaba-af0300d3a187", name: "Standard" },
+        { id: "dlx", UUID: "58a0d7e8-b535-4ea4-9532-af0300d3a187", name: "Deluxe" }
+      ],
+      "mlo": [
+        { id: "std", UUID: "da3de7e5-1766-467d-aca1-b23400aa895c", name: "Standard" }
+      ],
+      "mst": [
+        { id: "std", UUID: "4083606c-2a80-4027-886f-affe00a59a4d", name: "Standard" },
+        { id: "dlx", UUID: "0349fd3e-91b4-4743-93be-affe00a59a4d", name: "Deluxe" }
+      ]
+    };
+
+    // ======= HELPERS =======
+    const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    const isUuid = (v) => UUID_RE.test(String(v||"").trim());
+
+    const logEl = () => document.getElementById('execLog');
+    const logs = [];
+    function log(step, data = {}) {
+      const row = { ts: new Date().toISOString(), step, ...data };
+      logs.push(row);
+      console.log("[EXEC]", row);
+      const el = logEl();
+      if (el) el.textContent = logs.map(x => JSON.stringify(x)).join("\n");
+    }
+
+    function paramsToObject(search) {
+      const p = new URLSearchParams(search);
+      const o = {};
+      for (const [k, v] of p.entries()) o[k] = v;
+      return o;
+    }
+
+    function parseIsoToDate(iso) {
+      if (!iso) return null;
+      const [y, m, d] = iso.split("-").map(Number);
+      if (!y || !m || !d) return null;
+      return new Date(y, m - 1, d);
+    }
+
+    function findCityBySlugOrUUID(val) {
+      if (!val) return null;
+      let c = cityMap.find(x => x.id === val);
+      if (c) return { slug: c.id, uuid: c.UUID, name: c.name };
+      c = cityMap.find(x => x.UUID === val);
+      return c ? { slug: c.id, uuid: c.UUID, name: c.name } : null;
+    }
+
+    function findHotelBySlugOrUUID(val) {
+      if (!val) return null;
+      let h = hotelMap.find(x => x.id === val);
+      if (h) return { slug: h.id, uuid: h.UUID, name: h.name, cityId: h.cityId };
+      h = hotelMap.find(x => x.UUID === val);
+      return h ? { slug: h.id, uuid: h.UUID, name: h.name, cityId: h.cityId } : null;
+    }
+
+    function getRoomUuid(hotelSlug, roomSlug) {
+      if (!hotelSlug || !roomSlug) return null;
+      const list = roomMap[hotelSlug] || [];
+      const m = list.find(x => x.id === roomSlug);
+      return m ? m.UUID : null;
+    }
+
+    function hotelsInCity(citySlug) {
+      return hotelMap.filter(h => h.cityId === citySlug);
+    }
+
+    // ======= BOOT =======
+    (function boot(){
+      const raw = paramsToObject(location.search);
+      document.getElementById("payloadOut").textContent = JSON.stringify(raw, null, 2);
+
+      // UI-parameters
+      const cityKey     = raw.city  || raw.cityId  || "";       // 'ams' of UUID
+      const hotelKey    = raw.hotel || raw.hotelId || "";       // 'tda' of UUID
+      const roomKey     = raw.room  || raw.roomTypeId || "";    // 'dlx' etc. (optioneel)
+      const voucherCode = (raw.voucher || "").trim();
+
+      // Datums
+      const start = parseIsoToDate(raw.startDateIso || raw.start || "") ||
+                    (raw.startDateY ? new Date(+raw.startDateY, (+raw.startDateM||1)-1, +raw.startDateD||1) : null);
+      const end   = parseIsoToDate(raw.endDateIso || raw.end || "") ||
+                    (raw.endDateY ? new Date(+raw.endDateY, (+raw.endDateM||1)-1, +raw.endDateD||1) : null);
+
+      // Resolve city/hotel
+      const city  = findCityBySlugOrUUID(cityKey);
+      const hotel = findHotelBySlugOrUUID(hotelKey);
+
+      // ---- Beslisvolgorde property (hotel) ----
+      // 1) Als hotel gekozen → gebruik dat hotel
+      // 2) Anders als stad gekozen én er is precies 1 hotel in die stad → gebruik dat hotel
+      let propertyToUse = null; // { slug, uuid, name, cityId } of null
+      if (hotel?.uuid) {
+        propertyToUse = hotel;
+      } else if (city?.slug) {
+        const candidates = hotelsInCity(city.slug);
+        if (candidates.length === 1) {
+          const h = candidates[0];
+          propertyToUse = { slug: h.id, uuid: h.UUID, name: h.name, cityId: h.cityId };
+        }
+      }
+
+      // Kamertype: alleen filteren als er én hotel is én roomKey gekozen is
+      const roomUuid = (propertyToUse && roomKey) ? getRoomUuid(propertyToUse.slug, roomKey) : null;
+
+      // Resolved info tonen
+      const resolved = {
+        startISO: start ? start.toISOString() : null,
+        endISO: end ? end.toISOString() : null,
+        cityKey, hotelKey, roomKey, voucherCode,
+        cityUuid: city?.uuid || null,
+        chosenProperty: propertyToUse ? { slug: propertyToUse.slug, uuid: propertyToUse.uuid, name: propertyToUse.name } : null,
+        roomUuid: roomUuid || null,
+        configurationIds: CONFIGURATION_IDS
+      };
+      document.getElementById("resolvedOut").textContent = JSON.stringify(resolved, null, 2);
+
+      // Logging
+      log("init:configurationIds", { configurationIds: CONFIGURATION_IDS });
+      if (propertyToUse?.uuid) log("resolve:propertyToUse", { hotelSlug: propertyToUse.slug, hotelUuid: propertyToUse.uuid, valid: isUuid(propertyToUse.uuid) });
+      if (roomUuid) log("resolve:roomUuid", { roomUuid, valid: isUuid(roomUuid) });
+      if (voucherCode) log("resolve:voucher", { voucherCode });
+
+      // ======= Init Mews Distributor =======
+      Mews.Distributor(
+        {
+          configurationIds: CONFIGURATION_IDS,
+          // zet de juiste omgeving hier (demo of productie)
+          dataBaseUrl: 'https://api.mews-demo.com'
+        },
+        function (api) {
+          // Beschikbare API-methodes loggen
+          log("api:ready", {
+            methods: Object.keys(api).filter(k => typeof api[k] === "function").slice(0, 60)
+          });
+
+          // ==== Datums ====
+          if (start) {
+            api.setStartDate(start);
+            log("api:setStartDate", { start: start.toISOString().slice(0, 10) });
+          }
+          if (end) {
+            api.setEndDate(end);
+            log("api:setEndDate", { end: end.toISOString().slice(0, 10) });
+          }
+
+          // ==== UUID's uit je resolvers ====
+          const cityUuid  = city?.uuid || null;
+          const hotelUuid = propertyToUse?.uuid || hotel?.uuid || null;
+          // let op: GEEN roomUuidRaw meer — we gebruiken de eerder berekende roomUuid
+
+          // ==== Volgorde: HOTEL > CITY ====
+          if (hotelUuid) {
+            // Hotel gekozen → kamers tonen voor dat hotel
+            if (!isUuid(hotelUuid)) {
+              log("api:property:skip_invalid_uuid", { hotelUuid });
+            } else if (typeof api.showRooms === "function") {
+              try {
+                api.showRooms(hotelUuid);
+                log("api:property:showRooms", { propertyId: hotelUuid });
+              } catch (e) {
+                log("api:property:showRooms:error", { error: String(e) });
+              }
+            } else if (typeof api.setProperty === "function") {
+              try {
+                api.setProperty(hotelUuid);
+                log("api:property:setProperty", { propertyId: hotelUuid });
+              } catch (e) {
+                log("api:property:setProperty:error", { error: String(e) });
+              }
+            } else {
+              log("api:property:no_method", {});
+            }
+
+          } else if (cityUuid) {
+            // Geen hotel maar wel city → hotels in die stad tonen
+            if (!isUuid(cityUuid)) {
+              log("api:city:skip_invalid_uuid", { cityUuid });
+            } else if (typeof api.setCity === "function") {
+              try {
+                api.setCity(cityUuid);
+                log("api:city:setCity", { cityId: cityUuid });
+              } catch (e) {
+                log("api:city:setCity:error", { error: String(e) });
+              }
+            } else if (typeof api.setFilters === "function") {
+              try {
+                api.setFilters({ cityId: cityUuid });
+                log("api:city:setFilters", { cityId: cityUuid });
+              } catch (e) {
+                log("api:city:setFilters:error", { error: String(e) });
+              }
+            } else {
+              log("api:city:no_method", {});
+            }
+
+            if (typeof api.showHotels === "function") {
+              try {
+                api.showHotels();
+                log("api:city:showHotels", {});
+              } catch (e) {
+                log("api:city:showHotels:error", { error: String(e) });
+              }
+            } else {
+              log("api:city:showHotels:no_method", {});
+            }
+
+          } else {
+            log("api:property:city:none_selected", {});
+          }
+
+          // ==== Kamertype (alleen als geldig en hotel gekozen) ====
+          if (roomUuid && isUuid(roomUuid)) {
+            if (typeof api.showRates === "function") {
+              try {
+                api.showRates(roomUuid);
+                log("api:room:showRates", { spaceCategoryId: roomUuid });
+              } catch (e) {
+                log("api:room:showRates:error", { error: String(e) });
+              }
+            } else {
+              log("api:room:no_showRates_method", {});
+            }
+          } else if (roomUuid && !isUuid(roomUuid)) {
+            log("api:room:skip_invalid_uuid", { roomUuid });
+          } else {
+            log("api:room:no_filter_applied", { reason: "no room chosen" });
+          }
+
+          // ==== Voucher (optioneel) ====
+          if (voucherCode) {
+            if (typeof api.setVoucherCode === "function") {
+              try {
+                api.setVoucherCode(voucherCode);
+                log("api:voucher:setVoucherCode", { voucherCode });
+              } catch (e) {
+                log("api:voucher:error", { error: String(e) });
+              }
+            } else {
+              log("api:voucher:no_method", {});
+            }
+          }
+
+          // ==== Widget openen ====
+          log("api:open", {});
+          api.open();
+
+          // ==== Debug object in console ====
+          window.mewsLastCall = {
+            configurationIds: CONFIGURATION_IDS.slice(),
+            startISO: start?.toISOString() || null,
+            endISO: end?.toISOString() || null,
+            cityUuid,
+            hotelUuid,
+            roomUuid,
+            voucherCode
+          };
+        },
+        { dataBaseUrl: 'https://api.mews-demo.com' }
+      );
+    })();
+  </script>
+</body>
+</html>
