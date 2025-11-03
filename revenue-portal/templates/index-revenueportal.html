@@ -2,152 +2,381 @@
 <html lang="nl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Revenue Availability Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hotel Kamer Dashboard – inline edit</title>
   <style>
-    :root {
-      --bg: #0b1220;
-      --panel: #111a2b;
-      --muted: #6c7a91;
-      --text: #e7edf8;
-      --accent: #4f8cff;
-      --accent-2: #9ad97a;
-      --danger: #ff6b6b;
+    :root{
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #1f2330;
+      --muted: #6b7280;
+      --border: #e6e8ef;
+      --primary: #5b4df0;
+      --primary-600: #4a3fe0;
+      --shadow: 0 10px 30px rgba(16,18,27,.08);
+      --radius: 16px;
+      --first-col-width: 220px;
     }
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body {
-      margin: 0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-      background: linear-gradient(180deg, #0a1120, #0b1426 40%, #0a0f1c);
-      color: var(--text);
-    }
-    .topbar {
-      position: sticky; top: 0; z-index: 50;
-      display: flex; align-items: center; gap: 12px; justify-content: space-between;
-      padding: 14px 18px; background: rgba(9, 15, 28, 0.75); backdrop-filter: blur(8px);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-    .brand { font-weight: 700; letter-spacing: 0.3px; }
-    .controls { display: flex; gap: 10px; align-items: center; }
-    .card {
-      background: var(--panel); border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 16px; padding: 16px; box-shadow: 0 6px 24px rgba(0,0,0,0.25);
-    }
-    .container { max-width: 1200px; margin: 24px auto; padding: 0 16px; }
-    label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; }
-    input[type="month"], select { 
-      background: #0e1626; color: var(--text); border: 1px solid rgba(255,255,255,0.12);
-      padding: 10px 12px; border-radius: 10px; outline: none; min-width: 180px;
-    }
-    button { 
-      background: var(--accent); color: #071222; border: none; padding: 10px 14px; border-radius: 10px;
-      cursor: pointer; font-weight: 600;
-    }
-    button.secondary { background: #17233a; color: var(--text); }
-    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;background:var(--bg);min-height:100vh;padding:32px 16px;color:var(--text)}
+    .container{max-width:1400px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow)}
+    h1{font-size:28px;font-weight:800;letter-spacing:.1px;margin-bottom:6px}
+    .subtitle{color:var(--muted);margin-bottom:18px;font-size:14px}
+    .controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+    .controls .field{display:flex;gap:8px;align-items:center}
+    label{font-size:12px;color:var(--muted)}
+    select, .btn, input[type="checkbox"]{cursor:pointer}
+    select{appearance:none;padding:10px 14px;font-size:14px;border:1px solid var(--border);border-radius:10px;background:#fff;min-width:220px;transition:border-color .2s, box-shadow .2s}
+    select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(91,77,240,.12)}
+    .btn{border:1px solid var(--border);background:#fff;border-radius:10px;padding:10px 14px;font-size:14px;font-weight:700}
+    .btn-primary{background:var(--primary);border-color:var(--primary);color:#fff}
+    .btn-primary:hover{background:var(--primary-600)}
+    .btn-ghost:hover{background:#f4f5fa}
+    .hint{font-size:12px;color:var(--muted)}
+    .spacer{flex:1 1 auto}
 
-    table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 10px 12px; text-align: right; border-bottom: 1px solid rgba(255,255,255,0.06); }
-    th:first-child, td:first-child { text-align: left; }
-    thead th { position: sticky; top: 58px; background: #11192d; z-index: 1; }
-    caption { text-align: left; color: var(--muted); margin-bottom: 8px; font-size: 13px; }
+    .table-wrapper{overflow:auto;border-radius:12px;border:1px solid var(--border)}
+    table{width:max-content;min-width:900px;border-collapse:separate;border-spacing:0;background:#fff}
+    thead th{position:sticky;top:0;z-index:3;background:#fff;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em;font-weight:700;border-bottom:1px solid var(--border);padding:14px 12px;white-space:nowrap}
+    thead th:first-child, tbody td:first-child{position:sticky;left:0;z-index:4;background:#fff;border-right:1px solid var(--border);width:var(--first-col-width);min-width:var(--first-col-width);max-width:var(--first-col-width)}
+    th,td{padding:12px 12px;border-bottom:1px solid #f2f3f7;font-size:14px;white-space:nowrap;text-align:center}
+    .room-type-row{cursor:pointer;background:#fafbff;transition:background-color .15s;font-weight:700}
+    .room-type-row:hover{background:#f2f4ff}
+    .room-type-row td:first-child{display:flex;align-items:center;gap:10px;text-align:left;padding-left:16px}
+    .expand-icon{display:inline-block;width:10px;height:10px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(-45deg);transition:transform .18s;margin-right:4px}
+    .room-type-row.expanded .expand-icon{transform:rotate(45deg)}
+    .detail-row{display:none;background:#fff}
+    .detail-row.visible{display:table-row}
+    .detail-row td:first-child{text-align:left;padding-left:28px;color:var(--muted);font-weight:600;font-size:12px}
+    .metric-value{display:inline-block;padding:6px 10px;border-radius:999px;font-weight:700;min-width:42px;line-height:1;background:#f3f4f7;color:#2d3350}
+    .metric-value.totaal{background:#e8edff;color:#1f2a80}
+    .metric-value.vrij{background:#e6fbef;color:#0f6a40}
+    .metric-value.hotel{background:#f6f6fa;color:#333a66}
+    .metric-value.student{background:#f6f6fa;color:#333a66}
+    .metric-value.lang{background:#f6f6fa;color:#333a66}
+    tbody .detail-row:nth-child(2n) td{background:#fcfdff}
 
-    .meta { font-size: 12px; color: var(--muted); display: flex; gap: 16px; align-items: center; }
-    .dot { width: 8px; height: 8px; border-radius: 999px; display: inline-block; margin-right: 6px; }
-    .dot.ok { background: var(--accent-2); }
-    .dot.err { background: var(--danger); }
-    .pill { font-size: 12px; padding: 4px 8px; border-radius: 999px; background: #17233a; color: var(--text); }
-    .grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
-
-    @media (min-width: 960px) {
-      .grid { grid-template-columns: 1.2fr 0.8fr; }
-    }
+    /* Inline edit stijl */
+    .editable{outline:1px dashed transparent}
+    .editing .editable{outline:1px dashed #c8ccf8;background:#fafbff}
+    .editable[contenteditable="true"]:focus{outline:2px solid var(--primary);background:#fff}
   </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">Revenue Availability Portal</div>
+  <div class="container" id="app">
+    <h1>Hotel Kamer Dashboard</h1>
+    <p class="subtitle">Beheer je kamerbezetting per maand (inline aanpasbaar voor Hotel/Student/Lang verblijf)</p>
+
     <div class="controls">
-      <div>
-        <label for="monthInput">Maand</label>
-        <input type="month" id="monthInput" />
+      <div class="field">
+        <label for="monthSelect">Selecteer maand</label>
+        <select id="monthSelect">
+          <option value="0">Januari 2025</option>
+          <option value="1">Februari 2025</option>
+          <option value="2">Maart 2025</option>
+          <option value="3">April 2025</option>
+          <option value="4">Mei 2025</option>
+          <option value="5">Juni 2025</option>
+          <option value="6">Juli 2025</option>
+          <option value="7">Augustus 2025</option>
+          <option value="8">September 2025</option>
+          <option value="9">Oktober 2025</option>
+          <option value="10">November 2025</option>
+          <option value="11">December 2025</option>
+        </select>
       </div>
-      <button id="refreshBtn">Vernieuwen</button>
+
+      <div class="field">
+        <input type="checkbox" id="editToggle" />
+        <label for="editToggle"><strong>Bewerken</strong> (Hotel / Student / Lang verblijf)</label>
+      </div>
+
+      <span class="spacer"></span>
+
+      <button class="btn btn-ghost" id="resetBtn">Reset wijzigingen</button>
+      <button class="btn btn-primary" id="saveBtn">Opslaan (verstuur wijzigingen)</button>
     </div>
-  </header>
 
-  <main class="container">
-    <section class="grid">
-      <div class="card">
-        <div class="meta" style="margin-bottom: 10px;">
-          <span><span id="statusDot" class="dot"></span><span id="statusText">Gereed</span></span>
-          <span class="pill" id="selectedMonthPill">—</span>
-          <span id="lastUpdated" class="meta"></span>
-        </div>
-        <div style="overflow: auto;">
-          <table id="availabilityTable" aria-describedby="tableCaption">
-            <caption id="tableCaption">Beschikbaarheid per kamertype</caption>
-            <thead id="tableHead"></thead>
-            <tbody id="tableBody"></tbody>
-          </table>
-        </div>
-      </div>
+    <div class="hint">Tip: dubbelklik of focus op een bewerkbare cel en voer een geheel getal in.</div>
 
-      <aside class="card">
-        <h3 style="margin-top: 0;">Opzet & API</h3>
-        <p style="color: var(--muted);">Dit is een voorbeeld. Vervang de <code>fetchAvailability()</code> functie met echte API‑calls. Voorbeeld structuur die de tabel verwacht:</p>
-        <pre style="white-space: pre-wrap; background:#0e1626; padding: 12px; border-radius: 12px; border:1px solid rgba(255,255,255,0.06);">{
-  "month": "2025-11",
-  "roomTypes": ["Classic", "Deluxe", "Suite"],
-  "metrics": {
-    "Classic": {
-      "totalRooms": 30,
-      "freeRooms": 12,
-      "services": { "hotel": 8, "student": 3, "longStay": 1 }
-    }
-  }
-}</pre>
-        <p class="meta">Rijen: <strong>Totaal kamers</strong>, <strong>Vrije kamers</strong>, <strong>Hotel</strong>, <strong>Student</strong>, <strong>Langverblijf</strong>. Kolommen: kamertypes.</p>
-      </aside>
-    </section>
-  </main>
+    <div class="table-wrapper">
+      <table id="roomTable">
+        <thead>
+          <tr id="headerRow"><th>Kamertypen</th></tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
 
   <script>
-    // ===== Utilities =====
-    const pad = (n) => String(n).padStart(2, '0');
-    const now = new Date();
+    // ===== Config / mapping =====
+    const roomTypeNameMap = {
+      "d1801d11-fe8d-404b-a26f-af170189605a": "Classic",
+      "d132423d1-fe8d-404b-a26f-af170189605a": "Deluxe",
+      "d1-triple-rca": "Triple"
+    };
+    // reverse: Naam -> Id (voor save payload)
+    const roomTypeIdByName = Object.fromEntries(
+      Object.entries(roomTypeNameMap).map(([id, name]) => [name, id])
+    );
 
-    // Set default month to current (Amsterdam TZ not required for visual only)
-    const defaultMonthValue = `${now.getFullYear()}-${pad(now.getMonth() + 1)}`;
+    // Bewaar API-datums voor header
+    let apiDatesUtc = [];
 
-    const monthInput = document.getElementById('monthInput');
-    const refreshBtn = document.getElementById('refreshBtn');
-    const statusDot = document.getElementById('statusDot');
-    const statusText = document.getElementById('statusText');
-    const lastUpdated = document.getElementById('lastUpdated');
-    const selectedMonthPill = document.getElementById('selectedMonthPill');
+    // ===== DOM refs & state =====
+    const monthSelect = document.getElementById('monthSelect');
+    const headerRow   = document.getElementById('headerRow');
+    const tableBody   = document.getElementById('tableBody');
+    const editToggle  = document.getElementById('editToggle');
+    const saveBtn     = document.getElementById('saveBtn');
+    const resetBtn    = document.getElementById('resetBtn');
+    const app         = document.getElementById('app');
 
-    const tableHead = document.getElementById('tableHead');
-    const tableBody = document.getElementById('tableBody');
+    // workingData = wat we tonen/bewerken; originalData = snapshot voor diff
+    let workingData = {};
+    let originalData = {};
+    let currentDays = 31;
 
-    monthInput.value = defaultMonthValue;
-    selectedMonthPill.textContent = defaultMonthValue;
+    // ===== API calls =====
+    async function loadFromApi(year, monthIndex){
+      const res = await fetch(`/availability?year=${year}&month=${monthIndex}`);
+      if(!res.ok){ throw new Error('API error ' + res.status); }
+      const apiData = await res.json();
 
-    // ===== Fake API layer (replace with real fetch) =====
-    async function fetchAvailability(month) {
-      // Example: replace this with your real API calls
-      // - Do parallel fetches for multiple endpoints if needed
-      // - Combine results into the schema below
-      await new Promise(r => setTimeout(r, 500)); // simulate latency
+      // sla datums op
+      apiDatesUtc = Array.isArray(apiData.TimeUnitStartsUtc) ? apiData.TimeUnitStartsUtc : [];
 
-      const roomTypes = ["Classic", "Deluxe", "Suite", "Studio"]; // dynamic in real world
+      // map naar workingData (roomTypeNameMap)
+      return apiToWorkingData(apiData, roomTypeNameMap);
+    }
 
-      // generate mock numbers to show dynamics per month
-      const seed = Number(month.replace('-', '')) % 97;
-      const rnd = (base, i) => Math.max(0, Math.round(base + (seed % 7) - 3 + i));
+    async function saveToServer(payload){
+      const res = await fetch('/availability/overrides', {
+        method:'PUT',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(payload)
+      });
+      if(!res.ok) throw new Error('Save failed ' + res.status);
+      return await res.json();
+    }
 
-      const metrics = {};
-      roomTypes.forEach((rt, i) => {
-        const totalRooms = rnd(20 + i * 5, i) + 10;
-        const freeRooms = Math.min(totalRooms, rnd(8 + i *
+    function apiToWorkingData(apiData, nameMap = {}){
+      const out = {};
+      const entries = apiData.ResourceCategoryAvailabilities || [];
+      const len = (apiData.TimeUnitStartsUtc || []).length;
+      const ensure = arr => Array.isArray(arr) ? arr : Array.from({length: len}, _=>0);
+
+      entries.forEach(item=>{
+        const id = item.ResourceCategoryId;
+        const name = nameMap[id] || id;
+        const m = item.Metrics || {};
+        out[name] = {
+          "Totaal kamers": ensure(m["Totaal kamers"]),
+          "Vrije kamers":  ensure(m["Vrije kamers"]),
+          "Hotel":         ensure(m["Hotel"]),
+          "Student":       ensure(m["Student"]),
+          "Lang verblijf": ensure(m["Lang verblijf"]),
+        };
+      });
+      return out;
+    }
+
+    // ===== Helpers =====
+    function getDaysInMonth(year, month){ return new Date(year, month+1, 0).getDate(); }
+
+    // ===== Render =====
+    function generateTable(monthIndex){
+      const year = 2025;
+
+      // Header op basis van API-dagen (UTC) als beschikbaar
+      headerRow.innerHTML = '<th>Kamertypen</th>';
+      if (apiDatesUtc && apiDatesUtc.length){
+        currentDays = apiDatesUtc.length;
+        for(let i=0;i<apiDatesUtc.length;i++){
+          const d = new Date(apiDatesUtc[i]);
+          const day = d.getUTCDate();
+          const dayName = d.toLocaleDateString('nl-NL', { weekday: 'short', timeZone: 'UTC' });
+          headerRow.innerHTML += `<th>${day} ${dayName}</th>`;
+        }
+      } else {
+        currentDays = getDaysInMonth(year, monthIndex);
+        for(let day=1; day<=currentDays; day++){
+          const date = new Date(year, monthIndex, day);
+          const dayName = date.toLocaleDateString('nl-NL',{weekday:'short'});
+          headerRow.innerHTML += `<th>${day} ${dayName}</th>`;
+        }
+      }
+
+      // Body
+      tableBody.innerHTML = '';
+      Object.keys(workingData).forEach(roomType => {
+        // hoofd-rij
+        const mainRow = document.createElement('tr');
+        mainRow.className = 'room-type-row';
+        mainRow.innerHTML = `<td><span class="expand-icon"></span>${roomType}</td>`;
+        for(let d=0; d<currentDays; d++){ mainRow.innerHTML += `<td></td>`; }
+        tableBody.appendChild(mainRow);
+
+        const metrics = ['Totaal kamers','Vrije kamers','Hotel','Student','Lang verblijf'];
+        const metricClasses = ['totaal','vrij','hotel','student','lang'];
+
+        metrics.forEach((metric, idx) => {
+          const detailRow = document.createElement('tr');
+          detailRow.className = 'detail-row';
+          detailRow.innerHTML = `<td>${metric}</td>`;
+
+          for(let d=0; d<currentDays; d++){
+            const val = workingData[roomType]?.[metric]?.[d] ?? 0;
+            const isEditable = (metric==='Hotel' || metric==='Student' || metric==='Lang verblijf');
+            const classes = `metric-value ${metricClasses[idx]} ${isEditable ? 'editable' : ''}`;
+
+            detailRow.innerHTML += `
+              <td>
+                <span class="${classes}"
+                      data-room="${roomType}"
+                      data-metric="${metric}"
+                      data-day="${d}"
+                      ${isEditable ? 'data-editable="1"' : ''}>${val}</span>
+              </td>`;
+          }
+          tableBody.appendChild(detailRow);
+        });
+
+        // Toggle gedrag
+        mainRow.addEventListener('click', function(){
+          this.classList.toggle('expanded');
+          let next = this.nextElementSibling;
+          while(next && next.classList.contains('detail-row')){
+            next.classList.toggle('visible');
+            next = next.nextElementSibling;
+          }
+        });
+      });
+
+      applyEditMode(editToggle.checked);
+    }
+
+    function applyEditMode(on){
+      app.classList.toggle('editing', on);
+      tableBody.querySelectorAll('[data-editable="1"]').forEach(el=>{
+        el.setAttribute('contenteditable', on ? 'true' : 'false');
+        if(!on) el.blur();
+        if(!el._bound){
+          el.addEventListener('beforeinput', onlyDigits);
+          el.addEventListener('input', handleEdit);
+          el.addEventListener('blur', normalizeEmpty);
+          el._bound = true;
+        }
+      });
+    }
+
+    function onlyDigits(e){
+      const allowedTypes = ['deleteContentBackward','deleteContentForward','insertText'];
+      if(!allowedTypes.includes(e.inputType)) return;
+      if(e.inputType==='insertText' && !/^\d+$/.test(e.data ?? '')){
+        e.preventDefault();
+      }
+    }
+
+    function normalizeEmpty(e){
+      if(e.target.textContent.trim()===''){ e.target.textContent = '0'; }
+      handleEdit(e);
+    }
+
+    function handleEdit(e){
+      const el = e.target;
+      const room   = el.dataset.room;
+      const metric = el.dataset.metric;
+      const day    = Number(el.dataset.day);
+      const raw    = el.textContent.trim();
+      const val    = raw==='' ? 0 : Math.max(0, parseInt(raw,10) || 0);
+      if(workingData?.[room]?.[metric]){
+        workingData[room][metric][day] = val;
+      }
+    }
+
+    // ===== Diff payload builder (Optie B) =====
+    function buildSavePayloadDiff(year, monthIndex){
+      const edits = [];
+
+      Object.keys(workingData).forEach(name => {
+        const id = roomTypeIdByName[name] || name;
+        const now  = workingData[name] || {};
+        const orig = originalData[name] || {};
+
+        const metrics = ["Hotel","Student","Lang verblijf"];
+        const metricEdits = {};
+
+        metrics.forEach(metric => {
+          const a = now[metric] || [];
+          const b = orig[metric] || [];
+          const changed = a.length !== b.length || a.some((v,i)=> v !== (b[i] ?? 0));
+          if(changed) metricEdits[metric] = a;
+        });
+
+        if(Object.keys(metricEdits).length){
+          edits.push({ ResourceCategoryId: id, Metrics: metricEdits });
+        }
+      });
+
+      return {
+        Year: year,
+        MonthIndex: monthIndex,           // 0 = jan
+        TimeUnitStartsUtc: apiDatesUtc,   // handig voor backend, optioneel
+        Edits: edits
+      };
+    }
+
+    // ===== Events =====
+    monthSelect.addEventListener('change', async function(){
+      const mIdx = parseInt(this.value, 10);
+      const api = await loadFromApi(2025, mIdx);
+      workingData  = JSON.parse(JSON.stringify(api));
+      originalData = JSON.parse(JSON.stringify(api)); // snapshot voor diff
+      generateTable(mIdx);
+    });
+
+    editToggle.addEventListener('change', function(){
+      applyEditMode(this.checked);
+    });
+
+    saveBtn.addEventListener('click', async function(){
+      const year = 2025;
+      const monthIndex = parseInt(monthSelect.value, 10);
+      const payload = buildSavePayloadDiff(year, monthIndex);
+
+      try{
+        const result = await saveToServer(payload);
+        console.log('Server antwoord:', result);
+        alert(`Wijzigingen verstuurd ✅ (${payload.Edits.length} kamertypen met edits)`);
+        // nieuwe snapshot zetten, zodat volgende save alleen nieuwe wijzigingen pakt
+        originalData = JSON.parse(JSON.stringify(workingData));
+      }catch(e){
+        console.error(e);
+        alert('Versturen mislukt ❌');
+      }
+    });
+
+    resetBtn.addEventListener('click', async function(){
+      if(confirm('Weet je zeker dat je alle wijzigingen wilt terugzetten naar de laatst geladen API-data?')){
+        const mIdx = parseInt(monthSelect.value, 10);
+        const api = await loadFromApi(2025, mIdx);
+        workingData  = JSON.parse(JSON.stringify(api));
+        originalData = JSON.parse(JSON.stringify(api));
+        generateTable(mIdx);
+      }
+    });
+
+    // ===== Initial load =====
+    (async function init(){
+      const currentMonth = new Date().getMonth();
+      monthSelect.value = currentMonth;
+      const api = await loadFromApi(2025, currentMonth);
+      workingData  = JSON.parse(JSON.stringify(api));
+      originalData = JSON.parse(JSON.stringify(api)); // eerste snapshot voor diff
+      generateTable(currentMonth);
+    })();
+  </script>
+</body>
+</html>
