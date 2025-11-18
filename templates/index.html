@@ -42,27 +42,27 @@
         <div class="mt-3 text-sm text-slate-700 space-y-2">
           <p>Edit the <code>apps</code> array inside this file. Each app supports:</p>
           <pre class="bg-slate-50 p-3 rounded-xl overflow-x-auto text-xs">{
-  id: "statusPanel",
-  name: "Status Panel",
-  description: "Open dashboard",
-  icon: "📊",                 // any emoji
-  category: "Monitoring",
-  type: "url",                // "url" | "endpoint"
-  url: "https://example.com"  // opens in a new tab
-}
-// or trigger an HTTP endpoint (POST/GET)
-{
-  id: "sync",
-  name: "Nightly Sync",
-  description: "Kick off a sync job",
-  icon: "🔁",
-  category: "Jobs",
-  type: "endpoint",
-  method: "POST",             // or GET
-  url: "https://api.example.com/jobs/sync",
-  headers: { "X-Key": "{{token}}" }, // optional; {{token}} replaced with saved token
-  body: { "force": true }     // optional JSON body for POST
-}</pre>
+            id: "statusPanel",
+            name: "Status Panel",
+            description: "Open dashboard",
+            icon: "📊",                 // any emoji
+            category: "Monitoring",
+            type: "url",                // "url" | "endpoint"
+            url: "https://example.com"  // opens in a new tab
+          }
+          // or trigger an HTTP endpoint (POST/GET)
+          {
+            id: "sync",
+            name: "Nightly Sync",
+            description: "Kick off a sync job",
+            icon: "🔁",
+            category: "Jobs",
+            type: "endpoint",
+            method: "POST",             // or GET
+            url: "https://api.example.com/jobs/sync",
+            headers: { "X-Key": "{{token}}" }, // optional; {{token}} replaced with saved token
+            body: { "force": true }     // optional JSON body for POST
+          }</pre>
           <p><strong>Notes:</strong> This page can only open URLs or call HTTP endpoints your apps expose. Running local files/CLI from a plain HTML page isn’t possible without a backend or a custom protocol.</p>
           <p>If your endpoint is on another origin, make sure it enables CORS for your domain.</p>
         </div>

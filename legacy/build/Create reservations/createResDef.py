@@ -103,3 +103,5 @@ def getStartTimeUnitUtc(timeZoneLocation):
 
     # Return ISO format UTC timestamp
     return nowUpdate.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    

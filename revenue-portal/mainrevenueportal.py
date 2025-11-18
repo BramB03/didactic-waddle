@@ -167,7 +167,7 @@ def get_availability():
 
     # 2) Tijdas op basis van Europe/Amsterdam → UTC
     time_axis = iso_midnights_utc_for_month_eu_amsterdam(year, month)
-
+    print("Timeaxis: ", time_axis)
     # 3) MARK: UPSTREAM CALL (VUL IN)
     #    - Vul hieronder je eigen URL, headers en payload in.
     #    - Vaak wil je ook startUtc en endUtc meegeven.

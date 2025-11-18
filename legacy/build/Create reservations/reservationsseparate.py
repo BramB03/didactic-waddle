@@ -9,14 +9,15 @@ import math
 import pytz
 import time
 
+availabilityRatio = 0.7
+ExtraDays = 16
 
 ClientToken = os.getenv("DEMO_CLIENTTOKEN")
-#AccessToken = os.getenv("DAVID_ACCESSTOKEN")
-AccessToken = "6EEF7985DA0441F0B89FB26800F6F98A-894EA6E59C3748BA6B44C8105458AF1"
-
+AccessToken = os.getenv("DAVID_ACCESSTOKEN")
+#AccessToken = "6EEF7985DA0441F0B89FB26800F6F98A-894EA6E59C3748BA6B44C8105458AF1"
+stayServiceId = "5291ecd7-c75f-4281-bca0-ae94011b2f3a"
 Client = "Demo"
 
-ExtraDays = 4
 #time.sleep(900)
 payloadBase = {
     "ClientToken": ClientToken,
@@ -81,6 +82,7 @@ payload1 = {
     "AccessToken": AccessToken,
     "Client": Client,
     "EnterpriseId": enterprise_id,
+    "ServiceType": "Bookable",
     "Limitation":{ "Count": 50 }
 }
 
@@ -97,279 +99,279 @@ getService_data = getService.json() # Parse the JSON response
 time.sleep(0.1)
 service_ids_list = getService_data["Services"]
 bookable_active_ids = [[service['Id'], service['Data']['Value']['StartOffset'], service['Data']['Value']['EndOffset']] for service in service_ids_list if service.get('Data', {}).get('Discriminator') == 'Bookable' and service.get('IsActive') and service.get('Data', {}).get('Value',{}).get('TimeUnitPeriod')== 'Day']
-bookable_active_ids = [['fe1a015d-6600-40ab-a09a-b38700a10b79', 'P0M0DT15H0M0S', 'P0M0DT12H0M0S']]
+#bookable_active_ids = [['fe1a015d-6600-40ab-a09a-b38700a10b79', 'P0M0DT15H0M0S', 'P0M0DT12H0M0S']]
 for serviceId in bookable_active_ids:
-    for i in range(0, 4):
-#   get rates active list for random
-        payload0 = {
-            "ClientToken": ClientToken,
-            "AccessToken": AccessToken,
-            "Client": Client,
-            "EnterpriseId": enterprise_id,
-            "ServiceIds": [
-                serviceId[0]
-            ],
-            "ActivityStates": [ "Active" ],
-            "Limitation": { "Count": 5 }
-        }
-        json_payload0 = json.dumps(payload0) # Convert the payload to JSON format
-        print(json_payload0)
-        getAge = requests.post(URL + "ageCategories/getAll", data=json_payload0, headers=headers) # Send the POST request
-        if getAge.status_code != 200:
-            print("Failed to get age categories")
-            print(getAge.json())
-            sys.exit(str(getAge))
-        getAge_data = getAge.json() # Parse the JSON response
-        time.sleep(0.1)
-        ageCatrgoryIds = getAge_data["AgeCategories"]
-        ageCategory = [age['Id'] for age in ageCatrgoryIds if age.get('MinimalAge') is None and age.get('MaximalAge') is None]
-        ageCategoryString = ''.join(ageCategory)
-        payload2 = {
-            "ClientToken": ClientToken,
-            "AccessToken": AccessToken,
-            "Client": Client,
-            "EnterpriseId": enterprise_id,
-            "ServiceIds": [
-                serviceId[0]
-            ],
-            "ActivityState": "Active",
-            "Extent": {
-                "Rates": "true",
-            },
-            "Limitation": { "Count": 80 }
-        }
-        json_payload2 = json.dumps(payload2) # Convert the payload to JSON format
-        getRates = requests.post(URL + "rates/getAll", data=json_payload2, headers=headers) # Send the POST request
-        if getRates.status_code != 200:
-            Error = "GetRates" + str(getRates)
-            sys.exit(Error)
-        getRates_data = getRates.json() # Parse the JSON response
-        rate_ids_data = getRates_data["Rates"]
-        time.sleep(0.1)
-        rate_active_ids = [rate['Id'] for rate in rate_ids_data if rate.get('IsEnabled') and rate.get('IsActive') and rate.get('IsPublic') == False]
+    if serviceId[0] != stayServiceId:
+        continue
+    print("Processing service ID:", serviceId[0])
+    payload0 = {
+        "ClientToken": ClientToken,
+        "AccessToken": AccessToken,
+        "Client": Client,
+        "EnterpriseId": enterprise_id,
+        "ServiceIds": [
+            serviceId[0]
+        ],
+        "ActivityStates": [ "Active" ],
+        "Limitation": { "Count": 5 }
+    }
+    json_payload0 = json.dumps(payload0) # Convert the payload to JSON format
+    getAge = requests.post(URL + "ageCategories/getAll", data=json_payload0, headers=headers) # Send the POST request
+    if getAge.status_code != 200:
+        print("Failed to get age categories")
+        print(getAge.json())
+        sys.exit(str(getAge))
+    getAge_data = getAge.json() # Parse the JSON response
+    time.sleep(0.1)
+    ageCatrgoryIds = getAge_data["AgeCategories"]
+    ageCategory = [age['Id'] for age in ageCatrgoryIds if age.get('MinimalAge') is None and age.get('MaximalAge') is None]
+    ageCategoryString = ''.join(ageCategory)
+    payload2 = {
+        "ClientToken": ClientToken,
+        "AccessToken": AccessToken,
+        "Client": Client,
+        "EnterpriseId": enterprise_id,
+        "ServiceIds": [
+            serviceId[0]
+        ],
+        "ActivityState": "Active",
+        "Extent": {
+            "Rates": "true",
+        },
+        "Limitation": { "Count": 80 }
+    }
+    json_payload2 = json.dumps(payload2) # Convert the payload to JSON format
+    getRates = requests.post(URL + "rates/getAll", data=json_payload2, headers=headers) # Send the POST request
+    if getRates.status_code != 200:
+        Error = "GetRates" + str(getRates)
+        sys.exit(Error)
+    getRates_data = getRates.json() # Parse the JSON response
+    rate_ids_data = getRates_data["Rates"]
+    time.sleep(0.1)
+    rate_active_ids = [rate['Id'] for rate in rate_ids_data if rate.get('IsEnabled') and rate.get('IsActive') and rate.get('IsPublic') == False]
 
-        payload3 = {
+    payload3 = {
+        "ClientToken": ClientToken,
+        "AccessToken": AccessToken,
+        "Client": Client,
+        "EnterpriseId": enterprise_id,
+        "ServiceId": serviceId[0],
+        "FirstTimeUnitStartUtc": StartTimeUnitUtc,
+        "LastTimeUnitStartUtc": StartTimeUnitUtc
+    }
+    json_payload3 = json.dumps(payload3) # Convert the payload to JSON format
+    getAvailability = requests.post(URL + "services/getAvailability", data=json_payload3, headers=headers) # Send the POST request
+    getAvailability_data = getAvailability.json() # Parse the JSON response
+    if getAvailability.status_code != 200:
+        print("Failed to get availability")
+        print(getAvailability.json())
+        continue
+    category_availabilities = getAvailability_data["CategoryAvailabilities"]  
+    time.sleep(0.1)  
+    category_id =[]
+    for category in category_availabilities:
+        failedRes = 0
+        categoryId = category['CategoryId']
+        availabilities = category["Availabilities"]
+        mean = sum(availabilities) / len(availabilities)
+        availabilityAdjusted = math.ceil(mean * availabilityRatio)
+        payload5 = {
             "ClientToken": ClientToken,
             "AccessToken": AccessToken,
             "Client": Client,
             "EnterpriseId": enterprise_id,
-            "ServiceId": serviceId[0],
-            "FirstTimeUnitStartUtc": StartTimeUnitUtc,
-            "LastTimeUnitStartUtc": StartTimeUnitUtc
+            "ServiceIds": [
+                serviceId[0]
+            ],
+            "ResourceId": categoryId,
+            "Limitation":{
+                "Count": 1
+            }
         }
-        json_payload3 = json.dumps(payload3) # Convert the payload to JSON format
-        getAvailability = requests.post(URL + "services/getAvailability", data=json_payload3, headers=headers) # Send the POST request
-        getAvailability_data = getAvailability.json() # Parse the JSON response
-        if getAvailability.status_code != 200:
-            print("Failed to get availability")
-            print(getAvailability.json())
+        json_payload5 = json.dumps(payload5) # Convert the payload to JSON format
+        getGuests = requests.post(URL + "resourceCategories/getAll", data=json_payload5, headers=headers) # Send the POST request
+        if getGuests.status_code != 200:
+            Error = "getGuests " + str(getGuests)
+            print(Error)
             continue
-        category_availabilities = getAvailability_data["CategoryAvailabilities"]  
-        time.sleep(0.1)  
-        category_id =[]
-        for category in category_availabilities:
-            failedRes = 0
-            categoryId = category['CategoryId']
-            availabilities = category["Availabilities"]
-            mean = sum(availabilities) / len(availabilities)
-            availabilityAdjusted = math.ceil(mean * 0.2)
-            payload5 = {
+        getGuests_data = getGuests.json()
+        defaultGuests = getGuests_data["ResourceCategories"][0]["Capacity"]
+        
+        payload13 = {
+            "ClientToken": ClientToken,
+            "AccessToken": AccessToken,
+            "Client": Client,
+            "EnterpriseId": enterprise_id,
+            "ServiceIds": [
+                serviceId[0]
+            ],
+            "Limitation":{
+                "Count": 50
+            }
+        }
+        json_payload13 = json.dumps(payload13) # Convert the payload to JSON format
+        getProd = requests.post(URL + "products/getAll", data=json_payload13, headers=headers) # Send the POST request
+        if getProd.status_code != 200:
+            Error = "getProd" + str(getProd)
+            continue
+        getProd_data = getProd.json() # Parse the JSON response
+        prodList = getProd_data["CustomerProducts"]
+        activeProdList = [product['Id'] for product in prodList if product.get('IsActive')]
+        Counter250 = 0
+        #change 1 to availabilities if succes
+        for i in range(availabilityAdjusted):
+            Counter250 = Counter250 + 1
+            if Counter250 == 125:
+                Error = "Reaching max posts"
+                SystemExit(Error)
+            firstNameId = random.choice(lastName)
+            lastNameId = random.choice(firstName)
+            emailId = firstNameId + "." + lastNameId + "@demo.com"
+            payload6 = {
+                "ClientToken": ClientToken,
+                "AccessToken": AccessToken,
+                "Client": Client,
+                "ChainId": chain_id,
+                "OverwriteExisting": 'true',
+                "LastName": firstNameId,
+                "FirstName": lastNameId,
+                "Email": emailId,
+            }
+            json_payload6 = json.dumps(payload6) # Convert the payload to JSON format
+            getGuest_data = requests.post(URL + "customers/add", data=json_payload6, headers=headers) # Send the POST request
+            if getGuest_data.status_code != 200:
+                Error = "getGuest_data" + str(getGuest_data)
+                continue
+            getGuestIdPlural = getGuest_data.json()
+            GuestId = getGuestIdPlural.get('Id')
+            payload11 = {
                 "ClientToken": ClientToken,
                 "AccessToken": AccessToken,
                 "Client": Client,
                 "EnterpriseId": enterprise_id,
-                "ServiceIds": [
-                    serviceId[0]
-                ],
-                "ResourceId": categoryId,
-                "Limitation":{
-                    "Count": 1
-                }
+                "CustomerId": GuestId,
             }
-            json_payload5 = json.dumps(payload5) # Convert the payload to JSON format
-            getGuests = requests.post(URL + "resourceCategories/getAll", data=json_payload5, headers=headers) # Send the POST request
-            if getGuests.status_code != 200:
-                Error = "getGuests " + str(getGuests)
-                print(Error)
-                continue
-            getGuests_data = getGuests.json()
-            defaultGuests = getGuests_data["ResourceCategories"][0]["Capacity"]
-            
-            payload13 = {
+            #bookingengine api: hotels/getAll, store publickey van sandbox pci proxy, 
+            #json_payload11 = json.dumps(payload11) # Convert the payload to JSON format
+            #getCCconfirmation = requests.post(URL + "creditCards/addTokenized", data=json_payload11, headers=headers) # Send the POST request
+            #getCCconfirmationtext = getCCconfirmation.json()
+            #print(getCCconfirmationtext)
+            randomNumbersIn = [ 0, 0, 0, 0, 0,0, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3] 
+            randomNumberIn = random.choice(randomNumbersIn) + ExtraDays
+            randomDayDeltaIn = timedelta(days=randomNumberIn) 
+            randomNumbersOut = [1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 5]
+            randomNumberOut = random.randint(1, 7)
+            randomDayDeltaOut = timedelta(days=randomNumberOut)
+            num_times = randomNumberOut
+            startOffsetData = serviceId[1]
+            endOffsetData = serviceId[2]
+            startOffset = int(startOffsetData[-7:-5])
+            endOffset = int(endOffsetData[-7:-5])
+            CheckInUpdate = nowUpdate + timedelta(hours=startOffset)
+            CheckOutUpdate = nowUpdate + timedelta(hours=endOffset)
+            checkInUpdate = CheckInUpdate + randomDayDeltaIn
+            checkOutUpdate = CheckOutUpdate + randomDayDeltaOut + randomDayDeltaIn
+            checkInTime = checkInUpdate.strftime("%Y-%m-%dT%H:%M:%SZ")
+            checkOutTime = checkOutUpdate.strftime("%Y-%m-%dT%H:%M:%SZ")
+            payloads = []
+            payloadRes =[]
+            index = 0
+            rateId = random.choice(rate_active_ids)
+            payload14 = {
                 "ClientToken": ClientToken,
                 "AccessToken": AccessToken,
                 "Client": Client,
-                "EnterpriseId": enterprise_id,
-                "ServiceIds": [
-                    serviceId[0]
-                ],
-                "Limitation":{
-                    "Count": 50
-                }
+                "RateId": rateId,
+                "FirstTimeUnitStartUtc": StartTimeUnitUtc,
+                "LastTimeUnitStartUtC": StartTimeUnitUtc
             }
-            json_payload13 = json.dumps(payload13) # Convert the payload to JSON format
-            getProd = requests.post(URL + "products/getAll", data=json_payload13, headers=headers) # Send the POST request
-            if getProd.status_code != 200:
-                Error = "getProd" + str(getProd)
+            json_payload14 = json.dumps(payload14) # Convert the payload to JSON format
+            getPricingJson = requests.post(URL + "rates/getpricing", data=json_payload14, headers=headers) # Send the POST request
+            getPricingData = getPricingJson.json()
+            taxRateCodes = []
+            for entry in getPricingData['BaseAmountPrices']:
+                items = entry['Breakdown']['Items']
+                for item in items:
+                    taxRateCodes.append(item['TaxRateCode'])
+            if taxRateCodes == [None]:
                 continue
-            getProd_data = getProd.json() # Parse the JSON response
-            prodList = getProd_data["CustomerProducts"]
-            activeProdList = [product['Id'] for product in prodList if product.get('IsActive')]
-            Counter250 = 0
-            #change 1 to availabilities if succes
-            for i in range(availabilityAdjusted):
-                Counter250 = Counter250 + 1
-                if Counter250 == 125:
-                    Error = "Reaching max posts"
-                    SystemExit(Error)
-                firstNameId = random.choice(lastName)
-                lastNameId = random.choice(firstName)
-                emailId = firstNameId + "." + lastNameId + "@demo.com"
-                payload6 = {
-                    "ClientToken": ClientToken,
-                    "AccessToken": AccessToken,
-                    "Client": Client,
-                    "ChainId": chain_id,
-                    "OverwriteExisting": 'true',
-                    "LastName": firstNameId,
-                    "FirstName": lastNameId,
-                    "Email": emailId,
-                }
-                json_payload6 = json.dumps(payload6) # Convert the payload to JSON format
-                getGuest_data = requests.post(URL + "customers/add", data=json_payload6, headers=headers) # Send the POST request
-                if getGuest_data.status_code != 200:
-                    Error = "getGuest_data" + str(getGuest_data)
-                    continue
-                getGuestIdPlural = getGuest_data.json()
-                GuestId = getGuestIdPlural.get('Id')
-                payload11 = {
-                    "ClientToken": ClientToken,
-                    "AccessToken": AccessToken,
-                    "Client": Client,
-                    "EnterpriseId": enterprise_id,
-                    "CustomerId": GuestId,
-                }
-                #bookingengine api: hotels/getAll, store publickey van sandbox pci proxy, 
-                #json_payload11 = json.dumps(payload11) # Convert the payload to JSON format
-                #getCCconfirmation = requests.post(URL + "creditCards/addTokenized", data=json_payload11, headers=headers) # Send the POST request
-                #getCCconfirmationtext = getCCconfirmation.json()
-                #print(getCCconfirmationtext)
-                randomNumbersIn = [ 0, 0, 0, 0, 0,0, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3]
-                randomNumberIn = random.choices([0, 1, 2, 3, 4, 5, 6, 7], [0.4, 0.3, 0.1, 0.1, 0.05, 0.03, 0.01, 0.01])[0] #random.choice(randomNumbersIn) + ExtraDays
-                randomDayDeltaIn = timedelta(days=randomNumberIn) 
-                randomNumbersOut = [1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 5]
-                randomNumberOut = random.randint(1, 7)
-                randomDayDeltaOut = timedelta(days=randomNumberOut)
-                num_times = randomNumberOut
-                startOffsetData = serviceId[1]
-                endOffsetData = serviceId[2]
-                startOffset = int(startOffsetData[-7:-5])
-                endOffset = int(endOffsetData[-7:-5])
-                CheckInUpdate = nowUpdate + timedelta(hours=startOffset)
-                CheckOutUpdate = nowUpdate + timedelta(hours=endOffset)
-                checkInUpdate = CheckInUpdate + randomDayDeltaIn
-                checkOutUpdate = CheckOutUpdate + randomDayDeltaOut + randomDayDeltaIn
-                checkInTime = checkInUpdate.strftime("%Y-%m-%dT%H:%M:%SZ")
-                checkOutTime = checkOutUpdate.strftime("%Y-%m-%dT%H:%M:%SZ")
-                payloads = []
-                payloadRes =[]
-                index = 0
-                rateId = random.choice(rate_active_ids)
-                payload14 = {
-                    "ClientToken": ClientToken,
-                    "AccessToken": AccessToken,
-                    "Client": Client,
-                    "RateId": rateId,
-                    "FirstTimeUnitStartUtc": StartTimeUnitUtc,
-                    "LastTimeUnitStartUtC": StartTimeUnitUtc
-                }
-                json_payload14 = json.dumps(payload14) # Convert the payload to JSON format
-                getPricingJson = requests.post(URL + "rates/getpricing", data=json_payload14, headers=headers) # Send the POST request
-                getPricingData = getPricingJson.json()
-                taxRateCodes = []
-                for entry in getPricingData['BaseAmountPrices']:
-                    items = entry['Breakdown']['Items']
-                    for item in items:
-                        taxRateCodes.append(item['TaxRateCode'])
-                if taxRateCodes == [None]:
-                    continue
-                for index in range(num_times):
-                    payload10 = {
-                        "Index": index,
-                        "Amount": {
-                            "Currency": currency_active_ids[0],
-                            GrossNet: random.randint(100, 200),
-                            "TaxCodes": taxRateCodes
-                        }
+            for index in range(num_times):
+                payload10 = {
+                    "Index": index,
+                    "Amount": {
+                        "Currency": currency_active_ids[0],
+                        GrossNet: random.randint(100, 200),
+                        "TaxCodes": taxRateCodes
                     }
-                    payloads.append(payload10)
-                ranThree = [1, 1, 1, 1, 2, 2, 3]
-                numRes = random.choice(ranThree)
-                for index in range(numRes):
-                    if activeProdList != []:
-                        payload12 = {
-                            "State" : random.choice(resState),
-                            "StartUtc": checkInTime, 
-                            "EndUtc": checkOutTime,
-                            "CustomerId": GuestId,
-                            "RequestedCategoryId": categoryId,
-                            "RateId": rateId,
-                            "Notes": "Test reservation",
-                            "PersonCounts": [
-                                {
-                                "AgeCategoryId": ageCategoryString,
-                                "Count": defaultGuests
-                            },
-                            ],
-                            "TimeUnitPrices": payloads,
-                            "ProductOrders": [
-                                {
-                                    "ProductId": random.choice(activeProdList)
-                                }
-                            ]
-                        }
-                        payloadRes.append(payload12)
-                    else:
-                        payload12 = {
-                            "State" : random.choice(resState),
-                            "StartUtc": checkInTime, 
-                            "EndUtc": checkOutTime,
-                            "CustomerId": GuestId,
-                            "RequestedCategoryId": categoryId,
-                            "RateId": rateId,
-                            "Notes": "Test reservation",
-                            "PersonCounts": [
-                                {
-                                "AgeCategoryId": ageCategoryString,
-                                "Count": defaultGuests
-                            },
-                            ],
-                            "TimeUnitPrices": payloads
-                        }
-                        payloadRes.append(payload12)
-                payload4 = {
-                    "ClientToken": ClientToken,
-                    "AccessToken": AccessToken,
-                    "Client": Client,
-                    "EnterpriseId": enterprise_id,
-                    "ServiceId": serviceId[0],
-                    "CheckRateApplicability": "false",
-                    "GroupName": "Demo Push",
-                    "Reservations": payloadRes
                 }
-                json_payload4 = json.dumps(payload4) # Convert the payload to JSON format
-                ResponseJson = requests.post(URL + "reservations/add", data=json_payload4, headers=headers) # Send the POST request
-                if ResponseJson.status_code == 200:
-                    print("Reservation created")
-                    createdReservations = createdReservations + 1
-                    time.sleep(0.1)
+                payloads.append(payload10)
+            ranThree = [1, 1, 1, 1, 2, 2, 3]
+            numRes = random.choice(ranThree)
+            for index in range(numRes):
+                if activeProdList != []:
+                    payload12 = {
+                        "State" : random.choice(resState),
+                        "StartUtc": checkInTime, 
+                        "EndUtc": checkOutTime,
+                        "CustomerId": GuestId,
+                        "RequestedCategoryId": categoryId,
+                        "RateId": rateId,
+                        "Notes": "Test reservation",
+                        "PersonCounts": [
+                            {
+                            "AgeCategoryId": ageCategoryString,
+                            "Count": defaultGuests
+                        },
+                        ],
+                        "TimeUnitPrices": payloads,
+                        "ProductOrders": [
+                            {
+                                "ProductId": random.choice(activeProdList)
+                            }
+                        ]
+                    }
+                    payloadRes.append(payload12)
                 else:
-                    Response = ResponseJson.json()
-                    failedRes = failedRes +1
-                    print("Failed to create reservation")
-                    print(failedRes)
-                    print(Response)
-                if failedRes == 3:
-                    print("Skip to next category")
-                    break
-        print(createdReservations)
+                    payload12 = {
+                        "State" : random.choice(resState),
+                        "StartUtc": checkInTime, 
+                        "EndUtc": checkOutTime,
+                        "CustomerId": GuestId,
+                        "RequestedCategoryId": categoryId,
+                        "RateId": rateId,
+                        "Notes": "Test reservation",
+                        "PersonCounts": [
+                            {
+                            "AgeCategoryId": ageCategoryString,
+                            "Count": defaultGuests
+                        },
+                        ],
+                        "TimeUnitPrices": payloads
+                    }
+                    payloadRes.append(payload12)
+            payload4 = {
+                "ClientToken": ClientToken,
+                "AccessToken": AccessToken,
+                "Client": Client,
+                "EnterpriseId": enterprise_id,
+                "ServiceId": serviceId[0],
+                "CheckRateApplicability": "false",
+                "GroupName": "Demo Push",
+                "Reservations": payloadRes
+            }
+            json_payload4 = json.dumps(payload4) # Convert the payload to JSON format
+            ResponseJson = requests.post(URL + "reservations/add", data=json_payload4, headers=headers) # Send the POST request
+            if ResponseJson.status_code == 200:
+                print("Reservation created")
+                createdReservations = createdReservations + 1
+                time.sleep(0.1)
+            else:
+                Response = ResponseJson.json()
+                failedRes = failedRes +1
+                print("Failed to create reservation")
+                print(failedRes)
+                print(Response)
+            if failedRes == 3:
+                print("Skip to next category")
+                break
+    print(createdReservations)
