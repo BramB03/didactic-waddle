@@ -76,58 +76,98 @@ def http_session_with_retries() -> requests.Session:
 
 def transform_upstream_to_portal(upstream: Dict[str, Any], time_axis: List[str]) -> Dict[str, Any]:
     """
-    Pas DIT aan je daadwerkelijke upstream response aan.
-    Het portal-schema dat de UI verwacht:
+    Adapter voor Mews services/getAvailability/2024-01-22 → portal-schema.
 
+    Verwacht upstream ongeveer als:
     {
       "TimeUnitStartsUtc": [...],
       "ResourceCategoryAvailabilities": [
         {
-          "ResourceCategoryId": "uuid/naam",
+          "ResourceCategoryId": "uuid",
           "Metrics": {
-            "Totaal kamers": [...],
-            "Vrije kamers":  [...],
-            "Hotel":         [...],
-            "Student":       [...],
-            "Lang verblijf": [...]
+            "UsableResources": [...],
+            "OutOfOrderBlocks": [...],
+            "ConfirmedReservations": [...],
+            "OptionalReservations": [...],
+            "AllocatedBlockAvailability": [...],
+            ...
           }
         },
         ...
       ]
     }
 
-    ── VOORBEELD adapter ──
-    Verwacht upstream als:
+    Portal-output die de UI verwacht:
     {
-      "items": [
-        { "resourceCategoryId":"...", "total":[...], "free":[...], "hotel":[...], "student":[...], "longStay":[...] },
+      "TimeUnitStartsUtc": [...],
+      "ResourceCategoryAvailabilities": [
+        {
+          "ResourceCategoryId": "uuid/naam",
+          "Metrics": {
+            "Totaal kamers": [...],   # UsableResources
+            "Vrije kamers":  [...],   # trueAvailability
+            "Hotel":         [...],   # voorlopig gelijk aan Vrije kamers of 0
+            "Student":       [...],   # voorlopig 0
+            "Lang verblijf": [...]    # voorlopig 0
+          }
+        },
         ...
       ]
     }
     """
     n = len(time_axis)
 
-    def ensure(arr) -> List[int]:
+    def ensure_metric(arr: Any) -> List[int]:
+        """Normaliseer een metric-array naar lengte n → ints ≥ 0."""
         if not isinstance(arr, list):
             return [0] * n
-        # trim/pad naar n en maak ints ≥ 0
+        # trim/pad naar n
         arr = (arr + [0] * n)[:n]
-        return [int(x) if isinstance(x, (int, float)) else 0 for x in arr]
+        out: List[int] = []
+        for x in arr:
+            if isinstance(x, (int, float)):
+                out.append(max(0, int(x)))
+            else:
+                out.append(0)
+        return out
 
-    rca = []
-    for it in upstream.get("items", []):
-        rcid = it.get("resourceCategoryId") or it.get("ResourceCategoryId") or "unknown"
-        metrics = {
-            "Totaal kamers": ensure(it.get("total")),
-            "Vrije kamers":  ensure(it.get("free")),
-            "Hotel":         ensure(it.get("hotel")),
-            "Student":       ensure(it.get("student")),
-            "Lang verblijf": ensure(it.get("longStay") or it.get("long_stay")),
+    rca: List[Dict[str, Any]] = []
+
+    for rc in upstream.get("ResourceCategoryAvailabilities", []):
+        rcid = rc.get("ResourceCategoryId") or "unknown"
+        m = rc.get("Metrics", {}) or {}
+
+        usable = ensure_metric(m.get("UsableResources"))
+        out_of_order = ensure_metric(m.get("OutOfOrderBlocks"))
+        confirmed = ensure_metric(m.get("ConfirmedReservations"))
+        optional = ensure_metric(m.get("OptionalReservations"))
+        allocated = ensure_metric(m.get("AllocatedBlockAvailability"))
+
+        # trueAvailability = UsableResources - OOO - Confirmed - Optional - AllocatedBlocks
+        true_availability: List[int] = []
+        for u, o, c, opt, alloc in zip(usable, out_of_order, confirmed, optional, allocated):
+            val = (u or 0) - (o or 0) - (c or 0) - (opt or 0) - (alloc or 0)
+            true_availability.append(max(0, val))
+
+        # TODO: als je later segmentatie “Hotel / Student / Lang verblijf”
+        # uit een andere bron haalt, kun je die hier mappen.
+        metrics_portal: Dict[str, List[int]] = {
+            "Totaal kamers": usable,
+            "Vrije kamers":  true_availability,
+            "Hotel":         true_availability,   # of [0] * n als je dit liever leeg laat
+            "Student":       [0] * n,
+            "Lang verblijf": [0] * n,
         }
-        rca.append({"ResourceCategoryId": rcid, "Metrics": metrics})
 
-    return {"TimeUnitStartsUtc": time_axis, "ResourceCategoryAvailabilities": rca}
+        rca.append({
+            "ResourceCategoryId": rcid,
+            "Metrics": metrics_portal,
+        })
 
+    return {
+        "TimeUnitStartsUtc": time_axis,
+        "ResourceCategoryAvailabilities": rca,
+    }
 # ============================================================
 # Page route (UI)
 # ============================================================
@@ -148,14 +188,21 @@ def index():
 def get_availability():
     """
     Ophalen van data voor een specifieke maand.
+
     Query parameters:
       - year  (int)  bijv. 2025
       - month (int)  0=jan .. 11=dec
 
     Werking:
     - Bepaal de tijdas (lokale middernacht in NL → UTC) voor alle dagen in de maand
-    - Roep jouw UPSTREAM (Mews/DB/eigen service) aan met passende parameters
+    - Roep Mews services/getAvailability/2024-01-22 aan (UPSTREAM)
     - Map de upstream response naar het portal-schema met transform_upstream_to_portal()
+      → daar kun je trueAvailability berekenen als:
+         UsableResources
+       - OutOfOrderBlocks
+       - ConfirmedReservations
+       - OptionalReservations
+       - AllocatedBlockAvailability
     """
     # 1) Params
     try:
@@ -166,54 +213,65 @@ def get_availability():
         return jsonify({"error": "Provide valid 'year' (int) and 'month' in 0..11"}), 400
 
     # 2) Tijdas op basis van Europe/Amsterdam → UTC
+    #    Deze functie zou ISO-strings als "2025-02-01T23:00:00.000Z" moeten teruggeven
     time_axis = iso_midnights_utc_for_month_eu_amsterdam(year, month)
-    print("Timeaxis: ", time_axis)
-    # 3) MARK: UPSTREAM CALL (VUL IN)
-    #    - Vul hieronder je eigen URL, headers en payload in.
-    #    - Vaak wil je ook startUtc en endUtc meegeven.
-    #    - Voorbeeld laat een POST zien; gebruik GET als jouw API dat verwacht.
-    upstream_base = os.getenv("UPSTREAM_BASE")           # bv. https://api.mijnservice.nl
-    upstream_path = os.getenv("UPSTREAM_PATH", "/v1/availability")
-    if not upstream_base:
-        # Geen upstream geconfigureerd → geef duidelijke melding
+    if not time_axis:
+        return jsonify({"error": "No dates generated for given month/year"}), 500
+
+    first_utc = time_axis[0]
+    last_utc = time_axis[-1]
+
+    # 3) Mews upstream configuratie
+    mews_base = "https://api.mews-demo.com/api/connector/v1/" # bv. https://mews-sandbox.mews-demo.com
+    client_token = os.getenv("DAvid_CLIENTTOKEN")
+    access_token = os.getenv("DAVID_ACCESSTOKEN")
+    client_name = "client 1.0.0"
+    service_id = "5291ecd7-c75f-4281-bca0-ae94011b2f3a"     # Accommodation service Id
+
+    missing = [
+        name for name, value in [
+            ("MEWS_PLATFORM_ADDRESS", mews_base),
+            ("MEWS_CLIENT_TOKEN", client_token),
+            ("MEWS_ACCESS_TOKEN", access_token),
+            ("MEWS_SERVICE_ID", service_id),
+        ]
+        if not value
+    ]
+    if missing:
         return jsonify({
             "error": "Upstream not configured",
-            "hint":  "Set environment variable UPSTREAM_BASE and implement payload mapping."
+            "missingEnv": missing,
+            "hint": "Set the missing MEWS_* environment variables."
         }), 502
 
-    start_utc = time_axis[0]                  # eerste lokale 00:00 (in UTC)
-    # 'end' meegeven als eerste lokale 00:00 van de VOLGENDE maand in UTC:
-    # → pak laatste dag van de maand en tel 1 dag op
-    n_days = monthrange(year, month + 1)[1]
-    tz_nl = ZoneInfo("Europe/Amsterdam")
-    local_first_next = datetime(year, month + 1, n_days, 0, 0, 0, tzinfo=tz_nl).replace(day=n_days) \
-        .astimezone(timezone.utc)
-    # local_first_next is 00:00 op laatste dag; we willen 00:00 van DAG+1 (volgende dag):
-    local_first_next = (datetime(year, month + 1, n_days, 0, 0, 0, tzinfo=tz_nl)
-                        .astimezone(timezone.utc))
-    # maak einde = volgende lokale 00:00:
-    # eenvoudige manier: neem laatste ISO in time_axis en voeg 24h toe in UTC; maar DST maakt het tricky.
-    # veiliger: bouw 00:00 lokale tijd van (jaar, maand, n_days) + 1 dag:
-    from datetime import timedelta
-    local_day_after = datetime(year, month + 1, n_days, 0, 0, 0, tzinfo=tz_nl) + timedelta(days=1)
-    end_utc = local_day_after.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+    # Endpoint: getAvailability (ver 2024-01-22)
+    url = mews_base.rstrip("/") + "/api/connector/v1/services/getAvailability/2024-01-22"
 
-    # Stel een payload samen die jouw upstream verwacht (PAS AAN):
+    # Metrics die we nodig hebben voor trueAvailability + wat extra's die handig kunnen zijn
+    metrics = [
+        "UsableResources",
+        "OutOfOrderBlocks",
+        "ConfirmedReservations",
+        "OptionalReservations",
+        "AllocatedBlockAvailability",
+        "BlockAvailability",
+        "PublicAvailabilityAdjustment",
+        "OtherServiceReservationCount",
+        "ActiveResources",
+    ]
+
     upstream_payload: Dict[str, Any] = {
-        "startUtc": start_utc,
-        "endUtc": end_utc,
-        # Voeg hier jouw identifiers/filters toe:
-        # "enterpriseId": "...",
-        # "serviceId": "...",
-        # "resourceCategoryIds": ["...", "..."],
-        # "limitation": {"count": 100},
+        "ClientToken": client_token,
+        "AccessToken": access_token,
+        "Client": client_name,
+        "ServiceId": service_id,
+        "FirstTimeUnitStartUtc": first_utc,
+        "LastTimeUnitStartUtc": last_utc,
+        "Metrics": metrics,
     }
 
     try:
         session = http_session_with_retries()
-        url = upstream_base.rstrip("/") + upstream_path
-        # KIES GET of POST afhankelijk van je API:
-        # resp = session.get(url, params=upstream_payload, timeout=15)
         resp = session.post(url, json=upstream_payload, timeout=15)
         resp.raise_for_status()
         upstream_json = resp.json()
@@ -221,13 +279,21 @@ def get_availability():
         return jsonify({"error": "Upstream call failed", "detail": str(e)}), 502
 
     # 4) Transformeer naar portal-schema
+    #    TIP in transform_upstream_to_portal:
+    #    - loop over ResourceCategoryAvailabilities
+    #    - per dag i:
+    #         trueAvailability[i] =
+    #             UsableResources[i]
+    #           - OutOfOrderBlocks[i]
+    #           - ConfirmedReservations[i]
+    #           - OptionalReservations[i]
+    #           - AllocatedBlockAvailability[i]
     try:
         portal = transform_upstream_to_portal(upstream_json, time_axis)
     except Exception as e:
         return jsonify({"error": "Transform failed", "detail": str(e)}), 500
 
     return jsonify(portal)
-
 # ============================================================
 # API: wijzigingen ontvangen (echo of doorsturen)
 # ============================================================
