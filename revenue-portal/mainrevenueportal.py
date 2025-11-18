@@ -34,6 +34,7 @@ from zoneinfo import ZoneInfo  # Python 3.9+
 import requests
 from requests.adapters import HTTPAdapter, Retry
 import os
+import logging
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -42,6 +43,7 @@ app = Flask(
     template_folder=str(BASE_DIR / "templates"),  # templates/index-revenueportal.html
     static_folder=str(BASE_DIR / "static")        # /static/* assets
 )
+logging.basicConfig(level=logging.INFO)
 
 # ============================================================
 # Helpers
@@ -168,6 +170,36 @@ def transform_upstream_to_portal(upstream: Dict[str, Any], time_axis: List[str])
         "TimeUnitStartsUtc": time_axis,
         "ResourceCategoryAvailabilities": rca,
     }
+
+def fallback_empty_payload(time_axis: List[str]) -> Dict[str, Any]:
+    """
+    Fallback payload zodat de UI iets kan tonen als upstream-config mist.
+    Roomtype-ids komen overeen met de mapping in de frontend.
+    """
+    n = len(time_axis)
+    zeros = [0] * n
+    room_type_ids = [
+      "01d9c47b-2dea-4e3f-b87e-ae94011b33bb",
+      "185695d6-ab95-4416-bd3d-b30c00f0a37f",
+      "a42186d8-9b8d-4d00-ab1b-ae94011b33bb",
+      "14bd53d1-3058-49cc-84b9-ae94011b33bb" 
+    ]
+    return {
+        "TimeUnitStartsUtc": time_axis,
+        "ResourceCategoryAvailabilities": [
+            {
+                "ResourceCategoryId": rid,
+                "Metrics": {
+                    "Totaal kamers": zeros,
+                    "Vrije kamers": zeros,
+                    "Hotel": zeros,
+                    "Student": zeros,
+                    "Lang verblijf": zeros,
+                },
+            }
+            for rid in room_type_ids
+        ],
+    }
 # ============================================================
 # Page route (UI)
 # ============================================================
@@ -183,6 +215,20 @@ def index():
 # ============================================================
 # API: ophalen
 # ============================================================
+
+# Helpers om platform URL te normaliseren
+def _normalize_mews_base(raw: str) -> str:
+    """
+    Zorg dat we een basis als https://{platform} terugkrijgen.
+    Als raw al /api/connector bevat, strip dat deel om dubbele paden te voorkomen.
+    """
+    if not raw:
+        return ""
+    lower = raw.lower()
+    if "/api/connector" in lower:
+        raw = raw[: lower.index("/api/connector")]
+    return raw.rstrip("/")
+
 
 @app.get("/availability")
 def get_availability():
@@ -220,32 +266,31 @@ def get_availability():
 
     first_utc = time_axis[0]
     last_utc = time_axis[-1]
+    app.logger.info("Availability request received year=%s month=%s first=%s last=%s", year, month, first_utc, last_utc)
 
     # 3) Mews upstream configuratie
-    mews_base = "https://api.mews-demo.com/api/connector/v1/" # bv. https://mews-sandbox.mews-demo.com
-    client_token = os.getenv("DAvid_CLIENTTOKEN")
+    mews_base = "https://api.mews-demo.com/api/connector/v1/"
+    client_token = os.getenv("DEMO_CLIENTTOKEN")
     access_token = os.getenv("DAVID_ACCESSTOKEN")
-    client_name = "client 1.0.0"
-    service_id = "5291ecd7-c75f-4281-bca0-ae94011b2f3a"     # Accommodation service Id
+    client_name = "RevenuePortal 1.0.0"
+    service_id = "5291ecd7-c75f-4281-bca0-ae94011b2f3a"
 
     missing = [
         name for name, value in [
-            ("MEWS_PLATFORM_ADDRESS", mews_base),
-            ("MEWS_CLIENT_TOKEN", client_token),
+            ("DAVID_CLIENTTOKEN", client_token),
+            ("DAVID_ACCESSTOKEN", access_token),
             ("MEWS_ACCESS_TOKEN", access_token),
             ("MEWS_SERVICE_ID", service_id),
         ]
         if not value
     ]
     if missing:
-        return jsonify({
-            "error": "Upstream not configured",
-            "missingEnv": missing,
-            "hint": "Set the missing MEWS_* environment variables."
-        }), 502
+        # Geen upstream configuratie → geef lege payload zodat de UI blijft werken
+        app.logger.warning("Upstream config missing: %s", missing)
+        return jsonify(fallback_empty_payload(time_axis)), 200
 
     # Endpoint: getAvailability (ver 2024-01-22)
-    url = mews_base.rstrip("/") + "/api/connector/v1/services/getAvailability/2024-01-22"
+    url = mews_base + "services/getAvailability/2024-01-22"
 
     # Metrics die we nodig hebben voor trueAvailability + wat extra's die handig kunnen zijn
     metrics = [
@@ -272,11 +317,14 @@ def get_availability():
 
     try:
         session = http_session_with_retries()
+        app.logger.info("POST %s (ServiceId=%s, metrics=%d)", url, service_id, len(metrics))
         resp = session.post(url, json=upstream_payload, timeout=15)
+        app.logger.info("Upstream status %s", resp.status_code)
         resp.raise_for_status()
         upstream_json = resp.json()
     except requests.RequestException as e:
-        return jsonify({"error": "Upstream call failed", "detail": str(e)}), 502
+        app.logger.warning("Upstream call failed, serving fallback payload: %s", e)
+        return jsonify(fallback_empty_payload(time_axis)), 200
 
     # 4) Transformeer naar portal-schema
     #    TIP in transform_upstream_to_portal:
@@ -292,6 +340,10 @@ def get_availability():
         portal = transform_upstream_to_portal(upstream_json, time_axis)
     except Exception as e:
         return jsonify({"error": "Transform failed", "detail": str(e)}), 500
+
+    # Log wat er uit komt zonder gevoelige data
+    ids = [rc.get("ResourceCategoryId") for rc in portal.get("ResourceCategoryAvailabilities", [])]
+    app.logger.info("Returning %d categories: %s", len(ids), ids)
 
     return jsonify(portal)
 # ============================================================

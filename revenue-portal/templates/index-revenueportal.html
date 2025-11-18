@@ -112,9 +112,10 @@
   <script>
     // ===== Config / mapping =====
     const roomTypeNameMap = {
-      "d1801d11-fe8d-404b-a26f-af170189605a": "Classic",
-      "d132423d1-fe8d-404b-a26f-af170189605a": "Deluxe",
-      "d1-triple-rca": "Triple"
+      "01d9c47b-2dea-4e3f-b87e-ae94011b33bb": "Standard Double",
+      "185695d6-ab95-4416-bd3d-b30c00f0a37f": "Standard Twin",
+      "a42186d8-9b8d-4d00-ab1b-ae94011b33bb": "Deluxe Double",
+      "14bd53d1-3058-49cc-84b9-ae94011b33bb": "Family Room"
     };
     // reverse: Naam -> Id (voor save payload)
     const roomTypeIdByName = Object.fromEntries(
@@ -139,8 +140,12 @@
     let currentDays = 31;
 
     // ===== API calls =====
+    const apiBase = window.location.pathname.endsWith('/')
+      ? window.location.pathname
+      : window.location.pathname + '/';
+
     async function loadFromApi(year, monthIndex){
-      const res = await fetch(`/availability?year=${year}&month=${monthIndex}`);
+      const res = await fetch(`${apiBase}availability?year=${year}&month=${monthIndex}`);
       if(!res.ok){ throw new Error('API error ' + res.status); }
       const apiData = await res.json();
 
@@ -152,7 +157,7 @@
     }
 
     async function saveToServer(payload){
-      const res = await fetch('/availability/overrides', {
+      const res = await fetch(`${apiBase}availability/overrides`, {
         method:'PUT',
         headers:{'Content-Type':'application/json'},
         body: JSON.stringify(payload)
