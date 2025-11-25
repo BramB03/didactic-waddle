@@ -114,9 +114,9 @@ serviceId = ""
 # Execution specific information
 # =====================================================
 reservationCount = 1000
-dateRange = 30
-dayRange = 3
-start = "2026-08-22T00:00:00Z"
+dateRange = 1
+dayRange = 1
+start = "2025-11-24T00:00:00Z"
 travelAgencyId = "d988b779-31e5-4716-b21b-b24100a3a684"
 
 # Generic work
