@@ -64,37 +64,24 @@
 </head>
 <body>
   <div class="container" id="app">
-    <h1>Hotel Kamer Dashboard</h1>
-    <p class="subtitle">Beheer je kamerbezetting per maand (inline aanpasbaar voor Hotel/Student/Lang verblijf)</p>
+    <h1>Hotel Availability Dashboard</h1>
+    <p class="subtitle">Room availability per service</p>
 
     <div class="controls">
       <div class="field">
-        <label for="monthSelect">Selecteer maand</label>
-        <select id="monthSelect">
-          <option value="0">Januari 2025</option>
-          <option value="1">Februari 2025</option>
-          <option value="2">Maart 2025</option>
-          <option value="3">April 2025</option>
-          <option value="4">Mei 2025</option>
-          <option value="5">Juni 2025</option>
-          <option value="6">Juli 2025</option>
-          <option value="7">Augustus 2025</option>
-          <option value="8">September 2025</option>
-          <option value="9">Oktober 2025</option>
-          <option value="10">November 2025</option>
-          <option value="11">December 2025</option>
-        </select>
+        <label for="monthSelect">Select month</label>
+        <select id="monthSelect"></select>
       </div>
 
       <div class="field">
         <input type="checkbox" id="editToggle" />
-        <label for="editToggle"><strong>Bewerken</strong> (Hotel / Student / Lang verblijf)</label>
+        <label for="editToggle"><strong>Adjust</strong> (Hotel / Student / Extended stay)</label>
       </div>
 
       <span class="spacer"></span>
 
-      <button class="btn btn-ghost" id="resetBtn">Reset wijzigingen</button>
-      <button class="btn btn-primary" id="saveBtn">Opslaan (verstuur wijzigingen)</button>
+      <button class="btn btn-ghost" id="resetBtn">Reset changes</button>
+      <button class="btn btn-primary" id="saveBtn">Save (Post adjustments)</button>
     </div>
 
     <div class="hint">Tip: dubbelklik of focus op een bewerkbare cel en voer een geheel getal in.</div>
@@ -102,7 +89,7 @@
     <div class="table-wrapper">
       <table id="roomTable">
         <thead>
-          <tr id="headerRow"><th>Kamertypen</th></tr>
+          <tr id="headerRow"><th>Room categories</th></tr>
         </thead>
         <tbody id="tableBody"></tbody>
       </table>
@@ -112,15 +99,17 @@
   <script>
     // ===== Config / mapping =====
     const roomTypeNameMap = {
-      "01d9c47b-2dea-4e3f-b87e-ae94011b33bb": "Standard Double",
-      "185695d6-ab95-4416-bd3d-b30c00f0a37f": "Standard Twin",
-      "a42186d8-9b8d-4d00-ab1b-ae94011b33bb": "Deluxe Double",
-      "14bd53d1-3058-49cc-84b9-ae94011b33bb": "Family Room"
+      "01d9c47b-2dea-4e3f-b87e-ae94011b33bb": { name: "Standard Double", order: 0 },
+      "185695d6-ab95-4416-bd3d-b30c00f0a37f": { name: "Standard Twin", order: 1 },
+      "a42186d8-9b8d-4d00-ab1b-ae94011b33bb": { name: "Deluxe Double", order: 2 },
+      "14bd53d1-3058-49cc-84b9-ae94011b33bb": { name: "Family Room", order: 3 }
     };
-    // reverse: Naam -> Id (voor save payload)
-    const roomTypeIdByName = Object.fromEntries(
-      Object.entries(roomTypeNameMap).map(([id, name]) => [name, id])
-    );
+    const roomTypeOrder = Object.entries(roomTypeNameMap)
+      .sort(([, a], [, b]) => (a.order ?? Number.MAX_SAFE_INTEGER) - (b.order ?? Number.MAX_SAFE_INTEGER))
+      .map(([, cfg]) => cfg.name);
+    const roomTypeIdByName = {};
+    Object.entries(roomTypeNameMap).forEach(([id, cfg]) => { roomTypeIdByName[cfg.name] = id; });
+    const getRoomTypeName = id => roomTypeNameMap[id]?.name || id;
 
     // Bewaar API-datums voor header
     let apiDatesUtc = [];
@@ -138,6 +127,7 @@
     let workingData = {};
     let originalData = {};
     let currentDays = 31;
+    const monthsAhead = 12;
 
     // ===== API calls =====
     const apiBase = window.location.pathname.endsWith('/')
@@ -153,7 +143,7 @@
       apiDatesUtc = Array.isArray(apiData.TimeUnitStartsUtc) ? apiData.TimeUnitStartsUtc : [];
 
       // map naar workingData (roomTypeNameMap)
-      return apiToWorkingData(apiData, roomTypeNameMap);
+      return apiToWorkingData(apiData);
     }
 
     async function saveToServer(payload){
@@ -166,7 +156,7 @@
       return await res.json();
     }
 
-    function apiToWorkingData(apiData, nameMap = {}){
+    function apiToWorkingData(apiData){
       const out = {};
       const entries = apiData.ResourceCategoryAvailabilities || [];
       const len = (apiData.TimeUnitStartsUtc || []).length;
@@ -174,14 +164,14 @@
 
       entries.forEach(item=>{
         const id = item.ResourceCategoryId;
-        const name = nameMap[id] || id;
+        const name = getRoomTypeName(id);
         const m = item.Metrics || {};
         out[name] = {
-          "Totaal kamers": ensure(m["Totaal kamers"]),
-          "Vrije kamers":  ensure(m["Vrije kamers"]),
+          "Total rooms": ensure(m["Total rooms"]),
+          "Available rooms":  ensure(m["Available rooms"]),
           "Hotel":         ensure(m["Hotel"]),
           "Student":       ensure(m["Student"]),
-          "Lang verblijf": ensure(m["Lang verblijf"]),
+          "Extended stay": ensure(m["Extended stay"]),
         };
       });
       return out;
@@ -189,19 +179,38 @@
 
     // ===== Helpers =====
     function getDaysInMonth(year, month){ return new Date(year, month+1, 0).getDate(); }
+    function formatMonthValue(year, monthIndex){ return `${year}-${monthIndex}`; }
+
+    function populateMonthOptions(){
+      monthSelect.innerHTML = '';
+      const now = new Date();
+      for(let i=0;i<monthsAhead;i++){
+        const date = new Date(now.getFullYear(), now.getMonth() + i, 1);
+        const option = document.createElement('option');
+        option.value = formatMonthValue(date.getFullYear(), date.getMonth());
+        const label = date.toLocaleDateString('nl-NL', { month: 'long', year: 'numeric' });
+        option.textContent = label.charAt(0).toUpperCase() + label.slice(1);
+        monthSelect.appendChild(option);
+      }
+      return formatMonthValue(now.getFullYear(), now.getMonth());
+    }
+
+    function getSelectedYearMonth(){
+      const [yearStr, monthStr] = monthSelect.value.split('-');
+      return { year: parseInt(yearStr, 10), monthIndex: parseInt(monthStr, 10) };
+    }
 
     // ===== Render =====
-    function generateTable(monthIndex){
-      const year = 2025;
-
+    function generateTable(year, monthIndex){
       // Header op basis van API-dagen (UTC) als beschikbaar
       headerRow.innerHTML = '<th>Kamertypen</th>';
       if (apiDatesUtc && apiDatesUtc.length){
         currentDays = apiDatesUtc.length;
         for(let i=0;i<apiDatesUtc.length;i++){
           const d = new Date(apiDatesUtc[i]);
-          const day = d.getUTCDate();
-          const dayName = d.toLocaleDateString('nl-NL', { weekday: 'short', timeZone: 'UTC' });
+          // API timestamps are UTC; show them in local time so 23:00Z becomes next day locally
+          const day = d.getDate();
+          const dayName = d.toLocaleDateString('nl-NL', { weekday: 'short' });
           headerRow.innerHTML += `<th>${day} ${dayName}</th>`;
         }
       } else {
@@ -215,7 +224,11 @@
 
       // Body
       tableBody.innerHTML = '';
-      Object.keys(workingData).forEach(roomType => {
+      const orderedNames = roomTypeOrder.filter(name => !!workingData[name]);
+      const fallbackNames = Object.keys(workingData)
+        .filter(name => !roomTypeOrder.includes(name))
+        .sort();
+      [...orderedNames, ...fallbackNames].forEach(roomType => {
         // hoofd-rij
         const mainRow = document.createElement('tr');
         mainRow.className = 'room-type-row';
@@ -223,7 +236,7 @@
         for(let d=0; d<currentDays; d++){ mainRow.innerHTML += `<td></td>`; }
         tableBody.appendChild(mainRow);
 
-        const metrics = ['Totaal kamers','Vrije kamers','Hotel','Student','Lang verblijf'];
+        const metrics = ['Total rooms','Available rooms','Hotel','Student','Extended stay'];
         const metricClasses = ['totaal','vrij','hotel','student','lang'];
 
         metrics.forEach((metric, idx) => {
@@ -233,7 +246,7 @@
 
           for(let d=0; d<currentDays; d++){
             const val = workingData[roomType]?.[metric]?.[d] ?? 0;
-            const isEditable = (metric==='Hotel' || metric==='Student' || metric==='Lang verblijf');
+            const isEditable = (metric==='Hotel' || metric==='Student' || metric==='Extended stay');
             const classes = `metric-value ${metricClasses[idx]} ${isEditable ? 'editable' : ''}`;
 
             detailRow.innerHTML += `
@@ -310,7 +323,7 @@
         const now  = workingData[name] || {};
         const orig = originalData[name] || {};
 
-        const metrics = ["Hotel","Student","Lang verblijf"];
+        const metrics = ["Hotel","Student","Extended stay"];
         const metricEdits = {};
 
         metrics.forEach(metric => {
@@ -335,11 +348,11 @@
 
     // ===== Events =====
     monthSelect.addEventListener('change', async function(){
-      const mIdx = parseInt(this.value, 10);
-      const api = await loadFromApi(2025, mIdx);
+      const { year, monthIndex } = getSelectedYearMonth();
+      const api = await loadFromApi(year, monthIndex);
       workingData  = JSON.parse(JSON.stringify(api));
       originalData = JSON.parse(JSON.stringify(api)); // snapshot voor diff
-      generateTable(mIdx);
+      generateTable(year, monthIndex);
     });
 
     editToggle.addEventListener('change', function(){
@@ -347,8 +360,7 @@
     });
 
     saveBtn.addEventListener('click', async function(){
-      const year = 2025;
-      const monthIndex = parseInt(monthSelect.value, 10);
+      const { year, monthIndex } = getSelectedYearMonth();
       const payload = buildSavePayloadDiff(year, monthIndex);
 
       try{
@@ -365,22 +377,23 @@
 
     resetBtn.addEventListener('click', async function(){
       if(confirm('Weet je zeker dat je alle wijzigingen wilt terugzetten naar de laatst geladen API-data?')){
-        const mIdx = parseInt(monthSelect.value, 10);
-        const api = await loadFromApi(2025, mIdx);
+        const { year, monthIndex } = getSelectedYearMonth();
+        const api = await loadFromApi(year, monthIndex);
         workingData  = JSON.parse(JSON.stringify(api));
         originalData = JSON.parse(JSON.stringify(api));
-        generateTable(mIdx);
+        generateTable(year, monthIndex);
       }
     });
 
     // ===== Initial load =====
     (async function init(){
-      const currentMonth = new Date().getMonth();
-      monthSelect.value = currentMonth;
-      const api = await loadFromApi(2025, currentMonth);
+      const defaultValue = populateMonthOptions();
+      monthSelect.value = defaultValue;
+      const { year, monthIndex } = getSelectedYearMonth();
+      const api = await loadFromApi(year, monthIndex);
       workingData  = JSON.parse(JSON.stringify(api));
       originalData = JSON.parse(JSON.stringify(api)); // eerste snapshot voor diff
-      generateTable(currentMonth);
+      generateTable(year, monthIndex);
     })();
   </script>
 </body>

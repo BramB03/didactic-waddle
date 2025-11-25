@@ -2,6 +2,15 @@ import requests, json, time, pytest, os, pprint
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+'''
+Booking.com vanaf 10 november 0.00 uur.
+Logica:
+if travelagencyId == "" and createdUtc before November 10th 00:00:00Z:
+Webtarieven bastion (CWI / Open API), vanaf 13 november 0:00 uur
+if origin == "Connector" and createdUtc before November 13th 00:00:00Z:
+
+'''
+
 def getReservationInformation(serviceId, count, startDate, endDate, clientToken, accessToken, client, url, headers):
     payload = {
         "ClientToken": clientToken,
@@ -26,10 +35,20 @@ def getReservationInformation(serviceId, count, startDate, endDate, clientToken,
         print(json.dumps(payload))
         print("Reservations Get Response:", response.status_code, response.text)
     reservationdIds = []
+    bookingCutoff = datetime(2025, 11, 9, 23, 0, 0, tzinfo=timezone.utc)
+    connectorCutoff = datetime(2025, 11, 12, 23, 0, 0, tzinfo=timezone.utc)
     for item in response.json().get("Reservations", []):
-        if item.get("Id") in processed_ids:
+        createdStr = datetime.fromisoformat(item.get("CreatedUtc").replace("Z", "+00:00"))
+        if item.get("TravelAgencyId") == "d988b779-31e5-4716-b21b-b24100a3a684" and createdStr < bookingCutoff:
+            skippedReservations.append((item.get("Id"), "Booking.com pre-Nov 10"))
             continue
-        reservationdIds.append(item.get("Id"))
+        elif item.get("Origin") == "Connector" and createdStr < connectorCutoff:
+            skippedReservations.append((item.get("Id"), "Webtarieven Bastion pre-Nov 13"))
+            continue
+        elif item.get("Id") in processed_ids:
+            continue
+        else:
+            reservationdIds.append(item.get("Id"))
     return reservationdIds
 
 def getReservationNightData(reservationId, clientToken, accessToken, client, url, headers):
@@ -60,7 +79,6 @@ def getReservationNightData(reservationId, clientToken, accessToken, client, url
             "GrossValue": item.get("Amount", {}).get("GrossValue")
         }
         for item in nightsData
-        if item.get("Amount", {}).get("TaxValues", [{}])[0].get("Code") == oldVatCode
     ]
     return response
 
@@ -100,6 +118,7 @@ totalIncrease = 0
 reservationCounter = 0
 PROCESSED_FILE = Path("processed_ids.txt")
 ERRORED_FILE = Path("errored_ids.txt")
+SKIPPED_FILE = Path("skipped_ids.txt")
 
 # Property specific config
 # =====================================================
@@ -127,8 +146,15 @@ if ERRORED_FILE.exists():
 else:
     errored_ids = set()
 
+if SKIPPED_FILE.exists():
+    with open(SKIPPED_FILE, "r") as f:
+        skipped_ids = set(line.strip() for line in f if line.strip())
+else:
+    skipped_ids = set()
+
 
 startUtc = datetime.fromisoformat(start.replace("Z", "+00:00"))
+skippedReservations = []
 for length in range(weekRange):
     print("Processing week starting at:", startUtc.isoformat())
     endUtc = startUtc + timedelta(days=7)
@@ -217,6 +243,9 @@ with open(PROCESSED_FILE, "w") as f:
 with open(ERRORED_FILE, "w") as f:
     for sid in errored_ids:
         f.write(sid + "\n")
+with open(SKIPPED_FILE, "w") as f:
+    for sid, reason in skippedReservations:
+        f.write(f"{sid} - {reason}\n")
 
 utcAfter = datetime.now(timezone.utc)
 timeDiff = utcAfter - utcBefore
