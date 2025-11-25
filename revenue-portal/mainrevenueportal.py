@@ -30,18 +30,47 @@ METRIC_HOTEL = "Hotel"
 METRIC_STUDENT = "Student"
 METRIC_EXTENDED_STAY = "Extended stay"
 
-ROOM_TYPE_ID_TO_NAME: Dict[str, str] = {
-    "01d9c47b-2dea-4e3f-b87e-ae94011b33bb": "Standard Double",
-    "185695d6-ab95-4416-bd3d-b30c00f0a37f": "Standard Twin",
-    "a42186d8-9b8d-4d00-ab1b-ae94011b33bb": "Deluxe Double",
-    "14bd53d1-3058-49cc-84b9-ae94011b33bb": "Family Room",
+ROOM_TYPE_IDS_BY_SERVICE: Dict[str, Dict[str, str]] = {
+    # Service A (hotel)
+    "3080a911-df89-488e-a3ef-af02007dad8a": {
+        "Standard Double": "088e115f-30b0-4ff8-aaba-af0300d3a187",
+        "Standard Twin": "6efe10de-bbd1-4334-b0a4-b364007c9e4a",
+        "Deluxe Double": "58a0d7e8-b535-4ea4-9532-af0300d3a187",
+        "Family Room": "6885bdbb-a3fe-4b6f-88f6-af0300d3a187",
+    },
+    # Service B (student)
+    "5a6ee418-468c-45f7-a3d2-b364007a7c0f": {
+        "Standard Double": "8fad2a22-594a-4c39-afb3-b364007ae8aa",
+        "Standard Twin": "35f02589-5c0b-4eb5-9446-b3a000ef8159",
+        "Deluxe Double": "1bc0cab7-d54f-4c3f-86d3-b3a000efb7db",
+        "Family Room": "d7392203-a33e-4331-a566-b3a000efd4d2",
+    },
+    # Service C (extended stay)
+    "7c3f4e2a-1d2b-4c5d-9f6a-ae94011b33cc": {
+        "Standard Double": "ed2d470a-d6e1-4b6d-83fb-b364007acaa0",
+        "Standard Twin": "427b22df-1ea3-4772-821d-b3a000f1463c",
+        "Deluxe Double": "7d28e32b-1c8c-4586-861d-b3a000f1fe00",
+        "Family Room": "7a86e76e-7a5a-42eb-ad14-b3a000f28080",
+    },
 }
-ROOM_TYPE_NAME_TO_ID: Dict[str, str] = {name.lower(): rid for rid, name in ROOM_TYPE_ID_TO_NAME.items()}
-CANONICAL_ROOM_TYPE_IDS = list(ROOM_TYPE_ID_TO_NAME.keys())
 
-HOTEL_SERVICE_ID = os.getenv("MEWS_SERVICE_ID") or "5291ecd7-c75f-4281-bca0-ae94011b2f3a"
-STUDENT_SERVICE_ID = os.getenv("MEWS_STUDENT_SERVICE_ID") or "d4f7e1b3-5e2e-4f6a-8f3a-ae94011b33bb"
-EXTENDED_STAY_SERVICE_ID = os.getenv("MEWS_EXTENDED_SERVICE_ID") or "7c3f4e2a-1d2b-4c5d-9f6a-ae94011b33cc"
+HOTEL_SERVICE_ID = "3080a911-df89-488e-a3ef-af02007dad8a"
+STUDENT_SERVICE_ID = "5a6ee418-468c-45f7-a3d2-b364007a7c0f"
+EXTENDED_STAY_SERVICE_ID = "7c3f4e2a-1d2b-4c5d-9f6a-ae94011b33cc"
+
+# Canonieke roomtypes komen uit de hotel-service (of anders de eerste entry).
+_canonical_source = ROOM_TYPE_IDS_BY_SERVICE.get(HOTEL_SERVICE_ID) or next(iter(ROOM_TYPE_IDS_BY_SERVICE.values()))
+ROOM_TYPE_NAME_TO_ID: Dict[str, str] = {name.lower(): rid for name, rid in _canonical_source.items()}
+CANONICAL_ID_TO_NAME: Dict[str, str] = {rid: name for name, rid in _canonical_source.items()}
+CANONICAL_ROOM_TYPE_IDS = list(CANONICAL_ID_TO_NAME.keys())
+
+SERVICE_SPECIFIC_CATEGORY_MAP: Dict[str, Dict[str, str]] = {}
+for service_id, name_to_rcid in ROOM_TYPE_IDS_BY_SERVICE.items():
+    SERVICE_SPECIFIC_CATEGORY_MAP[service_id] = {}
+    for name, rcid in name_to_rcid.items():
+        canonical_id = ROOM_TYPE_NAME_TO_ID.get(name.lower())
+        if canonical_id:
+            SERVICE_SPECIFIC_CATEGORY_MAP[service_id][rcid] = canonical_id
 
 _RESOURCE_CATEGORY_CACHE: Dict[str, Dict[str, str]] = {}
 
@@ -50,9 +79,6 @@ _RESOURCE_CATEGORY_CACHE: Dict[str, Dict[str, str]] = {}
 # ============================================================
 
 def ensure_metric_length(arr: Any, n: int) -> List[int]:
-    """
-    Normaliseer een metric-array naar lengte n → ints ≥ 0.
-    """
     if not isinstance(arr, list):
         return [0] * n
     padded = (arr + [0] * n)[:n]
@@ -66,9 +92,6 @@ def ensure_metric_length(arr: Any, n: int) -> List[int]:
 
 
 def calculate_availability_arrays(metrics: Dict[str, Any], n: int) -> Dict[str, List[int]]:
-    """
-    Bepaal arrays voor totalen, true availability en hotel availability.
-    """
     active = ensure_metric_length(metrics.get("ActiveResources"), n)
     out_of_order = ensure_metric_length(metrics.get("OutOfOrderBlocks"), n)
     confirmed = ensure_metric_length(metrics.get("ConfirmedReservations"), n)
@@ -100,9 +123,7 @@ def fetch_resource_category_mapping(
     client_name: str,
     service_id: str,
 ) -> Dict[str, str]:
-    """
-    Haal de resource category namen op en map service-specifieke ids naar canonieke ids.
-    """
+
     if not service_id:
         return {}
     if service_id in _RESOURCE_CATEGORY_CACHE:
@@ -113,8 +134,9 @@ def fetch_resource_category_mapping(
         "AccessToken": access_token,
         "Client": client_name,
         "ServiceIds": [service_id],
-        "Limitation": {"Count": 200},
+        "Limitation": {"Count": 20},
     }
+
     url = mews_base + "resourceCategories/getAll"
 
     try:
@@ -141,9 +163,7 @@ def map_service_availability_to_canonical(
     time_axis: List[str],
     room_type_map: Dict[str, str],
 ) -> Dict[str, List[int]]:
-    """
-    Gebruik service-specifieke roomtype mapping om hotel availability arrays te koppelen aan canonieke roomtype ids.
-    """
+
     n = len(time_axis)
     result: Dict[str, List[int]] = {}
     if not upstream:
@@ -164,9 +184,7 @@ def apply_metric_to_portal(
     values_by_room: Dict[str, List[int]],
     n: int,
 ) -> None:
-    """
-    Injecteer een metric-array (bijv. Student) per canoniek roomtype in het portal payload.
-    """
+
     if not values_by_room:
         return
 
@@ -178,6 +196,7 @@ def apply_metric_to_portal(
         if room_id not in rca_index:
             rca_index[room_id] = {
                 "ResourceCategoryId": room_id,
+                "ResourceCategoryName": CANONICAL_ID_TO_NAME.get(room_id, room_id),
                 "Metrics": {
                     METRIC_TOTAL_ROOMS: [0] * n,
                     METRIC_AVAILABLE_ROOMS: [0] * n,
@@ -193,11 +212,7 @@ def apply_metric_to_portal(
 
 
 def iso_midnights_utc_for_month_eu_amsterdam(year: int, month_index: int) -> List[str]:
-    """
-    Geef voor elke dag in de maand het UTC-tijdstip terug dat overeenkomt met
-    00:00:00 lokale tijd (Europe/Amsterdam) op die dag.
-    Voorbeeld: 2025-02-01 00:00:00 Europe/Amsterdam → 2025-01-31T23:00:00Z (winter/zomer afhankelijk).
-    """
+
     tz_nl = ZoneInfo("Europe/Amsterdam")
     n_days = monthrange(year, month_index + 1)[1]
     out: List[str] = []
@@ -208,58 +223,14 @@ def iso_midnights_utc_for_month_eu_amsterdam(year: int, month_index: int) -> Lis
     return out
 
 def http_session_with_retries() -> requests.Session:
-    """
-    Maak een requests Session met retries/timeouts. Pas headers aan op jouw upstream.
-    """
+
     s = requests.Session()
     retries = Retry(total=3, backoff_factor=0.4, status_forcelist=[429, 500, 502, 503, 504])
     s.mount("https://", HTTPAdapter(max_retries=retries))
     s.mount("http://", HTTPAdapter(max_retries=retries))
-    # Voeg hier upstream-auth toe indien nodig (bijv. Mews tokens):
-    # s.headers.update({"ClientToken": "...", "AccessToken": "...", "Content-Type": "application/json"})
     return s
 
 def transform_upstream_to_portal(upstream: Dict[str, Any], time_axis: List[str]) -> Dict[str, Any]:
-    """
-    Adapter voor Mews services/getAvailability/2024-01-22 → portal-schema.
-
-    Verwacht upstream ongeveer als:
-    {
-      "TimeUnitStartsUtc": [...],
-      "ResourceCategoryAvailabilities": [
-        {
-          "ResourceCategoryId": "uuid",
-          "Metrics": {
-            "ActiveResources": [...],
-            "OutOfOrderBlocks": [...],
-            "ConfirmedReservations": [...],
-            "OptionalReservations": [...],
-            "AllocatedBlockAvailability": [...],
-            ...
-          }
-        },
-        ...
-      ]
-    }
-
-    Portal-output die de UI verwacht:
-    {
-      "TimeUnitStartsUtc": [...],
-      "ResourceCategoryAvailabilities": [
-        {
-          "ResourceCategoryId": "uuid/naam",
-          "Metrics": {
-            "Total rooms":    [...],   # ActiveResources
-            "Available rooms":[...],   # trueAvailability
-            "Hotel":          [...],
-            "Student":        [...],
-            "Extended stay":  [...]
-          }
-        },
-        ...
-      ]
-    }
-    """
     n = len(time_axis)
 
     rca: List[Dict[str, Any]] = []
@@ -280,6 +251,7 @@ def transform_upstream_to_portal(upstream: Dict[str, Any], time_axis: List[str])
 
         rca.append({
             "ResourceCategoryId": rcid,
+            "ResourceCategoryName": CANONICAL_ID_TO_NAME.get(rcid, rcid),
             "Metrics": metrics_portal,
         })
 
@@ -289,10 +261,7 @@ def transform_upstream_to_portal(upstream: Dict[str, Any], time_axis: List[str])
     }
 
 def fallback_empty_payload(time_axis: List[str]) -> Dict[str, Any]:
-    """
-    Fallback payload zodat de UI iets kan tonen als upstream-config mist.
-    Roomtype-ids komen overeen met de mapping in de frontend.
-    """
+
     n = len(time_axis)
     zeros = [0] * n
     return {
@@ -300,6 +269,7 @@ def fallback_empty_payload(time_axis: List[str]) -> Dict[str, Any]:
         "ResourceCategoryAvailabilities": [
             {
                 "ResourceCategoryId": rid,
+                "ResourceCategoryName": CANONICAL_ID_TO_NAME.get(rid, rid),
                 "Metrics": {
                     METRIC_TOTAL_ROOMS: zeros,
                     METRIC_AVAILABLE_ROOMS: zeros,
@@ -329,10 +299,6 @@ def index():
 
 # Helpers om platform URL te normaliseren
 def _normalize_mews_base(raw: str) -> str:
-    """
-    Zorg dat we een basis als https://{platform} terugkrijgen.
-    Als raw al /api/connector bevat, strip dat deel om dubbele paden te voorkomen.
-    """
     if not raw:
         return ""
     lower = raw.lower()
@@ -343,24 +309,6 @@ def _normalize_mews_base(raw: str) -> str:
 
 @app.get("/availability")
 def get_availability():
-    """
-    Ophalen van data voor een specifieke maand.
-
-    Query parameters:
-      - year  (int)  bijv. 2025
-      - month (int)  0=jan .. 11=dec
-
-    Werking:
-    - Bepaal de tijdas (lokale middernacht in NL → UTC) voor alle dagen in de maand
-    - Roep Mews services/getAvailability/2024-01-22 aan (UPSTREAM)
-    - Map de upstream response naar het portal-schema met transform_upstream_to_portal()
-      → daar kun je trueAvailability berekenen als:
-         ActiveResources
-       - OutOfOrderBlocks
-       - ConfirmedReservations
-       - OptionalReservations
-       - AllocatedBlockAvailability
-    """
     # 1) Params
     try:
         year = int(request.args.get("year"))
@@ -382,7 +330,7 @@ def get_availability():
     # 3) Mews upstream configuratie
     mews_base = "https://api.mews-demo.com/api/connector/v1/"
     client_token = os.getenv("DEMO_CLIENTTOKEN")
-    access_token = os.getenv("DAVID_ACCESSTOKEN")
+    access_token = os.getenv("DAVID_WEST_ACCESSTOKEN")
     client_name = "RevenuePortal 1.0.0"
     hotel_service_id = HOTEL_SERVICE_ID
     student_service_id = STUDENT_SERVICE_ID
@@ -391,7 +339,7 @@ def get_availability():
     missing = [
         name for name, value in [
             ("DEMO_CLIENTTOKEN", client_token),
-            ("DAVID_ACCESSTOKEN", access_token),
+            ("DAVID_WEST_ACCESSTOKEN", access_token),
             ("MEWS_SERVICE_ID", hotel_service_id),
         ]
         if not value
@@ -431,6 +379,7 @@ def get_availability():
     def call_service(service_id: str, label: str) -> Dict[str, Any]:
         payload = dict(payload_template)
         payload["ServiceId"] = service_id
+        print(payload)
         app.logger.info("POST %s (%s ServiceId=%s, metrics=%d)", url, label, service_id, len(metrics))
         resp = session.post(url, json=payload, timeout=15)
         app.logger.info("%s upstream status %s", label, resp.status_code)
@@ -493,7 +442,9 @@ def get_availability():
 
     # Log wat er uit komt zonder gevoelige data
     ids = [rc.get("ResourceCategoryId") for rc in portal.get("ResourceCategoryAvailabilities", [])]
-    app.logger.info("Returning %d categories: %s", len(ids), ids)
+    names = [rc.get("ResourceCategoryName") or CANONICAL_ID_TO_NAME.get(rc.get("ResourceCategoryId"), rc.get("ResourceCategoryId")) for rc in portal.get("ResourceCategoryAvailabilities", [])]
+    app.logger.info("Returning %d categories (ids): %s", len(ids), ids)
+    app.logger.info("Returning %d categories (names): %s", len(names), names)
 
     return jsonify(portal)
 # ============================================================
