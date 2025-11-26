@@ -99,10 +99,10 @@
   <script>
     // ===== Config / mapping =====
     const roomTypeNameMap = {
-      "01d9c47b-2dea-4e3f-b87e-ae94011b33bb": { name: "Standard Double", order: 0 },
-      "185695d6-ab95-4416-bd3d-b30c00f0a37f": { name: "Standard Twin", order: 1 },
-      "a42186d8-9b8d-4d00-ab1b-ae94011b33bb": { name: "Deluxe Double", order: 2 },
-      "14bd53d1-3058-49cc-84b9-ae94011b33bb": { name: "Family Room", order: 3 }
+      "088e115f-30b0-4ff8-aaba-af0300d3a187": { name: "Standard Double", order: 0 },
+      "6efe10de-bbd1-4334-b0a4-b364007c9e4a": { name: "Standard Twin", order: 1 },
+      "58a0d7e8-b535-4ea4-9532-af0300d3a187": { name: "Deluxe Double", order: 2 },
+      "6885bdbb-a3fe-4b6f-88f6-af0300d3a187": { name: "Family Room", order: 3 }
     };
     const roomTypeOrder = Object.entries(roomTypeNameMap)
       .sort(([, a], [, b]) => (a.order ?? Number.MAX_SAFE_INTEGER) - (b.order ?? Number.MAX_SAFE_INTEGER))
