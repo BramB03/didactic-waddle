@@ -308,10 +308,9 @@
     let currentDays = 31;
     const monthsAhead = 12;
 
-    // ===== API base (keeps /<profile>/ prefix) =====
-    const apiBase = window.location.pathname.endsWith('/')
-      ? window.location.pathname
-      : window.location.pathname + '/';
+    // ===== API base (always include /<profile>/) =====
+    // Works for both /revenue-portal/ and /revenue-portal/<profile>/ URLs
+    const apiBase = `${appRoot}${currentProfile}/`;
 
     // ===== API call voor availability =====
     async function loadFromApi(year, monthIndex){

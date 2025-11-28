@@ -27,11 +27,9 @@ logging.basicConfig(level=logging.INFO)
 # ============================================================
 
 def get_profile(profile_key: str) -> dict:
-    """Return profile dict or fallback to default"""
     if profile_key not in PROFILES:
         app.logger.warning("Unknown profile '%s', falling back to default", profile_key)
     return PROFILES.get(profile_key, PROFILES["default"])
-
 
 # ============================================================
 # Helper functions (same as before)
@@ -42,7 +40,6 @@ def ensure_metric_length(arr: Any, n: int) -> List[int]:
         return [0] * n
     padded = (arr + [0] * n)[:n]
     return [int(v) if isinstance(v, (int, float)) else 0 for v in padded]
-
 
 def calculate_basic_service_arrays(metrics: Dict[str, Any], n: int) -> Dict[str, List[int]]:
     usable = ensure_metric_length(metrics.get("UsableResources"), n)
@@ -63,7 +60,6 @@ def calculate_basic_service_arrays(metrics: Dict[str, Any], n: int) -> Dict[str,
         "public_adj": public_adj,
     }
 
-
 def iso_midnights_utc_for_month_eu_amsterdam(year: int, month_index: int, tz_name: str) -> List[str]:
     tz_nl = ZoneInfo(tz_name)
     month = month_index + 1
@@ -74,7 +70,6 @@ def iso_midnights_utc_for_month_eu_amsterdam(year: int, month_index: int, tz_nam
         as_utc = local_midnight.astimezone(timezone.utc)
         out.append(as_utc.isoformat().replace("+00:00", "Z"))
     return out
-
 
 def http_session_with_retries() -> requests.Session:
     s = requests.Session()
@@ -109,7 +104,6 @@ def fallback_empty_payload(time_axis: List[str], canonical_map: Dict[str, str]) 
         ],
     }
 
-
 # ============================================================
 # Data transformation (same as before)
 # ============================================================
@@ -132,7 +126,6 @@ def extract_service_arrays_by_canonical(upstream: Dict[str, Any], service_id: st
         result[canonical_id] = calculate_basic_service_arrays(metrics, n)
 
     return result
-
 
 def build_portal_from_services(time_axis: List[str],
                                hotel_upstream: Dict[str, Any],
@@ -192,7 +185,6 @@ def build_portal_from_services(time_axis: List[str],
 
     return {"TimeUnitStartsUtc": time_axis, "ResourceCategoryAvailabilities": rca}
 
-
 # ============================================================
 # Utility builders
 # ============================================================
@@ -228,18 +220,16 @@ def build_service_specific_map(profile: dict) -> Dict[str, Dict[str, str]]:
 
     return service_map
 
-
 def get_canonical_map(profile: dict) -> Dict[str, str]:
     """Return canonical_id -> readable name from the first service"""
     canonical = list(profile["room_type_ids_by_service"].values())[0]
     return {rid: name for name, rid in canonical.items()}
 
-
 # ============================================================
 # ROUTES
 # ============================================================
 
-DEFAULT_PROFILE_KEY = "default"  # zorg dat PROFILES["default"] bestaat
+DEFAULT_PROFILE_KEY = "default" 
 
 @app.get("/<profile>/")
 def index(profile):
@@ -323,7 +313,6 @@ def get_availability(profile):
     portal = build_portal_from_services(time_axis, hotel_upstream, student_upstream, extended_upstream, cfg)
     return jsonify(portal)
 
-
 @app.get("/availability")
 def get_availability_default():
     return get_availability(DEFAULT_PROFILE_KEY)
@@ -338,11 +327,9 @@ def save_overrides(profile):
         "editCount": len(payload.get("Edits", []))
     })
 
-
 @app.put("/availability/overrides")
 def save_overrides_default():
     return save_overrides(DEFAULT_PROFILE_KEY)
-
 
 @app.get("/room-types")
 def get_room_types_default():
@@ -360,11 +347,12 @@ def get_room_types(profile):
 
 @app.get("/profiles")
 def list_profiles():
-    out = {}
+    out = []
     for key, cfg in PROFILES.items():
-        out[key] = {
-            "display_name": cfg.get("display_name", key)
-        }
+        out.append({
+            "key": key,
+            "display_name": cfg.get("display_name", key),
+        })
     return jsonify(out)
 
 if __name__ == "__main__":
