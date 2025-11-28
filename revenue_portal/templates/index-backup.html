@@ -60,6 +60,22 @@
     .editable{outline:1px dashed transparent}
     .editing .editable{outline:1px dashed #c8ccf8;background:#fafbff}
     .editable[contenteditable="true"]:focus{outline:2px solid var(--primary);background:#fff}
+        /* Value state colours for Hotel / Student / Extended stay */
+    .metric-value.metric-zero {
+      background: #fff4e5;   /* soft orange */
+      color: #92400e;
+    }
+
+    .metric-value.metric-negative {
+      background: #fee2e2;   /* soft red */
+      color: #991b1b;
+    }
+
+    .metric-value.available-negative {
+      color: #b91c1c !important;   /* strong red */
+      background: transparent !important;
+      font-weight: 800;
+    }
   </style>
 </head>
 <body>
@@ -247,7 +263,23 @@
           for(let d=0; d<currentDays; d++){
             const val = workingData[roomType]?.[metric]?.[d] ?? 0;
             const isEditable = (metric==='Hotel' || metric==='Student' || metric==='Extended stay');
-            const classes = `metric-value ${metricClasses[idx]} ${isEditable ? 'editable' : ''}`;
+
+            // base classes
+            let classes = `metric-value ${metricClasses[idx]} ${isEditable ? 'editable' : ''}`;
+
+            if (metric === 'Available rooms') {
+              // Available rooms: only red text if negative
+              if (val < 0) {
+                classes += ' available-negative';
+              }
+            } else if (isEditable) {
+              // Hotel / Student / Extended stay: pill colours
+              if (val === 0) {
+                classes += ' metric-zero';
+              } else if (val < 0) {
+                classes += ' metric-negative';
+              }
+            }
 
             detailRow.innerHTML += `
               <td>
@@ -308,12 +340,36 @@
       const metric = el.dataset.metric;
       const day    = Number(el.dataset.day);
       const raw    = el.textContent.trim();
-      const val    = raw==='' ? 0 : Math.max(0, parseInt(raw,10) || 0);
-      if(workingData?.[room]?.[metric]){
+
+      // keep your current logic (no negatives) – if you later want to allow negatives,
+      // just remove Math.max(0, ...)
+      const val = raw === '' ? 0 : Math.max(0, parseInt(raw,10) || 0);
+
+      if (workingData?.[room]?.[metric]){
         workingData[room][metric][day] = val;
       }
-    }
 
+      // update colour when Hotel / Student / Extended stay changes
+
+      el.classList.remove('metric-zero', 'metric-negative', 'available-negative');
+
+      // Available rooms special rule
+      if (metric === 'Available rooms') {
+        if (val < 0) {
+          el.classList.add('available-negative');
+        }
+        return;
+      }
+
+      // Hotel / Student / Extended stay pills
+      if (metric === 'Hotel' || metric === 'Student' || metric === 'Extended stay') {
+        if (val === 0) {
+          el.classList.add('metric-zero');
+        } else if (val < 0) {
+          el.classList.add('metric-negative');
+        }
+      }
+    }
     // ===== Diff payload builder (Optie B) =====
     function buildSavePayloadDiff(year, monthIndex){
       const edits = [];

@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hotel Kamer Dashboard – inline edit</title>
+  <style>
+    :root{
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #1f2330;
+      --muted: #6b7280;
+      --border: #e6e8ef;
+      --primary: #5b4df0;
+      --primary-600: #4a3fe0;
+      --shadow: 0 10px 30px rgba(16,18,27,.08);
+      --radius: 16px;
+      --first-col-width: 220px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;
+      background:var(--bg);
+      min-height:100vh;
+      padding:32px 16px;
+      color:var(--text)
+    }
+    .container{
+      max-width:1400px;
+      margin:0 auto;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:28px;
+      box-shadow:var(--shadow)
+    }
+    h1{font-size:28px;font-weight:800;letter-spacing:.1px;margin-bottom:6px}
+    .subtitle{color:var(--muted);margin-bottom:18px;font-size:14px}
+    .controls{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-bottom:14px
+    }
+    .controls .field{display:flex;gap:8px;align-items:center}
+    label{font-size:12px;color:var(--muted)}
+    select, .btn, input[type="checkbox"]{cursor:pointer}
+    select{
+      appearance:none;
+      padding:10px 14px;
+      font-size:14px;
+      border:1px solid var(--border);
+      border-radius:10px;
+      background:#fff;
+      min-width:220px;
+      transition:border-color .2s, box-shadow .2s
+    }
+    select:focus{
+      outline:none;
+      border-color:var(--primary);
+      box-shadow:0 0 0 3px rgba(91,77,240,.12)
+    }
+    .btn{
+      border:1px solid var(--border);
+      background:#fff;
+      border-radius:10px;
+      padding:10px 14px;
+      font-size:14px;
+      font-weight:700
+    }
+    .btn-primary{
+      background:var(--primary);
+      border-color:var(--primary);
+      color:#fff
+    }
+    .btn-primary:hover{background:var(--primary-600)}
+    .btn-ghost:hover{background:#f4f5fa}
+    .hint{font-size:12px;color:var(--muted)}
+    .spacer{flex:1 1 auto}
+
+    .table-wrapper{
+      overflow:auto;
+      border-radius:12px;
+      border:1px solid var(--border)
+    }
+    table{
+      width:max-content;
+      min-width:900px;
+      border-collapse:separate;
+      border-spacing:0;
+      background:#fff
+    }
+    thead th{
+      position:sticky;
+      top:0;
+      z-index:3;
+      background:#fff;
+      color:var(--muted);
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+      font-weight:700;
+      border-bottom:1px solid var(--border);
+      padding:14px 12px;
+      white-space:nowrap
+    }
+    thead th:first-child,
+    tbody td:first-child{
+      position:sticky;
+      left:0;
+      z-index:4;
+      background:#fff;
+      border-right:1px solid var(--border);
+      width:var(--first-col-width);
+      min-width:var(--first-col-width);
+      max-width:var(--first-col-width)
+    }
+    th,td{
+      padding:12px 12px;
+      border-bottom:1px solid #f2f3f7;
+      font-size:14px;
+      white-space:nowrap;
+      text-align:center
+    }
+    .room-type-row{
+      cursor:pointer;
+      background:#fafbff;
+      transition:background-color .15s;
+      font-weight:700
+    }
+    .room-type-row:hover{background:#f2f4ff}
+    .room-type-row td:first-child{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      text-align:left;
+      padding-left:16px
+    }
+    .expand-icon{
+      display:inline-block;
+      width:10px;
+      height:10px;
+      border-right:2px solid var(--muted);
+      border-bottom:2px solid var(--muted);
+      transform:rotate(-45deg);
+      transition:transform .18s;
+      margin-right:4px
+    }
+    .room-type-row.expanded .expand-icon{transform:rotate(45deg)}
+    .detail-row{display:none;background:#fff}
+    .detail-row.visible{display:table-row}
+    .detail-row td:first-child{
+      text-align:left;
+      padding-left:28px;
+      color:var(--muted);
+      font-weight:600;
+      font-size:12px
+    }
+
+    .metric-value{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      font-weight:700;
+      min-width:42px;
+      line-height:1;
+      background:#f3f4f7;
+      color:#2d3350;
+      border:1px solid transparent;
+    }
+    .metric-value.totaal{background:#e8edff;color:#1f2a80}
+    .metric-value.vrij{background:#e6fbef;color:#0f6a40}
+    .metric-value.hotel{background:#f6f6fa;color:#333a66}
+    .metric-value.student{background:#f6f6fa;color:#333a66}
+    .metric-value.lang{background:#f6f6fa;color:#333a66}
+    tbody .detail-row:nth-child(2n) td{background:#fcfdff}
+
+    /* Zero & negative states for Hotel/Student/Extended */
+    .metric-value.zero-value{
+      background:#fff7ed;
+      color:#c05621;
+      border-color:#fed7aa;
+    }
+    .metric-value.negative-value{
+      background:#fee2e2;
+      color:#b91c1c;
+      border-color:#fecaca;
+    }
+
+    /* Available rooms: negative -> red text only, no pill */
+    .metric-value.available-negative{
+      background:transparent !important;
+      color:#b91c1c !important;
+      padding:0;
+      border-radius:0;
+      border:none;
+      min-width:0;
+    }
+
+    /* Inline edit stijl */
+    .editable{outline:1px dashed transparent}
+    .editing .editable{outline:1px dashed #c8ccf8;background:#fafbff}
+    .editable[contenteditable="true"]:focus{
+      outline:2px solid var(--primary);
+      background:#fff
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="app">
+    <h1>Hotel Availability Dashboard</h1>
+    <p class="subtitle">Room availability per service</p>
+    
+    <div class="controls">
+      <div class="field">
+        <label for="profileSelect">Profile</label>
+        <select id="profileSelect"></select>
+    </div>
+    
+    <div class="controls">
+      <div class="field">
+        <label for="monthSelect">Select month</label>
+        <select id="monthSelect"></select>
+      </div>
+
+      <div class="field">
+        <input type="checkbox" id="editToggle" />
+        <label for="editToggle"><strong>Adjust</strong> (Hotel / Student / Extended stay)</label>
+      </div>
+
+      <span class="spacer"></span>
+
+      <button class="btn btn-ghost" id="resetBtn">Reset changes</button>
+      <button class="btn btn-primary" id="saveBtn">Save (Post adjustments)</button>
+    </div>
+
+    <div class="hint">Tip: dubbelklik of focus op een bewerkbare cel en voer een geheel getal in.</div>
+
+    <div class="table-wrapper">
+      <table id="roomTable">
+        <thead>
+          <tr id="headerRow"><th>Room categories</th></tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+  // ===== Detect current profile from URL path =====
+  // e.g. /revenue-portal/default/ -> ['revenue-portal','default']
+  const pathParts = window.location.pathname.split('/').filter(Boolean);
+  let currentProfile = 'default';
+  if (pathParts.length >= 2) {
+    currentProfile = pathParts[1]; // second segment after "revenue-portal"
+  }
+
+  // Root/prefix: "/revenue-portal/" als pad "/revenue-portal/TSH/" is
+  const appRoot = pathParts.length > 0 ? `/${pathParts[0]}/` : '/';
+
+  let roomTypeNameMap = {};
+  let roomTypeOrder = [];
+  let roomTypeIdByName = {};
+
+  async function loadRoomTypes() {
+    const res = await fetch(`${apiBase}room-types`);
+    if (!res.ok) throw new Error("Cannot load room types");
+    const data = await res.json(); // same structure as profiles.py
+
+    roomTypeNameMap = data;
+
+    // Build order
+    roomTypeOrder = Object.entries(data)
+      .sort(([, a], [, b]) => (a.order ?? 99999) - (b.order ?? 99999))
+      .map(([, cfg]) => cfg.name);
+
+    // Reverse lookup
+    roomTypeIdByName = {};
+    Object.entries(data).forEach(([id, cfg]) => {
+      roomTypeIdByName[cfg.name] = id;
+    });
+
+    console.log("Loaded room types:", data);
+  }
+
+  const getRoomTypeName = id => roomTypeNameMap[id]?.name || id;
+
+    // Debug (optional)
+    console.log("Current profile:", currentProfile);
+
+  // ===== State =====
+  let apiDatesUtc = [];
+  const profileSelect = document.getElementById('profileSelect');
+  const monthSelect   = document.getElementById('monthSelect');
+  const headerRow     = document.getElementById('headerRow');
+  const tableBody     = document.getElementById('tableBody');
+  const editToggle    = document.getElementById('editToggle');
+  const saveBtn       = document.getElementById('saveBtn');
+  const resetBtn      = document.getElementById('resetBtn');
+  const app           = document.getElementById('app');
+
+    let workingData = {};
+    let originalData = {};
+    let currentDays = 31;
+    const monthsAhead = 12;
+
+    // ===== API base (keeps /<profile>/ prefix) =====
+    const apiBase = window.location.pathname.endsWith('/')
+      ? window.location.pathname
+      : window.location.pathname + '/';
+
+    // ===== API calls =====
+    async function loadFromApi(year, monthIndex){
+      const res = await fetch(`${apiBase}availability?year=${year}&month=${monthIndex}`);
+      if(!res.ok){ throw new Error('API error ' + res.status); }
+      const apiData = await res.json();
+
+      apiDatesUtc = Array.isArray(apiData.TimeUnitStartsUtc) ? apiData.TimeUnitStartsUtc : [];
+      return apiToWorkingData(apiData);
+    }
+
+    // ===== Profiles dropdown =====
+    async function loadProfiles() {
+      try {
+        // Backend route: @app.get("/profiles")
+        const res = await fetch(`${appRoot}profiles`);
+        if (!res.ok) throw new Error('Cannot load profiles');
+
+        const profiles = await res.json(); // bijv. ["default","TSH"]
+
+        profileSelect.innerHTML = '';
+        profiles.forEach(key => {
+          const opt = document.createElement('option');
+          opt.value = key;
+          opt.textContent = key;
+          profileSelect.appendChild(opt);
+        });
+
+        // Current profile als geselecteerd zetten
+        if (profiles.includes(currentProfile)) {
+          profileSelect.value = currentProfile;
+        }
+      } catch (e) {
+        console.error('Error loading profiles, falling back to hardcoded', e);
+        // Fallback: hardcoded default + TSH
+        const fallback = ['default', 'TSH'];
+        profileSelect.innerHTML = '';
+        fallback.forEach(key => {
+          const opt = document.createElement('option');
+          opt.value = key;
+          opt.textContent = key;
+          profileSelect.appendChild(opt);
+        });
+        profileSelect.value = currentProfile;
+      }
+    }
+
+    // Veranderen van profiel = redirect naar /revenue-portal/<profile>/
+    profileSelect.addEventListener('change', () => {
+      const selected = profileSelect.value || 'default';
+      window.location.href = `${appRoot}${selected}/`;
+    });
+
+    async function saveToServer(payload){
+      const res = await fetch(`${apiBase}availability/overrides`, {
+        method:'PUT',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(payload)
+      });
+      if(!res.ok) throw new Error('Save failed ' + res.status);
+      return await res.json();
+    }
+
+    function apiToWorkingData(apiData){
+      const out = {};
+      const entries = apiData.ResourceCategoryAvailabilities || [];
+      const len = (apiData.TimeUnitStartsUtc || []).length;
+      const ensure = arr => Array.isArray(arr) ? arr : Array.from({length: len}, _=>0);
+
+      entries.forEach(item=>{
+        const id = item.ResourceCategoryId;
+        const name = getRoomTypeName(id);
+        const m = item.Metrics || {};
+        out[name] = {
+          "Total rooms":    ensure(m["Total rooms"]),
+          "Available rooms":ensure(m["Available rooms"]),
+          "Hotel":          ensure(m["Hotel"]),
+          "Student":        ensure(m["Student"]),
+          "Extended stay":  ensure(m["Extended stay"]),
+        };
+      });
+      return out;
+    }
+
+    // ===== Helpers =====
+    function getDaysInMonth(year, month){ return new Date(year, month+1, 0).getDate(); }
+    function formatMonthValue(year, monthIndex){ return `${year}-${monthIndex}`; }
+
+    function populateMonthOptions(){
+      monthSelect.innerHTML = '';
+      const now = new Date();
+      for(let i=0;i<monthsAhead;i++){
+        const date = new Date(now.getFullYear(), now.getMonth() + i, 1);
+        const option = document.createElement('option');
+        option.value = formatMonthValue(date.getFullYear(), date.getMonth());
+        const label = date.toLocaleDateString('nl-NL', { month: 'long', year: 'numeric' });
+        option.textContent = label.charAt(0).toUpperCase() + label.slice(1);
+        monthSelect.appendChild(option);
+      }
+      return formatMonthValue(now.getFullYear(), now.getMonth());
+    }
+
+    function getSelectedYearMonth(){
+      const [yearStr, monthStr] = monthSelect.value.split('-');
+      return { year: parseInt(yearStr, 10), monthIndex: parseInt(monthStr, 10) };
+    }
+
+    // ===== Render =====
+    function generateTable(year, monthIndex){
+      headerRow.innerHTML = '<th>Room categories</th>';
+      if (apiDatesUtc && apiDatesUtc.length){
+        currentDays = apiDatesUtc.length;
+        for(let i=0;i<apiDatesUtc.length;i++){
+          const d = new Date(apiDatesUtc[i]);
+          const day = d.getDate();
+          const dayName = d.toLocaleDateString('nl-NL', { weekday: 'short' });
+          headerRow.innerHTML += `<th>${day} ${dayName}</th>`;
+        }
+      } else {
+        currentDays = getDaysInMonth(year, monthIndex);
+        for(let day=1; day<=currentDays; day++){
+          const date = new Date(year, monthIndex, day);
+          const dayName = date.toLocaleDateString('nl-NL',{weekday:'short'});
+          headerRow.innerHTML += `<th>${day} ${dayName}</th>`;
+        }
+      }
+
+      tableBody.innerHTML = '';
+      const orderedNames = roomTypeOrder.filter(name => !!workingData[name]);
+      const fallbackNames = Object.keys(workingData)
+        .filter(name => !roomTypeOrder.includes(name))
+        .sort();
+
+      [...orderedNames, ...fallbackNames].forEach(roomType => {
+        const mainRow = document.createElement('tr');
+        mainRow.className = 'room-type-row';
+        mainRow.innerHTML = `<td><span class="expand-icon"></span>${roomType}</td>`;
+        for(let d=0; d<currentDays; d++){ mainRow.innerHTML += `<td></td>`; }
+        tableBody.appendChild(mainRow);
+
+        const metrics = ['Total rooms','Available rooms','Hotel','Student','Extended stay'];
+        const metricClasses = ['totaal','vrij','hotel','student','lang'];
+
+        metrics.forEach((metric, idx) => {
+          const detailRow = document.createElement('tr');
+          detailRow.className = 'detail-row';
+          detailRow.innerHTML = `<td>${metric}</td>`;
+
+          for(let d=0; d<currentDays; d++){
+            const val = workingData[roomType]?.[metric]?.[d] ?? 0;
+            const isEditable = (metric==='Hotel' || metric==='Student' || metric==='Extended stay');
+
+            let extraClass = '';
+
+            // Available rooms: negative -> red text only
+            if (metric === 'Available rooms' && val < 0) {
+              extraClass += ' available-negative';
+            }
+
+            // Hotel/Student/Extended: color by zero/negative
+            if (metric === 'Hotel' || metric === 'Student' || metric === 'Extended stay') {
+              if (val < 0) {
+                extraClass += ' negative-value';
+              } else if (val === 0) {
+                extraClass += ' zero-value';
+              }
+            }
+
+            const classes = `metric-value ${metricClasses[idx]} ${isEditable ? 'editable' : ''}${extraClass}`;
+
+            detailRow.innerHTML += `
+              <td>
+                <span class="${classes}"
+                      data-room="${roomType}"
+                      data-metric="${metric}"
+                      data-day="${d}"
+                      ${isEditable ? 'data-editable="1"' : ''}>${val}</span>
+              </td>`;
+          }
+          tableBody.appendChild(detailRow);
+        });
+
+        mainRow.addEventListener('click', function(){
+          this.classList.toggle('expanded');
+          let next = this.nextElementSibling;
+          while(next && next.classList.contains('detail-row')){
+            next.classList.toggle('visible');
+            next = next.nextElementSibling;
+          }
+        });
+      });
+
+      applyEditMode(editToggle.checked);
+    }
+
+    function applyEditMode(on){
+      app.classList.toggle('editing', on);
+      tableBody.querySelectorAll('[data-editable="1"]').forEach(el=>{
+        el.setAttribute('contenteditable', on ? 'true' : 'false');
+        if(!on) el.blur();
+        if(!el._bound){
+          el.addEventListener('beforeinput', onlyDigits);
+          el.addEventListener('input', handleEdit);
+          el.addEventListener('blur', normalizeEmpty);
+          el._bound = true;
+        }
+      });
+    }
+
+    function onlyDigits(e){
+      const allowedTypes = ['deleteContentBackward','deleteContentForward','insertText'];
+      if(!allowedTypes.includes(e.inputType)) return;
+      if(e.inputType==='insertText' && !/^\d+$/.test(e.data ?? '')){
+        e.preventDefault();
+      }
+    }
+
+    function normalizeEmpty(e){
+      if(e.target.textContent.trim()===''){ e.target.textContent = '0'; }
+      handleEdit(e);
+    }
+
+    function handleEdit(e){
+      const el = e.target;
+      const room   = el.dataset.room;
+      const metric = el.dataset.metric;
+      const day    = Number(el.dataset.day);
+      const raw    = el.textContent.trim();
+      const val    = raw==='' ? 0 : parseInt(raw,10) || 0;
+      if(workingData?.[room]?.[metric]){
+        workingData[room][metric][day] = val;
+      }
+    }
+
+    function buildSavePayloadDiff(year, monthIndex){
+      const edits = [];
+
+      Object.keys(workingData).forEach(name => {
+        const id = roomTypeIdByName[name] || name;
+        const now  = workingData[name] || {};
+        const orig = originalData[name] || {};
+
+        const metrics = ["Hotel","Student","Extended stay"];
+        const metricEdits = {};
+
+        metrics.forEach(metric => {
+          const a = now[metric] || [];
+          const b = orig[metric] || [];
+          const changed = a.length !== b.length || a.some((v,i)=> v !== (b[i] ?? 0));
+          if(changed) metricEdits[metric] = a;
+        });
+
+        if(Object.keys(metricEdits).length){
+          edits.push({ ResourceCategoryId: id, Metrics: metricEdits });
+        }
+      });
+
+      return {
+        Year: year,
+        MonthIndex: monthIndex,
+        TimeUnitStartsUtc: apiDatesUtc,
+        Edits: edits
+      };
+    }
+
+    // ===== Events =====
+    monthSelect.addEventListener('change', async function(){
+      const { year, monthIndex } = getSelectedYearMonth();
+      const api = await loadFromApi(year, monthIndex);
+      workingData  = JSON.parse(JSON.stringify(api));
+      originalData = JSON.parse(JSON.stringify(api));
+      generateTable(year, monthIndex);
+    });
+
+    editToggle.addEventListener('change', function(){
+      applyEditMode(this.checked);
+    });
+
+    saveBtn.addEventListener('click', async function(){
+      const { year, monthIndex } = getSelectedYearMonth();
+      const payload = buildSavePayloadDiff(year, monthIndex);
+
+      try{
+        const result = await saveToServer(payload);
+        console.log('Server antwoord:', result);
+        alert(`Wijzigingen verstuurd ✅ (${payload.Edits.length} kamertypen met edits)`);
+        originalData = JSON.parse(JSON.stringify(workingData));
+      }catch(e){
+        console.error(e);
+        alert('Versturen mislukt ❌');
+      }
+    });
+
+    resetBtn.addEventListener('click', async function(){
+      if(confirm('Weet je zeker dat je alle wijzigingen wilt terugzetten naar de laatst geladen API-data?')){
+        const { year, monthIndex } = getSelectedYearMonth();
+        const api = await loadFromApi(year, monthIndex);
+        workingData  = JSON.parse(JSON.stringify(api));
+        originalData = JSON.parse(JSON.stringify(api));
+        generateTable(year, monthIndex);
+      }
+    });
+
+    // ===== Initial load =====
+    (async function init(){
+      await loadProfiles();    // eerst profielen dropdown vullen
+      await loadRoomTypes();   // dan room types voor huidige profile laden
+
+      const defaultValue = populateMonthOptions();
+      monthSelect.value = defaultValue;
+
+      const { year, monthIndex } = getSelectedYearMonth();
+
+      const api = await loadFromApi(year, monthIndex);
+      workingData  = JSON.parse(JSON.stringify(api));
+      originalData = JSON.parse(JSON.stringify(api));
+
+      generateTable(year, monthIndex);
+    })();
+  </script>
+</body>
+</html>

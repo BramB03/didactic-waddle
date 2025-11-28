@@ -10,6 +10,7 @@ import requests
 from requests.adapters import HTTPAdapter, Retry
 import os
 import logging
+from profiles import PROFILES
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -19,6 +20,12 @@ app = Flask(
     static_folder=str(BASE_DIR / "static")        # /static/* assets
 )
 logging.basicConfig(level=logging.INFO)
+
+def get_profile(profile_key: str) -> dict:
+    """Return profile dict or fallback to default"""
+    if profile_key not in PROFILES:
+        app.logger.warning("Unknown profile '%s', falling back to default", profile_key)
+    return PROFILES.get(profile_key, PROFILES["default"])
 
 # ============================================================
 # Constants / configuration
@@ -79,12 +86,7 @@ for service_id, name_to_rcid in ROOM_TYPE_IDS_BY_SERVICE.items():
 # ============================================================
 
 def ensure_metric_length(arr: Any, n: int) -> List[int]:
-    """
-    Normalise metrics arrays:
-    - if missing or not a list -> zeros
-    - pad/truncate to length n
-    - cast numeric values to int (can be negative if Mews sends negatives)
-    """
+
     if not isinstance(arr, list):
         return [0] * n
     padded = (arr + [0] * n)[:n]
@@ -98,17 +100,6 @@ def ensure_metric_length(arr: Any, n: int) -> List[int]:
 
 
 def calculate_basic_service_arrays(metrics: Dict[str, Any], n: int) -> Dict[str, List[int]]:
-    """
-    Per-service, per-category basic arrays:
-
-    - usable            = UsableResources
-    - confirmed         = ConfirmedReservations
-    - optional          = OptionalReservations
-    - occupied          = Occupied
-    - other_service     = OtherServiceReservationCount
-    - public_adj        = PublicAvailabilityAdjustment
-    - non_picked_up     = Occupied - Confirmed - Optional (Nonpickupblock per service)
-    """
     usable = ensure_metric_length(metrics.get("UsableResources"), n)
     confirmed = ensure_metric_length(metrics.get("ConfirmedReservations"), n)
     optional = ensure_metric_length(metrics.get("OptionalReservations"), n)
@@ -153,10 +144,6 @@ def http_session_with_retries() -> requests.Session:
 
 
 def fallback_empty_payload(time_axis: List[str]) -> Dict[str, Any]:
-    """
-    Fallback when upstream calls fail or config is missing:
-    return a fully-formed, but zeroed, payload so the UI stays alive.
-    """
     n = len(time_axis)
     zeros = [0] * n
     return {
@@ -312,7 +299,7 @@ def _normalize_mews_base(raw: str) -> str:
 @app.get("/availability")
 def get_availability():
     # 1) Params: if missing/invalid -> default to current month in Europe/Amsterdam
-    tz_nl = ZoneInfo("Europe/Amsterdam")
+    tz_nl = ZoneInfo(timeZone)
     now_local = datetime.now(tz_nl)
 
     raw_year = request.args.get("year")
