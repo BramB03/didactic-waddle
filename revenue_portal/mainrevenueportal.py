@@ -239,6 +239,8 @@ def get_canonical_map(profile: dict) -> Dict[str, str]:
 # ROUTES
 # ============================================================
 
+DEFAULT_PROFILE_KEY = "default"  # zorg dat PROFILES["default"] bestaat
+
 @app.get("/<profile>/")
 def index(profile):
     return render_template("index-revenueportal.html")
@@ -273,7 +275,8 @@ def get_availability(profile):
     student_service_id = cfg["student_service_id"]
     extended_service_id = cfg["extended_service_id"]
 
-    url = mews_base + "services/getAvailability/2024-01-22"  # <-- fixed
+    url = mews_base + "services/getAvailability/2024-01-22"
+
     metrics = [
         "ActiveResources", "Occupied", "UsableResources", "ConfirmedReservations",
         "OptionalReservations", "PublicAvailabilityAdjustment", "OtherServiceReservationCount"
@@ -323,7 +326,7 @@ def get_availability(profile):
 
 @app.get("/availability")
 def get_availability_default():
-    return get_availability("default")
+    return get_availability(DEFAULT_PROFILE_KEY)
 
 
 @app.put("/<profile>/availability/overrides")
@@ -338,7 +341,14 @@ def save_overrides(profile):
 
 @app.put("/availability/overrides")
 def save_overrides_default():
-    return save_overrides("default")
+    return save_overrides(DEFAULT_PROFILE_KEY)
+
+
+@app.get("/room-types")
+def get_room_types_default():
+    cfg = get_profile(DEFAULT_PROFILE_KEY)
+    room_types = cfg.get("frontend_room_types", {})
+    return jsonify(room_types)
 
 
 @app.get("/<profile>/room-types")
@@ -347,12 +357,15 @@ def get_room_types(profile):
     room_types = cfg.get("frontend_room_types", {})
     return jsonify(room_types)
 
-from flask import jsonify
 
 @app.get("/profiles")
 def list_profiles():
-    return jsonify(sorted(PROFILES.keys()))
-
+    out = {}
+    for key, cfg in PROFILES.items():
+        out[key] = {
+            "display_name": cfg.get("display_name", key)
+        }
+    return jsonify(out)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

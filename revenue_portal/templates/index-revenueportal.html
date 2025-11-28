@@ -210,11 +210,12 @@
 <body>
   <div class="container" id="app">
     <h1>Hotel Availability Dashboard</h1>
-    <p class="subtitle">Room availability per service</p>
+    <p class="subtitle">Room availability per service
+      <span id="profileLabel"></span>
+    </p>
     
     <div class="controls">
       <div class="field">
-        <label for="profileSelect">Profile</label>
         <select id="profileSelect"></select>
     </div>
     
@@ -235,7 +236,7 @@
       <button class="btn btn-primary" id="saveBtn">Save (Post adjustments)</button>
     </div>
 
-    <div class="hint">Tip: dubbelklik of focus op een bewerkbare cel en voer een geheel getal in.</div>
+    <div class="hint">..</div>
 
     <div class="table-wrapper">
       <table id="roomTable">
@@ -262,6 +263,7 @@
   let roomTypeNameMap = {};
   let roomTypeOrder = [];
   let roomTypeIdByName = {};
+  let profilesMap = {};
 
   async function loadRoomTypes() {
     const res = await fetch(`${apiBase}room-types`);
@@ -299,6 +301,7 @@
   const saveBtn       = document.getElementById('saveBtn');
   const resetBtn      = document.getElementById('resetBtn');
   const app           = document.getElementById('app');
+  const profileLabel  = document.getElementById('profileLabel');
 
     let workingData = {};
     let originalData = {};
@@ -310,51 +313,80 @@
       ? window.location.pathname
       : window.location.pathname + '/';
 
-    // ===== API calls =====
+    // ===== API call voor availability =====
     async function loadFromApi(year, monthIndex){
-      const res = await fetch(`${apiBase}availability?year=${year}&month=${monthIndex}`);
-      if(!res.ok){ throw new Error('API error ' + res.status); }
+      const url = `${apiBase}availability?year=${year}&month=${monthIndex}`;
+      console.log("Calling availability →", url);
+
+      const res = await fetch(url);
+      console.log("Availability status", res.status);
+
+      if (!res.ok) {
+        console.error("API error body:", await res.text());
+        throw new Error('API error ' + res.status);
+      }
+
       const apiData = await res.json();
+      console.log("Availability payload", apiData);
 
       apiDatesUtc = Array.isArray(apiData.TimeUnitStartsUtc) ? apiData.TimeUnitStartsUtc : [];
       return apiToWorkingData(apiData);
     }
 
-    // ===== Profiles dropdown =====
-    async function loadProfiles() {
-      try {
-        // Backend route: @app.get("/profiles")
-        const res = await fetch(`${appRoot}profiles`);
-        if (!res.ok) throw new Error('Cannot load profiles');
+  // ===== Profiles dropdown =====
+  async function loadProfiles() {
+    try {
+      // Backend route: @app.get("/profiles")
+      const res = await fetch(`${appRoot}profiles`);
+      if (!res.ok) throw new Error('Cannot load profiles');
 
-        const profiles = await res.json(); // bijv. ["default","TSH"]
+      const data = await res.json(); 
+      // data = { "default": {display_name: "The David Demo"}, "TSH": {display_name: "TSH Delft"}, ... }
 
-        profileSelect.innerHTML = '';
-        profiles.forEach(key => {
-          const opt = document.createElement('option');
-          opt.value = key;
-          opt.textContent = key;
-          profileSelect.appendChild(opt);
-        });
+      profilesMap = data;
 
-        // Current profile als geselecteerd zetten
-        if (profiles.includes(currentProfile)) {
-          profileSelect.value = currentProfile;
-        }
-      } catch (e) {
-        console.error('Error loading profiles, falling back to hardcoded', e);
-        // Fallback: hardcoded default + TSH
-        const fallback = ['default', 'TSH'];
-        profileSelect.innerHTML = '';
-        fallback.forEach(key => {
-          const opt = document.createElement('option');
-          opt.value = key;
-          opt.textContent = key;
-          profileSelect.appendChild(opt);
-        });
+      const keys = Object.keys(data);
+      profileSelect.innerHTML = '';
+
+      keys.forEach(key => {
+        const opt = document.createElement('option');
+        opt.value = key;
+        opt.textContent = data[key].display_name || key; // gebruik display_name
+        profileSelect.appendChild(opt);
+      });
+
+      // Current profile als geselecteerd zetten
+      if (keys.includes(currentProfile)) {
         profileSelect.value = currentProfile;
       }
+
+      // Label in de subtitel zetten
+      const displayName = (data[currentProfile] && data[currentProfile].display_name) || currentProfile;
+      profileLabel.textContent = displayName;
+
+    } catch (e) {
+      console.error('Error loading profiles, falling back to hardcoded', e);
+
+      // Fallback: hardcoded default + TSH
+      const fallback = {
+        "default": { display_name: "Default" },
+        "TSH": { display_name: "TSH" }
+      };
+      profilesMap = fallback;
+
+      profileSelect.innerHTML = '';
+      Object.entries(fallback).forEach(([key, cfg]) => {
+        const opt = document.createElement('option');
+        opt.value = key;
+        opt.textContent = cfg.display_name || key;
+        profileSelect.appendChild(opt);
+      });
+      profileSelect.value = currentProfile;
+
+      const displayName = (fallback[currentProfile] && fallback[currentProfile].display_name) || currentProfile;
+      profileLabel.textContent = displayName;
     }
+  }
 
     // Veranderen van profiel = redirect naar /revenue-portal/<profile>/
     profileSelect.addEventListener('change', () => {
@@ -612,21 +644,35 @@
       }
     });
 
-    // ===== Initial load =====
-    (async function init(){
-      await loadProfiles();    // eerst profielen dropdown vullen
-      await loadRoomTypes();   // dan room types voor huidige profile laden
+    (async function init() {
+      try {
+        console.log("INIT start");
 
-      const defaultValue = populateMonthOptions();
-      monthSelect.value = defaultValue;
+        await loadProfiles();    // profielen + label
+        console.log("Profiles loaded");
 
-      const { year, monthIndex } = getSelectedYearMonth();
+        await loadRoomTypes();   // room types
+        console.log("Room types loaded");
 
-      const api = await loadFromApi(year, monthIndex);
-      workingData  = JSON.parse(JSON.stringify(api));
-      originalData = JSON.parse(JSON.stringify(api));
+        const defaultValue = populateMonthOptions();
+        monthSelect.value = defaultValue;
+        console.log("Month options set to", monthSelect.value);
 
-      generateTable(year, monthIndex);
+        const { year, monthIndex } = getSelectedYearMonth();
+        console.log("Loading availability for", year, monthIndex);
+
+        const api = await loadFromApi(year, monthIndex);
+        console.log("Working data after loadFromApi", api);
+
+        workingData  = JSON.parse(JSON.stringify(api));
+        originalData = JSON.parse(JSON.stringify(api));
+
+        generateTable(year, monthIndex);
+        console.log("Table generated");
+      } catch (err) {
+        console.error("INIT FAILED", err);
+        alert("Init error, zie console");
+      }
     })();
   </script>
 </body>

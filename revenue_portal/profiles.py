@@ -5,6 +5,7 @@ PROFILES = {
         # ---------------------------
         #  General settings
         # ---------------------------
+        "display_name": "The David Demo",
         "timezone": "Europe/Amsterdam",
         "client_name": "RevenuePortal 1.0.0",
 
@@ -66,6 +67,7 @@ PROFILES = {
         # ---------------------------
         #  General settings
         # ---------------------------
+        "display_name": "TSH Delft",
         "timezone": "Europe/Amsterdam",
         "client_name": "RevenuePortal 1.0.0",
 
