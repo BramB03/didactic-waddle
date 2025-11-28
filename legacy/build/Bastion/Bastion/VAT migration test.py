@@ -39,6 +39,7 @@ def getReservationInformation(serviceId, count, startDate, endDate, clientToken,
     connectorCutoff = datetime(2025, 11, 12, 23, 0, 0, tzinfo=timezone.utc)
     for item in response.json().get("Reservations", []):
         createdStr = datetime.fromisoformat(item.get("CreatedUtc").replace("Z", "+00:00"))
+        '''
         if item.get("TravelAgencyId") == "d988b779-31e5-4716-b21b-b24100a3a684" and createdStr < bookingCutoff:
             skippedReservations.append((item.get("Id"), "Booking.com pre-Nov 10"))
             continue
@@ -46,6 +47,13 @@ def getReservationInformation(serviceId, count, startDate, endDate, clientToken,
             skippedReservations.append((item.get("Id"), "Webtarieven Bastion pre-Nov 13"))
             continue
         elif item.get("Id") in processed_ids:
+            continue
+        else:
+            reservationdIds.append(item.get("Id"))
+        '''
+
+        # Remove for production run
+        if item.get("Id") in processed_ids:
             continue
         else:
             reservationdIds.append(item.get("Id"))
@@ -122,14 +130,17 @@ SKIPPED_FILE = Path("skipped_ids.txt")
 
 # Property specific config
 # =====================================================
-accessToken = os.getenv("DAVID_ACCESSTOKEN")
-serviceId = "5291ecd7-c75f-4281-bca0-ae94011b2f3a"
+#accessToken = os.getenv("DAVID_ACCESSTOKEN")
+accessToken = "8BD94EED3ACA4C218CAFB39B00BDF407-259ED45886DCC70D6703A3F07041780"
+
+#serviceId = "5291ecd7-c75f-4281-bca0-ae94011b2f3a"
+serviceId = "023362ca-b557-4655-b228-afc7009cfe0a"
 
 # Execution specific information
 # =====================================================
 reservationCount = 50
 weekRange = 2
-start = "2025-11-11T00:00:00Z"
+start = "2026-01-01T00:00:00Z"
 oldVatCode = "NL-2019-R"
 
 # Generic work
@@ -198,7 +209,7 @@ for length in range(weekRange):
         for i, item in enumerate(data_sorted):
             item["Index"] = i
             totalValuebefore += item["GrossValue"]
-            item["GrossValue"] = round(item["GrossValue"] * 1.12, 2)  # Example VAT increase of 12%
+            item["GrossValue"] = round(item["GrossValue"] * 1.11009174, 2)  
             totalValueafter += item["GrossValue"]
             item.pop("ConsumedUtc", None)
 

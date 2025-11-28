@@ -29,14 +29,15 @@ METRIC_AVAILABLE_ROOMS = "Available rooms"
 METRIC_HOTEL = "Hotel"
 METRIC_STUDENT = "Student"
 METRIC_EXTENDED_STAY = "Extended stay"
+timeZone = "Europe/Amsterdam"
 
 ROOM_TYPE_IDS_BY_SERVICE: Dict[str, Dict[str, str]] = {
     # Service A (hotel)
-    "3080a911-df89-488e-a3ef-af02007dad8a": {
-        "Standard Double": "088e115f-30b0-4ff8-aaba-af0300d3a187",
-        "Standard Twin": "6efe10de-bbd1-4334-b0a4-b364007c9e4a",
-        "Deluxe Double": "58a0d7e8-b535-4ea4-9532-af0300d3a187",
-        "Family Room": "6885bdbb-a3fe-4b6f-88f6-af0300d3a187",
+    "2a11701c-061c-4262-830a-b3a200f3ff40": {
+        "Standard Double": "d10c5a8e-3e0a-4180-a7f7-b3a200f423c0",
+        "Standard Twin": "b527693b-4c9a-4778-8ee7-b3a200f488a5",
+        "Deluxe Double": "f0df4d73-8a79-44f5-822c-b3a200f4b847",
+        "Family Room": "36766d2f-c0b5-4ed0-a891-b3a200f4f15b",
     },
     # Service B (student)
     "5a6ee418-468c-45f7-a3d2-b364007a7c0f": {
@@ -54,15 +55,17 @@ ROOM_TYPE_IDS_BY_SERVICE: Dict[str, Dict[str, str]] = {
     },
 }
 
-HOTEL_SERVICE_ID = "3080a911-df89-488e-a3ef-af02007dad8a"
+HOTEL_SERVICE_ID = "2a11701c-061c-4262-830a-b3a200f3ff40"
 STUDENT_SERVICE_ID = "5a6ee418-468c-45f7-a3d2-b364007a7c0f"
 EXTENDED_STAY_SERVICE_ID = "d9668056-a076-434e-8412-b364007a95da"
 
+# Canonical room type mapping (based on hotel service)
 _canonical_source = ROOM_TYPE_IDS_BY_SERVICE.get(HOTEL_SERVICE_ID) or next(iter(ROOM_TYPE_IDS_BY_SERVICE.values()))
 ROOM_TYPE_NAME_TO_ID: Dict[str, str] = {name.lower(): rid for name, rid in _canonical_source.items()}
 CANONICAL_ID_TO_NAME: Dict[str, str] = {rid: name for name, rid in _canonical_source.items()}
 CANONICAL_ROOM_TYPE_IDS = list(CANONICAL_ID_TO_NAME.keys())
 
+# For each service: map that service's ResourceCategoryId -> canonical room type id
 SERVICE_SPECIFIC_CATEGORY_MAP: Dict[str, Dict[str, str]] = {}
 for service_id, name_to_rcid in ROOM_TYPE_IDS_BY_SERVICE.items():
     SERVICE_SPECIFIC_CATEGORY_MAP[service_id] = {}
@@ -71,209 +74,89 @@ for service_id, name_to_rcid in ROOM_TYPE_IDS_BY_SERVICE.items():
         if canonical_id:
             SERVICE_SPECIFIC_CATEGORY_MAP[service_id][rcid] = canonical_id
 
-_RESOURCE_CATEGORY_CACHE: Dict[str, Dict[str, str]] = {}
-
 # ============================================================
 # Helpers
 # ============================================================
 
 def ensure_metric_length(arr: Any, n: int) -> List[int]:
+    """
+    Normalise metrics arrays:
+    - if missing or not a list -> zeros
+    - pad/truncate to length n
+    - cast numeric values to int (can be negative if Mews sends negatives)
+    """
     if not isinstance(arr, list):
         return [0] * n
     padded = (arr + [0] * n)[:n]
     normalized: List[int] = []
     for value in padded:
         if isinstance(value, (int, float)):
-            normalized.append(int(value))  
+            normalized.append(int(value))
         else:
             normalized.append(0)
     return normalized
 
 
-def calculate_availability_arrays(metrics: Dict[str, Any], n: int) -> Dict[str, List[int]]:
-    # Core inputs
-    active = ensure_metric_length(metrics.get("ActiveResources"), n)
-    usable = ensure_metric_length(metrics.get("UsableResources"), n)
-    occupied = ensure_metric_length(metrics.get("Occupied"), n)
-    other_service = ensure_metric_length(metrics.get("OtherServiceReservationCount"), n)
-    public_adjustment = ensure_metric_length(metrics.get("PublicAvailabilityAdjustment"), n)
+def calculate_basic_service_arrays(metrics: Dict[str, Any], n: int) -> Dict[str, List[int]]:
+    """
+    Per-service, per-category basic arrays:
 
-    # If required
-    out_of_order = ensure_metric_length(metrics.get("OutOfOrderBlocks"), n)
+    - usable            = UsableResources
+    - confirmed         = ConfirmedReservations
+    - optional          = OptionalReservations
+    - occupied          = Occupied
+    - other_service     = OtherServiceReservationCount
+    - public_adj        = PublicAvailabilityAdjustment
+    - non_picked_up     = Occupied - Confirmed - Optional (Nonpickupblock per service)
+    """
+    usable = ensure_metric_length(metrics.get("UsableResources"), n)
     confirmed = ensure_metric_length(metrics.get("ConfirmedReservations"), n)
     optional = ensure_metric_length(metrics.get("OptionalReservations"), n)
-    allocated = ensure_metric_length(metrics.get("AllocatedBlockAvailability"), n)
+    occupied = ensure_metric_length(metrics.get("Occupied"), n)
+    public_adj = ensure_metric_length(metrics.get("PublicAvailabilityAdjustment"), n)
+    other_service = ensure_metric_length(metrics.get("OtherServiceReservationCount"), n)
 
-    # Legacy "true" if needed it later
-    true_availability: List[int] = []
-    for u, o, c, opt, alloc in zip(active, out_of_order, confirmed, optional, allocated):
-        val = (u or 0) - (o or 0) - (c or 0) - (opt or 0) - (alloc or 0)
-        true_availability.append(val)
-
-    # UsableResources − Occupied − OtherServiceReservationCount + PublicAvailabilityAdjustment
-    net_availability: List[int] = []
-    for u, occ, other, adj in zip(usable, occupied, other_service, public_adjustment):
-        val = (u or 0) - (occ or 0) - (other or 0) + (adj or 0)
-        net_availability.append(val)
+    non_picked_up: List[int] = []
+    for occ, conf, opt in zip(occupied, confirmed, optional):
+        val = (occ or 0) - (conf or 0) - (opt or 0)
+        non_picked_up.append(val)
 
     return {
-        "active": active,          # Total rooms
-        "usable": usable,          # Available rooms
-        "net": net_availability,   # My formula for Hotel/Student/Extended
-        "true": true_availability  # extra
+        "usable": usable,
+        "confirmed": confirmed,
+        "optional": optional,
+        "occupied": occupied,
+        "non_picked_up": non_picked_up,
+        "public_adj": public_adj,
+        "other_service": other_service,
     }
 
-def fetch_resource_category_mapping(
-    session: requests.Session,
-    mews_base: str,
-    client_token: str,
-    access_token: str,
-    client_name: str,
-    service_id: str,
-) -> Dict[str, str]:
-
-    if not service_id:
-        return {}
-    if service_id in _RESOURCE_CATEGORY_CACHE:
-        return _RESOURCE_CATEGORY_CACHE[service_id]
-
-    payload = {
-        "ClientToken": client_token,
-        "AccessToken": access_token,
-        "Client": client_name,
-        "ServiceIds": [service_id],
-        "Limitation": {"Count": 20},
-    }
-
-    url = mews_base + "resourceCategories/getAll"
-
-    try:
-        resp = session.post(url, json=payload, timeout=15)
-        resp.raise_for_status()
-        body = resp.json()
-    except requests.RequestException as exc:
-        app.logger.warning("Failed to load resource categories for service %s: %s", service_id, exc)
-        return {}
-
-    mapping: Dict[str, str] = {}
-    for item in body.get("ResourceCategories", []):
-        name = (item.get("Name") or "").strip().lower()
-        canonical_id = ROOM_TYPE_NAME_TO_ID.get(name)
-        if canonical_id:
-            mapping[item.get("Id")] = canonical_id
-
-    _RESOURCE_CATEGORY_CACHE[service_id] = mapping
-    return mapping
-
-
-def map_service_availability_to_canonical(
-    upstream: Dict[str, Any],
-    time_axis: List[str],
-    room_type_map: Dict[str, str],
-) -> Dict[str, List[int]]:
-
-    n = len(time_axis)
-    result: Dict[str, List[int]] = {}
-    if not upstream:
-        return result
-
-    for rc in upstream.get("ResourceCategoryAvailabilities", []):
-        canonical_id = room_type_map.get(rc.get("ResourceCategoryId"))
-        if not canonical_id:
-            continue
-
-        arrays = calculate_availability_arrays(rc.get("Metrics", {}) or {}, n)
-        # Use the SAME net formula for Student / Extended
-        result[canonical_id] = arrays["net"]
-
-    return result
-
-def apply_metric_to_portal(
-    portal: Dict[str, Any],
-    metric_name: str,
-    values_by_room: Dict[str, List[int]],
-    n: int,
-) -> None:
-
-    if not values_by_room:
-        return
-
-    rca_index: Dict[str, Dict[str, Any]] = {}
-    for rc in portal.get("ResourceCategoryAvailabilities", []):
-        rca_index[rc.get("ResourceCategoryId")] = rc
-
-    for room_id, values in values_by_room.items():
-        if room_id not in rca_index:
-            rca_index[room_id] = {
-                "ResourceCategoryId": room_id,
-                "ResourceCategoryName": CANONICAL_ID_TO_NAME.get(room_id, room_id),
-                "Metrics": {
-                    METRIC_TOTAL_ROOMS: [0] * n,
-                    METRIC_AVAILABLE_ROOMS: [0] * n,
-                    METRIC_HOTEL: [0] * n,
-                    METRIC_STUDENT: [0] * n,
-                    METRIC_EXTENDED_STAY: [0] * n,
-                },
-            }
-            portal.setdefault("ResourceCategoryAvailabilities", []).append(rca_index[room_id])
-
-        metrics = rca_index[room_id].setdefault("Metrics", {})
-        metrics[metric_name] = values
 
 def iso_midnights_utc_for_month_eu_amsterdam(year: int, month_index: int) -> List[str]:
-
-    tz_nl = ZoneInfo("Europe/Amsterdam")
-    n_days = monthrange(year, month_index + 1)[1]
+    tz_nl = ZoneInfo(timeZone)
+    month = month_index + 1
+    n_days = monthrange(year, month)[1]
     out: List[str] = []
     for d in range(1, n_days + 1):
-        local_midnight = datetime(year, month_index + 1, d, 0, 0, 0, tzinfo=tz_nl)
+        local_midnight = datetime(year, month, d, 0, 0, 0, tzinfo=tz_nl)
         as_utc = local_midnight.astimezone(timezone.utc)
         out.append(as_utc.isoformat().replace("+00:00", "Z"))
     return out
 
-def http_session_with_retries() -> requests.Session:
 
+def http_session_with_retries() -> requests.Session:
     s = requests.Session()
     retries = Retry(total=3, backoff_factor=0.4, status_forcelist=[429, 500, 502, 503, 504])
     s.mount("https://", HTTPAdapter(max_retries=retries))
     s.mount("http://", HTTPAdapter(max_retries=retries))
     return s
 
-def transform_upstream_to_portal(upstream: Dict[str, Any], time_axis: List[str]) -> Dict[str, Any]:
-    n = len(time_axis)
-    rca: List[Dict[str, Any]] = []
-
-    for rc in upstream.get("ResourceCategoryAvailabilities", []):
-        rcid = rc.get("ResourceCategoryId") or "unknown"
-        m = rc.get("Metrics", {}) or {}
-
-        arrays = calculate_availability_arrays(m, n)
-
-        metrics_portal: Dict[str, List[int]] = {
-            # Hotel TOTAL ROOMS = ActiveResources
-            METRIC_TOTAL_ROOMS: arrays["active"],
-            # Hotel AVAILABLE ROOMS = UsableResources
-            METRIC_AVAILABLE_ROOMS: arrays["usable"],
-            # Hotel = net formula (Usable − Occupied − OtherServiceReservationCount + PublicAvailabilityAdjustment)
-            METRIC_HOTEL: arrays["net"],
-            # Student/Extended are filled later by other services
-            METRIC_STUDENT: [0] * n,
-            METRIC_EXTENDED_STAY: [0] * n,
-        }
-
-        rca.append({
-            "ResourceCategoryId": rcid,
-            "ResourceCategoryName": CANONICAL_ID_TO_NAME.get(rcid, rcid),
-            "Metrics": metrics_portal,
-        })
-
-    return {
-        "TimeUnitStartsUtc": time_axis,
-        "ResourceCategoryAvailabilities": rca,
-    }
 
 def fallback_empty_payload(time_axis: List[str]) -> Dict[str, Any]:
-
+    """
+    Fallback when upstream calls fail or config is missing:
+    return a fully-formed, but zeroed, payload so the UI stays alive.
+    """
     n = len(time_axis)
     zeros = [0] * n
     return {
@@ -293,6 +176,118 @@ def fallback_empty_payload(time_axis: List[str]) -> Dict[str, Any]:
             for rid in CANONICAL_ROOM_TYPE_IDS
         ],
     }
+
+
+def extract_service_arrays_by_canonical(
+    upstream: Dict[str, Any],
+    service_id: str,
+    n: int,
+) -> Dict[str, Dict[str, List[int]]]:
+    if not upstream:
+        return {}
+
+    rcid_to_canonical = SERVICE_SPECIFIC_CATEGORY_MAP.get(service_id, {})
+    result: Dict[str, Dict[str, List[int]]] = {}
+
+    for rc in upstream.get("ResourceCategoryAvailabilities", []):
+        rcid = rc.get("ResourceCategoryId")
+        metrics = rc.get("Metrics", {}) or {}
+        canonical_id = rcid_to_canonical.get(rcid)
+
+        if not canonical_id:
+            app.logger.info(
+                "Service %s: RC %s has NO canonical mapping, skipping. Name? %s",
+                service_id,
+                rcid,
+                rc.get("ResourceCategoryName"),
+            )
+            continue
+
+        arrays = calculate_basic_service_arrays(metrics, n)
+        result[canonical_id] = arrays
+
+    return result
+
+
+def build_portal_from_services(
+    time_axis: List[str],
+    hotel_upstream: Dict[str, Any],
+    student_upstream: Dict[str, Any],
+    extended_upstream: Dict[str, Any],
+) -> Dict[str, Any]:
+
+    n = len(time_axis)
+
+    if not hotel_upstream:
+        # No hotel -> nothing meaningful to show
+        return fallback_empty_payload(time_axis)
+
+    hotel_arrays = extract_service_arrays_by_canonical(hotel_upstream, HOTEL_SERVICE_ID, n)
+    student_arrays = extract_service_arrays_by_canonical(student_upstream, STUDENT_SERVICE_ID, n) if student_upstream else {}
+    extended_arrays = extract_service_arrays_by_canonical(extended_upstream, EXTENDED_STAY_SERVICE_ID, n) if extended_upstream else {}
+
+    rca: List[Dict[str, Any]] = []
+
+    for canonical_id in CANONICAL_ROOM_TYPE_IDS:
+        h = hotel_arrays.get(canonical_id, {})
+        s = student_arrays.get(canonical_id, {})
+        e = extended_arrays.get(canonical_id, {})
+
+        usable_h = h.get("usable", [0] * n)
+        confirmed_h = h.get("confirmed", [0] * n)
+        optional_h = h.get("optional", [0] * n)
+        npb_h = h.get("non_picked_up", [0] * n)
+        paa_h = h.get("public_adj", [0] * n)
+        other_h = h.get("other_service", [0] * n)
+
+        npb_s = s.get("non_picked_up", [0] * n)
+        paa_s = s.get("public_adj", [0] * n)
+
+        npb_e = e.get("non_picked_up", [0] * n)
+        paa_e = e.get("public_adj", [0] * n)
+
+        # Total Nonpickupblock across ALL services
+        total_npb = [
+            (nh or 0) + (ns or 0) + (ne or 0)
+            for nh, ns, ne in zip(npb_h, npb_s, npb_e)
+        ]
+
+        # Available rooms =
+        # UsableResources(hotel)
+        # - ConfirmedReservations(hotel)
+        # - OptionalReservations(hotel)
+        # - OtherServiceReservationCount(hotel)
+        # - Nonpickupblock(all services)
+        base_available = [
+            (u or 0) - (ch or 0) - (oh or 0) - (oth or 0) - (np or 0)
+            for u, ch, oh, oth, np in zip(usable_h, confirmed_h, optional_h, other_h, total_npb)
+        ]
+
+        # Total rooms = UsableResources (Hotel)
+        total_rooms = list(usable_h)
+
+        # Service-specific columns
+        hotel_metric = [(base or 0) + (adj or 0) for base, adj in zip(base_available, paa_h)]
+        student_metric = [(base or 0) + (adj or 0) for base, adj in zip(base_available, paa_s)]
+        extended_metric = [(base or 0) + (adj or 0) for base, adj in zip(base_available, paa_e)]
+
+        rca.append({
+            "ResourceCategoryId": canonical_id,
+            "ResourceCategoryName": CANONICAL_ID_TO_NAME.get(canonical_id, canonical_id),
+            "Metrics": {
+                METRIC_TOTAL_ROOMS: total_rooms,
+                METRIC_AVAILABLE_ROOMS: base_available,
+                METRIC_HOTEL: hotel_metric,
+                METRIC_STUDENT: student_metric,
+                METRIC_EXTENDED_STAY: extended_metric,
+            },
+        })
+
+    return {
+        "TimeUnitStartsUtc": time_axis,
+        "ResourceCategoryAvailabilities": rca,
+    }
+
 # ============================================================
 # Page route (UI)
 # ============================================================
@@ -305,7 +300,6 @@ def index():
 # API: ophalen
 # ============================================================
 
-# Helpers om platform URL te normaliseren
 def _normalize_mews_base(raw: str) -> str:
     if not raw:
         return ""
@@ -317,25 +311,39 @@ def _normalize_mews_base(raw: str) -> str:
 
 @app.get("/availability")
 def get_availability():
-    # 1) Params
-    try:
-        year = int(request.args.get("year"))
-        month = int(request.args.get("month"))
-        assert 0 <= month <= 11
-    except Exception:
-        return jsonify({"error": "Provide valid 'year' (int) and 'month' in 0..11"}), 400
+    # 1) Params: if missing/invalid -> default to current month in Europe/Amsterdam
+    tz_nl = ZoneInfo("Europe/Amsterdam")
+    now_local = datetime.now(tz_nl)
 
-    # 2) Tijdas op basis van Europe/Amsterdam → UTC
-    #    Deze functie zou ISO-strings als "2025-02-01T23:00:00.000Z" moeten teruggeven
+    raw_year = request.args.get("year")
+    raw_month = request.args.get("month")
+
+    try:
+        if raw_year is not None and raw_month is not None:
+            year = int(raw_year)
+            month = int(raw_month)
+            assert 0 <= month <= 11
+        else:
+            raise ValueError("Missing params")
+    except Exception:
+        year = now_local.year
+        month = now_local.month - 1  # monthIndex 0–11
+        app.logger.info(
+            "No/invalid year/month provided, defaulting to current month: year=%s monthIndex=%s",
+            year,
+            month,
+        )
+
+    # 2) Time axis based on Europe/Amsterdam → UTC
     time_axis = iso_midnights_utc_for_month_eu_amsterdam(year, month)
     if not time_axis:
         return jsonify({"error": "No dates generated for given month/year"}), 500
 
     first_utc = time_axis[0]
     last_utc = time_axis[-1]
-    app.logger.info("Availability request received year=%s month=%s first=%s last=%s", year, month, first_utc, last_utc)
+    app.logger.info("Availability request year=%s monthIndex=%s first=%s last=%s", year, month, first_utc, last_utc)
 
-    # 3) Mews upstream configuratie
+    # 3) Mews upstream configuration
     mews_base = "https://api.mews-demo.com/api/connector/v1/"
     client_token = os.getenv("DEMO_CLIENTTOKEN")
     access_token = os.getenv("DAVID_WEST_ACCESSTOKEN")
@@ -348,30 +356,28 @@ def get_availability():
         name for name, value in [
             ("DEMO_CLIENTTOKEN", client_token),
             ("DAVID_WEST_ACCESSTOKEN", access_token),
-            ("MEWS_SERVICE_ID", hotel_service_id),
+            ("HOTEL_SERVICE_ID", hotel_service_id),
         ]
         if not value
     ]
     if missing:
-        # Geen upstream configuratie → geef lege payload zodat de UI blijft werken
         app.logger.warning("Upstream config missing: %s", missing)
         return jsonify(fallback_empty_payload(time_axis)), 200
 
     # Endpoint: getAvailability (ver 2024-01-22)
     url = mews_base + "services/getAvailability/2024-01-22"
 
-    # Metrics die we nodig hebben voor trueAvailability + wat extra's die handig kunnen zijn
     metrics = [
-        "ActiveResources",
-        "OutOfOrderBlocks",
+        "ActiveResources",                # not strictly needed, but harmless
+        "OutOfOrderBlocks",              # not used in current formulas
         "Occupied",
         "UsableResources",
         "ConfirmedReservations",
         "OptionalReservations",
-        "AllocatedBlockAvailability",
-        "BlockAvailability",
+        "AllocatedBlockAvailability",    # not used but might be useful later
+        "BlockAvailability",             # same
         "PublicAvailabilityAdjustment",
-        "OtherServiceReservationCount"
+        "OtherServiceReservationCount",
     ]
 
     payload_template: Dict[str, Any] = {
@@ -388,61 +394,64 @@ def get_availability():
     def call_service(service_id: str, label: str) -> Dict[str, Any]:
         payload = dict(payload_template)
         payload["ServiceId"] = service_id
-        app.logger.info("POST %s (%s ServiceId=%s, metrics=%d)", url, label, service_id, len(metrics))
         resp = session.post(url, json=payload, timeout=15)
-        app.logger.info("%s upstream status %s", label, resp.status_code)
+        app.logger.info("%s upstream status %s, ServiceId=%s", label, resp.status_code, service_id)
         resp.raise_for_status()
-        return resp.json()
 
+        # TEMP FIX
+        body = resp.json()
+
+        if label == "Hotel":
+            time_units = body.get("TimeUnitStartsUtc", [])
+            rcs = body.get("ResourceCategoryAvailabilities", [])
+            if rcs:
+                m0 = rcs[0].get("Metrics", {})
+                app.logger.info(
+                    "Hotel upstream first RC metrics (day0): usable=%s, confirmed=%s, optional=%s, occupied=%s, other=%s, adj=%s",
+                    (m0.get("UsableResources") or [None])[0],
+                    (m0.get("ConfirmedReservations") or [None])[0],
+                    (m0.get("OptionalReservations") or [None])[0],
+                    (m0.get("Occupied") or [None])[0],
+                    (m0.get("OtherServiceReservationCount") or [None])[0],
+                    (m0.get("PublicAvailabilityAdjustment") or [None])[0],
+                )
+
+        return body
+
+    # 4) Call Hotel (required)
     try:
-        upstream_json = call_service(hotel_service_id, "Hotel")
+        hotel_upstream = call_service(hotel_service_id, "Hotel")
     except requests.RequestException as e:
-        app.logger.warning("Upstream call failed, serving fallback payload: %s", e)
+        app.logger.warning("Hotel upstream call failed, serving fallback payload: %s", e)
         return jsonify(fallback_empty_payload(time_axis)), 200
 
+    # 5) Call Student / Extended (optional; if they fail, just treat as zeros)
+    student_upstream = None
+    if student_service_id:
+        try:
+            student_upstream = call_service(student_service_id, "Student")
+        except requests.RequestException as e:
+            app.logger.warning("Student upstream call failed, ignoring: %s", e)
+
+    extended_upstream = None
+    if extended_service_id:
+        try:
+            extended_upstream = call_service(extended_service_id, "Extended stay")
+        except requests.RequestException as e:
+            app.logger.warning("Extended stay upstream call failed, ignoring: %s", e)
+
+    # 6) Aggregate into portal payload
     try:
-        portal = transform_upstream_to_portal(upstream_json, time_axis)
+        portal = build_portal_from_services(time_axis, hotel_upstream, student_upstream, extended_upstream)
     except Exception as e:
+        app.logger.exception("Transform failed")
         return jsonify({"error": "Transform failed", "detail": str(e)}), 500
 
-    # 5) Verrijk met Student- en Extended stay-data
-    additional_services = [
-        (student_service_id, "Student", METRIC_STUDENT),
-        (extended_service_id, "Extended stay", METRIC_EXTENDED_STAY),
-    ]
-
-    for service_id, label, metric_name in additional_services:
-        if not service_id:
-            continue
-        try:
-            extra_upstream = call_service(service_id, label)
-        except requests.RequestException as exc:
-            app.logger.warning("Skipping %s service due to upstream error: %s", label, exc)
-            continue
-
-        # Use precomputed mapping from ROOM_TYPE_IDS_BY_SERVICE → canonical IDs
-        mapping = SERVICE_SPECIFIC_CATEGORY_MAP.get(service_id, {})
-        if not mapping:
-            app.logger.warning(
-                "No room type mapping available for %s service (service_id=%s), skipping metric merge",
-                label,
-                service_id,
-            )
-            continue
-
-        metric_values = map_service_availability_to_canonical(extra_upstream, time_axis, mapping)
-        if not metric_values:
-            app.logger.info("No matching categories returned for %s service", label)
-            continue
-
-        apply_metric_to_portal(portal, metric_name, metric_values, len(time_axis))
-
-    # Log wat er uit komt zonder gevoelige data
     ids = [rc.get("ResourceCategoryId") for rc in portal.get("ResourceCategoryAvailabilities", [])]
-    names = [rc.get("ResourceCategoryName") or CANONICAL_ID_TO_NAME.get(rc.get("ResourceCategoryId"), rc.get("ResourceCategoryId")) for rc in portal.get("ResourceCategoryAvailabilities", [])]
-    app.logger.info("Returning %d categories (names): %s", len(names), names)
+    names = [rc.get("ResourceCategoryName") for rc in portal.get("ResourceCategoryAvailabilities", [])]
 
     return jsonify(portal)
+
 # ============================================================
 # API: wijzigingen ontvangen (echo of doorsturen)
 # ============================================================
