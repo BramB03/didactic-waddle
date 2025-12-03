@@ -103,7 +103,7 @@ totalValuebefore = 0
 totalValueafter = 0
 totalIncrease = 0
 reservationCounter = 0
-PROCESSED_FILE = Path("reservations.txt")
+PROCESSED_FILE = Path("reservations bcom.txt")
 ERRORED_FILE = Path("full days.txt")
 
 # Property specific config
@@ -114,9 +114,9 @@ serviceId = ""
 # Execution specific information
 # =====================================================
 reservationCount = 1000
-dateRange = 1
+dateRange = 330
 dayRange = 1
-start = "2025-11-24T00:00:00Z"
+start = "2026-01-01T00:00:00Z"
 travelAgencyId = "d988b779-31e5-4716-b21b-b24100a3a684"
 
 # Generic work
@@ -145,9 +145,18 @@ if ERRORED_FILE.exists():
 else:
     errored_ids = set()
 
-
+timeList = [30,60,90,120,150,180,210,240,270,300,330,360]
 startUtc = datetime.fromisoformat(start.replace("Z", "+00:00"))
 for length in range(dateRange):
+    if length in timeList:
+        if length == 60:
+            dayRange =+ 1
+        if length == 120:
+            dayRange += 1
+        if length == 180:
+            dayRange += 2
+        time.sleep(30)
+
     print("Processing week starting at:", startUtc.isoformat())
     endUtc = startUtc + timedelta(days=dayRange)
     reservationsIds = getReservationInformation(

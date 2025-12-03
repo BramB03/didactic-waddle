@@ -2,13 +2,42 @@ import requests, json, time, pytest, os, pprint
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+# Rule Examples
+# =====================================================
+
 '''
 Booking.com vanaf 10 november 0.00 uur.
 Logica:
 if travelagencyId == "" and createdUtc before November 10th 00:00:00Z:
-Webtarieven bastion (CWI / Open API), vanaf 13 november 0:00 uur
-if origin == "Connector" and createdUtc before November 13th 00:00:00Z:
 '''
+
+# Execution specific information
+# =====================================================
+reservationCount = 3                # Max aantal reserveringen om te verwerken. Inkorten voor testdoeleinden.
+iterationRange = 10                 # Aantal iteraties om te verwerken vanaf startdatum.
+dayRange = 1                        # Aantal dagen per iteratie. 
+start = "2026-01-01T00:00:00Z"      # Startdatum in ISO formaat.
+priceIncrease = 0.11009174311927    # Percentage prijsverhoging, bv 0.1 = 10%
+url = "https://api.mews-demo.com/api/connector/v1/" # or "https://api.mews.com/api/connector/v1/", remove -demo for production.
+
+# Property specific config
+# =====================================================
+
+if url == "https://api.mews-demo.com/api/connector/v1/":
+    print("⚠️ Running against DEMO environment. Make sure this is intended. If not, waiting 15 seconds to abort...")
+    time.sleep(15)
+    clientToken = "3802A256E16D488796E5B20200B989CE-DD4A90FED8F9CD53DAD2841BCBA407C"
+    accessToken = "7500F90A29B442E0BFE3B24C00989464-FAC676C1542EDE861E5891A135E1B38"
+    serviceId = "065aba6e-2533-4985-9aef-b241009333a8"
+
+elif url == "https://api.mews.com/api/connector/v1/":
+    print("⚠️ Running against LIVE environment. Make sure this is intended. If not, waiting 15 seconds to abort...")
+    time.sleep(15)
+    clientToken = "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D"
+    accessToken = "8BD94EED3ACA4C218CAFB39B00BDF407-259ED45886DCC70D6703A3F07041780"
+    serviceId = "023362ca-b557-4655-b228-afc7009cfe0a"
+
+
 
 def getReservationInformation(serviceId, count, startDate, endDate, clientToken, accessToken, client, url, headers):
     payload = {
@@ -42,11 +71,6 @@ def getReservationInformation(serviceId, count, startDate, endDate, clientToken,
         if item.get("TravelAgencyId") == "d988b779-31e5-4716-b21b-b24100a3a684" and createdStr > bookingCutoff:
             skippedReservations.append((item.get("Id"), "Booking.com pre-Nov 10"))
             skipped_f.write(f"{item.get("Id")} - Booking.com post-Nov 10\n")
-            skipped_f.flush()
-            continue
-        elif item.get("Origin") == "Connector" and createdStr > connectorCutoff:
-            skippedReservations.append((item.get("Id"), "Webtarieven Bastion pre-Nov 13"))
-            skipped_f.write(f"{item.get("Id")} - Webtarieven Bastion post-Nov 13\n")
             skipped_f.flush()
             continue
         elif item.get("Id") in processed_ids:
@@ -114,10 +138,8 @@ def updateReservationNightData(reservationId, payloadPrice, clientToken, accessT
 utcBefore = datetime.now(timezone.utc)
 # Generic config
 # =====================================================
-#clientToken = os.getenv("DEMO_CLIENTTOKEN")
 
 client = "Test"
-url = "https://api.mews.com/api/connector/v1/"
 headers = {
     "Content-Type": "application/json"
 }
@@ -129,33 +151,6 @@ reservationCounter = 0
 PROCESSED_FILE = Path("processed_ids.txt")
 ERRORED_FILE = Path("errored_ids.txt")
 SKIPPED_FILE = Path("skipped_ids.txt")
-
-# Property specific config
-# =====================================================
-# Bastion Hotels WebsiteToken
-clientToken = "3802A256E16D488796E5B20200B989CE-DD4A90FED8F9CD53DAD2841BCBA407C"
-
-# Bastion Hotels AccessToken - Leiden Oesgeest (property marketplace)
-accessToken = "7500F90A29B442E0BFE3B24C00989464-FAC676C1542EDE861E5891A135E1B38"
-
-# Bastion Hotels ServiceId - Leiden Oesgeest (property services)
-serviceId = "a6754d19-6eee-4a5a-8a92-b24100970efd"
-
-# Bastion Hotels WebsiteToken - DEMO
-#clientToken = "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D"
-
-# Bastion Hotels AccessToken - Leiden Utrecht (property marketplace)
-#accessToken = "8BD94EED3ACA4C218CAFB39B00BDF407-259ED45886DCC70D6703A3F07041780"
-
-# Bastion Hotels ServiceId - Leiden Utrecht (property services)
-#serviceId = "023362ca-b557-4655-b228-afc7009cfe0a"
-
-# Execution specific information
-# =====================================================
-reservationCount = 50000 # Max aantal reserveringen om te verwerken. Inkorten voor testdoeleinden.
-iterationRange = 350 # Aantal iteraties om te verwerken vanaf startdatum.
-dayRange = 1 # Aantal dagen per iteratie. 
-start = "2026-01-22T00:00:00Z"
 
 # Generic work
 # =====================================================
@@ -176,7 +171,6 @@ if SKIPPED_FILE.exists():
         skipped_ids = set(line.strip() for line in f if line.strip())
 else:
     skipped_ids = set()
-
 
 startUtc = datetime.fromisoformat(start.replace("Z", "+00:00"))
 skippedReservations = []
@@ -233,8 +227,8 @@ with open(PROCESSED_FILE, "a") as processed_f, \
             for i, item in enumerate(data_sorted):
                 item["Index"] = i
                 totalValuebefore += item["GrossValue"]
-                item ["increasedBy"] = round(item["GrossValue"] * 0.11009174311927, 2)
-                item["GrossValue"] = round(item["GrossValue"] * 1.11009174311927, 2)
+                item["GrossValue"] = round(item["GrossValue"] * (1 + priceIncrease), 2)
+                item ["increasedBy"] = round(item["GrossValue"] * priceIncrease, 2)
                 totalValueafter += item["GrossValue"]
                 item.pop("ConsumedUtc", None)
 

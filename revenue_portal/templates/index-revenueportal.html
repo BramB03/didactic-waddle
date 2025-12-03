@@ -176,7 +176,6 @@
     .metric-value.lang{background:#f6f6fa;color:#333a66}
     tbody .detail-row:nth-child(2n) td{background:#fcfdff}
 
-    /* Zero & negative states for Hotel/Student/Extended */
     .metric-value.zero-value{
       background:#fff7ed;
       color:#c05621;
@@ -188,7 +187,6 @@
       border-color:#fecaca;
     }
 
-    /* Available rooms: negative -> red text only, no pill */
     .metric-value.available-negative{
       background:transparent !important;
       color:#b91c1c !important;
@@ -198,7 +196,6 @@
       min-width:0;
     }
 
-    /* Inline edit stijl */
     .editable{outline:1px dashed transparent}
     .editing .editable{outline:1px dashed #c8ccf8;background:#fafbff}
     .editable[contenteditable="true"]:focus{
@@ -210,16 +207,17 @@
 <body>
   <div class="container" id="app">
     <h1>Hotel Availability Dashboard</h1>
-    <p class="subtitle">Room availability per service
+    <p class="subtitle">
+      Room availability per service –
       <span id="profileLabel"></span>
     </p>
     
     <div class="controls">
       <div class="field">
+        <label for="profileSelect">Profile</label>
         <select id="profileSelect"></select>
-    </div>
-    
-    <div class="controls">
+      </div>
+
       <div class="field">
         <label for="monthSelect">Select month</label>
         <select id="monthSelect"></select>
@@ -236,7 +234,7 @@
       <button class="btn btn-primary" id="saveBtn">Save (Post adjustments)</button>
     </div>
 
-    <div class="hint">..</div>
+    <div class="hint">Tip: kies een profiel, selecteer een maand en dubbelklik op de bewerkbare cellen.</div>
 
     <div class="table-wrapper">
       <table id="roomTable">
@@ -249,70 +247,135 @@
   </div>
 
   <script>
-  // ===== Detect current profile from URL path =====
-  // e.g. /revenue-portal/default/ -> ['revenue-portal','default']
-  const pathParts = window.location.pathname.split('/').filter(Boolean);
-  let currentProfile = 'default';
-  if (pathParts.length >= 2) {
-    currentProfile = pathParts[1]; // second segment after "revenue-portal"
-  }
+    // ===== Profiel uit URL bepalen =====
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    let currentProfile = 'default';
+    if (pathParts.length >= 2) {
+      currentProfile = pathParts[1]; // segment na "revenue-portal"
+    }
 
-  // Root/prefix: "/revenue-portal/" als pad "/revenue-portal/TSH/" is
-  const appRoot = pathParts.length > 0 ? `/${pathParts[0]}/` : '/';
+    // Root van de app (altijd /revenue-portal/)
+    const appRoot = pathParts.length > 0 ? `/${pathParts[0]}/` : '/';
 
-  let roomTypeNameMap = {};
-  let roomTypeOrder = [];
-  let roomTypeIdByName = {};
-  let profilesMap = {};
+    // API-base voor availability/room-types
+    const apiBase = window.location.pathname.endsWith('/')
+      ? window.location.pathname
+      : window.location.pathname + '/';
 
-  async function loadRoomTypes() {
-    const res = await fetch(`${apiBase}room-types`);
-    if (!res.ok) throw new Error("Cannot load room types");
-    const data = await res.json(); // same structure as profiles.py
+    console.log("INIT pathParts:", pathParts, "currentProfile:", currentProfile, "appRoot:", appRoot, "apiBase:", apiBase);
 
-    roomTypeNameMap = data;
+    let roomTypeNameMap = {};
+    let roomTypeOrder = [];
+    let roomTypeIdByName = {};
+    let profilesMap = {};
 
-    // Build order
-    roomTypeOrder = Object.entries(data)
-      .sort(([, a], [, b]) => (a.order ?? 99999) - (b.order ?? 99999))
-      .map(([, cfg]) => cfg.name);
+    const profileSelect = document.getElementById('profileSelect');
+    const monthSelect   = document.getElementById('monthSelect');
+    const headerRow     = document.getElementById('headerRow');
+    const tableBody     = document.getElementById('tableBody');
+    const editToggle    = document.getElementById('editToggle');
+    const saveBtn       = document.getElementById('saveBtn');
+    const resetBtn      = document.getElementById('resetBtn');
+    const app           = document.getElementById('app');
+    const profileLabel  = document.getElementById('profileLabel');
 
-    // Reverse lookup
-    roomTypeIdByName = {};
-    Object.entries(data).forEach(([id, cfg]) => {
-      roomTypeIdByName[cfg.name] = id;
-    });
-
-    console.log("Loaded room types:", data);
-  }
-
-  const getRoomTypeName = id => roomTypeNameMap[id]?.name || id;
-
-    // Debug (optional)
-    console.log("Current profile:", currentProfile);
-
-  // ===== State =====
-  let apiDatesUtc = [];
-  const profileSelect = document.getElementById('profileSelect');
-  const monthSelect   = document.getElementById('monthSelect');
-  const headerRow     = document.getElementById('headerRow');
-  const tableBody     = document.getElementById('tableBody');
-  const editToggle    = document.getElementById('editToggle');
-  const saveBtn       = document.getElementById('saveBtn');
-  const resetBtn      = document.getElementById('resetBtn');
-  const app           = document.getElementById('app');
-  const profileLabel  = document.getElementById('profileLabel');
-
+    let apiDatesUtc = [];
     let workingData = {};
     let originalData = {};
     let currentDays = 31;
     const monthsAhead = 12;
 
-    // ===== API base (always include /<profile>/) =====
-    // Works for both /revenue-portal/ and /revenue-portal/<profile>/ URLs
-    const apiBase = `${appRoot}${currentProfile}/`;
+    // ===== Room types =====
+    async function loadRoomTypes() {
+      const res = await fetch(`${apiBase}room-types`);
+      if (!res.ok) throw new Error("Cannot load room types");
 
-    // ===== API call voor availability =====
+      const data = await res.json();
+      roomTypeNameMap = data;
+
+      roomTypeOrder = Object.entries(data)
+        .sort(([, a], [, b]) => (a.order ?? 99999) - (b.order ?? 99999))
+        .map(([, cfg]) => cfg.name);
+
+      roomTypeIdByName = {};
+      Object.entries(data).forEach(([id, cfg]) => {
+        roomTypeIdByName[cfg.name] = id;
+      });
+
+      console.log("Loaded room types:", data);
+    }
+
+    const getRoomTypeName = id => roomTypeNameMap[id]?.name || id;
+
+    // ===== Profiles dropdown =====
+    async function loadProfiles() {
+      try {
+        const res = await fetch(`${appRoot}profiles`);
+        if (!res.ok) throw new Error('Cannot load profiles');
+
+        const data = await res.json();
+        // verwacht: { "default": { "display_name": "The David Demo", ... }, "TSH": {...} }
+        console.log("Profiles response:", data);
+
+        profilesMap = data;
+        const keys = Object.keys(data);
+
+        profileSelect.innerHTML = '';
+        keys.forEach(key => {
+          const opt = document.createElement('option');
+          opt.value = key;
+          opt.textContent = data[key].display_name || key;
+          profileSelect.appendChild(opt);
+        });
+
+        // Als currentProfile niet bestaat → fallback
+        if (!keys.includes(currentProfile)) {
+          if (keys.includes('default')) {
+            currentProfile = 'default';
+          } else {
+            currentProfile = keys[0];
+          }
+        }
+        profileSelect.value = currentProfile;
+
+        const displayName = data[currentProfile]?.display_name || currentProfile;
+        profileLabel.textContent = displayName;
+
+      } catch (e) {
+        console.error('Error loading profiles, falling back to hardcoded', e);
+
+        const fallback = {
+          "default": { display_name: "Default" },
+          "TSH": { display_name: "TSH" }
+        };
+        profilesMap = fallback;
+
+        profileSelect.innerHTML = '';
+        Object.entries(fallback).forEach(([key, cfg]) => {
+          const opt = document.createElement('option');
+          opt.value = key;
+          opt.textContent = cfg.display_name || key;
+          profileSelect.appendChild(opt);
+        });
+
+        const keys = Object.keys(fallback);
+        if (!keys.includes(currentProfile)) {
+          currentProfile = keys[0];
+        }
+        profileSelect.value = currentProfile;
+
+        const displayName = fallback[currentProfile]?.display_name || currentProfile;
+        profileLabel.textContent = displayName;
+      }
+    }
+
+    // Profiel wijzigen → redirect
+    profileSelect.addEventListener('change', () => {
+      const selected = profileSelect.value || 'default';
+      window.location.href = `${appRoot}${selected}/`;
+    });
+
+    // ===== Availability API =====
     async function loadFromApi(year, monthIndex){
       const url = `${apiBase}availability?year=${year}&month=${monthIndex}`;
       console.log("Calling availability →", url);
@@ -331,67 +394,6 @@
       apiDatesUtc = Array.isArray(apiData.TimeUnitStartsUtc) ? apiData.TimeUnitStartsUtc : [];
       return apiToWorkingData(apiData);
     }
-
-  // ===== Profiles dropdown =====
-  async function loadProfiles() {
-    try {
-      // Backend route: @app.get("/profiles")
-      const res = await fetch(`${appRoot}profiles`);
-      if (!res.ok) throw new Error('Cannot load profiles');
-
-      const data = await res.json(); 
-      // data = { "default": {display_name: "The David Demo"}, "TSH": {display_name: "TSH Delft"}, ... }
-
-      profilesMap = data;
-
-      const keys = Object.keys(data);
-      profileSelect.innerHTML = '';
-
-      keys.forEach(key => {
-        const opt = document.createElement('option');
-        opt.value = key;
-        opt.textContent = data[key].display_name || key; // gebruik display_name
-        profileSelect.appendChild(opt);
-      });
-
-      // Current profile als geselecteerd zetten
-      if (keys.includes(currentProfile)) {
-        profileSelect.value = currentProfile;
-      }
-
-      // Label in de subtitel zetten
-      const displayName = (data[currentProfile] && data[currentProfile].display_name) || currentProfile;
-      profileLabel.textContent = displayName;
-
-    } catch (e) {
-      console.error('Error loading profiles, falling back to hardcoded', e);
-
-      // Fallback: hardcoded default + TSH
-      const fallback = {
-        "default": { display_name: "Default" },
-        "TSH": { display_name: "TSH" }
-      };
-      profilesMap = fallback;
-
-      profileSelect.innerHTML = '';
-      Object.entries(fallback).forEach(([key, cfg]) => {
-        const opt = document.createElement('option');
-        opt.value = key;
-        opt.textContent = cfg.display_name || key;
-        profileSelect.appendChild(opt);
-      });
-      profileSelect.value = currentProfile;
-
-      const displayName = (fallback[currentProfile] && fallback[currentProfile].display_name) || currentProfile;
-      profileLabel.textContent = displayName;
-    }
-  }
-
-    // Veranderen van profiel = redirect naar /revenue-portal/<profile>/
-    profileSelect.addEventListener('change', () => {
-      const selected = profileSelect.value || 'default';
-      window.location.href = `${appRoot}${selected}/`;
-    });
 
     async function saveToServer(payload){
       const res = await fetch(`${apiBase}availability/overrides`, {
@@ -494,12 +496,10 @@
 
             let extraClass = '';
 
-            // Available rooms: negative -> red text only
             if (metric === 'Available rooms' && val < 0) {
               extraClass += ' available-negative';
             }
 
-            // Hotel/Student/Extended: color by zero/negative
             if (metric === 'Hotel' || metric === 'Student' || metric === 'Extended stay') {
               if (val < 0) {
                 extraClass += ' negative-value';
@@ -643,25 +643,24 @@
       }
     });
 
-    (async function init() {
+    // ===== Initial load =====
+    (async function init(){
       try {
         console.log("INIT start");
-
-        await loadProfiles();    // profielen + label
+        await loadProfiles();
         console.log("Profiles loaded");
-
-        await loadRoomTypes();   // room types
+        await loadRoomTypes();
         console.log("Room types loaded");
 
         const defaultValue = populateMonthOptions();
         monthSelect.value = defaultValue;
-        console.log("Month options set to", monthSelect.value);
+        console.log("MonthSelect default:", defaultValue);
 
         const { year, monthIndex } = getSelectedYearMonth();
-        console.log("Loading availability for", year, monthIndex);
+        console.log("First availability load:", year, monthIndex);
 
         const api = await loadFromApi(year, monthIndex);
-        console.log("Working data after loadFromApi", api);
+        console.log("Working data after first load:", api);
 
         workingData  = JSON.parse(JSON.stringify(api));
         originalData = JSON.parse(JSON.stringify(api));
