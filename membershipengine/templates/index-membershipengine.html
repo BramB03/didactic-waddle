@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Membership / Reservation Creator</title>
+  <style>
+    :root{
+      --bg:#f6f7fb;
+      --card:#ffffff;
+      --text:#1f2330;
+      --muted:#6b7280;
+      --border:#e6e8ef;
+      --primary:#111827;
+      --primaryHover:#0b1220;
+      --shadow: 0 10px 30px rgba(16,18,27,.08);
+      --radius:16px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 28px;
+    }
+    .wrap{width: min(720px, 100%);}
+    .header{margin-bottom:14px;}
+    .header h1{font-size:22px; font-weight:750; letter-spacing:-.02em;}
+    .header p{margin-top:6px; color:var(--muted); font-size:14px; line-height:1.4;}
+    .card{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+    form{display:grid; gap:14px;}
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 640px){
+      .grid{grid-template-columns: 1fr;}
+    }
+    label{
+      display:block;
+      font-size:13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    input, select{
+      width: 100%;
+      padding: 12px 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 14px;
+      outline: none;
+      background: #fff;
+      color: var(--text);
+    }
+    input:focus, select:focus{
+      border-color:#c9cde0;
+      box-shadow: 0 0 0 4px rgba(17, 24, 39, 0.06);
+    }
+    .row{
+      display:flex;
+      gap: 12px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap: wrap;
+    }
+    .btn{
+      appearance:none;
+      border:0;
+      border-radius: 14px;
+      padding: 12px 14px;
+      background: var(--primary);
+      color:#fff;
+      font-weight: 650;
+      cursor:pointer;
+      transition: transform .04s ease, background .15s ease;
+      min-width: 160px;
+    }
+    .btn:hover{background: var(--primaryHover);}
+    .btn:active{transform: translateY(1px);}
+    .btn[disabled]{opacity:.6; cursor:not-allowed;}
+    .helper{
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #fff;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .status{
+      margin-top: 12px;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: #fff;
+      font-size: 14px;
+      white-space: pre-wrap;
+      display:none;
+    }
+    .status.ok{border-color:#b7e3c1; background:#f0fbf3; color:#0f5132;}
+    .status.err{border-color:#f5c2c7; background:#fff0f1; color:#842029;}
+    .mini{
+      font-size:12px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <h1>Create Reservation / Membership</h1>
+      <p>Enter guest details and a start date. Duration will translate to months. The form posts JSON to your backend (Python), where you’ll call Mews: customer add → loyalty add → reservation add.</p>
+    </div>
+
+    <div class="card">
+      <form id="bookingForm" autocomplete="on">
+        <div class="grid">
+          <div>
+            <label for="firstName">Firstname</label>
+            <input id="firstName" name="firstName" type="text" placeholder="Bram" required />
+          </div>
+          <div>
+            <label for="lastName">Lastname</label>
+            <input id="lastName" name="lastName" type="text" placeholder="Jansen" required />
+          </div>
+        </div>
+
+        <div class="grid">
+          <div>
+            <label for="emailAddress">Email address</label>
+            <input id="emailAddress" name="emailAddress" type="email" placeholder="bram@example.com" required />
+          </div>
+          <div>
+            <label for="startDate">Start date</label>
+            <input id="startDate" name="startDate" type="date" required />
+            <div class="mini">Tip: end date is computed as start date + duration months (end date exclusive).</div>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div>
+            <label for="durationMonths">Duration</label>
+            <select id="durationMonths" name="durationMonths" required>
+              <option value="1">1 month</option>
+              <option value="6">6 months</option>
+              <option value="12">12 months</option>
+            </select>
+          </div>
+
+          <div class="row" style="align-items:flex-end;">
+            <div class="pill" id="computedRange">End date: —</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="helper">
+            Backend endpoint (example): <code>POST /api/create</code><br />
+            Payload: <code>{ firstName, lastName, emailAddress, startDate, durationMonths, endDate }</code>
+          </div>
+          <button class="btn" id="createBtn" type="submit">Create</button>
+        </div>
+
+        <div id="statusBox" class="status"></div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // ---- Config: change this to your Python route ----
+    const apiUrl = "/api/create";
+
+    const bookingForm = document.getElementById("bookingForm");
+    const firstNameEl = document.getElementById("firstName");
+    const lastNameEl = document.getElementById("lastName");
+    const emailAddressEl = document.getElementById("emailAddress");
+    const startDateEl = document.getElementById("startDate");
+    const durationMonthsEl = document.getElementById("durationMonths");
+    const computedRangeEl = document.getElementById("computedRange");
+    const createBtn = document.getElementById("createBtn");
+    const statusBox = document.getElementById("statusBox");
+
+    function setStatus(type, message) {
+      statusBox.className = "status " + (type || "");
+      statusBox.textContent = message || "";
+      statusBox.style.display = message ? "block" : "none";
+    }
+
+    function toIsoDate(dateObj) {
+      // yyyy-mm-dd in local time
+      const yyyy = dateObj.getFullYear();
+      const mm = String(dateObj.getMonth() + 1).padStart(2, "0");
+      const dd = String(dateObj.getDate()).padStart(2, "0");
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    function addMonthsKeepingDay(startIso, monthsToAdd) {
+      // Works for most booking use-cases; for month-end edge-cases it keeps JS date rollover behavior.
+      const [y, m, d] = startIso.split("-").map(Number);
+      const dateObj = new Date(y, m - 1, d);
+      const targetMonth = dateObj.getMonth() + Number(monthsToAdd);
+      dateObj.setMonth(targetMonth);
+      return toIsoDate(dateObj);
+    }
+
+    function updateComputedEndDate() {
+      const startDate = startDateEl.value;
+      const durationMonths = Number(durationMonthsEl.value || 0);
+      if (!startDate || !durationMonths) {
+        computedRangeEl.textContent = "End date: —";
+        return;
+      }
+      const endDate = addMonthsKeepingDay(startDate, durationMonths);
+      computedRangeEl.textContent = `End date: ${endDate}`;
+    }
+
+    startDateEl.addEventListener("change", updateComputedEndDate);
+    durationMonthsEl.addEventListener("change", updateComputedEndDate);
+
+    bookingForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      setStatus("", "");
+
+      const firstName = firstNameEl.value.trim();
+      const lastName = lastNameEl.value.trim();
+      const emailAddress = emailAddressEl.value.trim();
+      const startDate = startDateEl.value;
+      const durationMonths = Number(durationMonthsEl.value);
+
+      if (!firstName || !lastName || !emailAddress || !startDate || !durationMonths) {
+        setStatus("err", "Please fill in all fields.");
+        return;
+      }
+
+      const endDate = addMonthsKeepingDay(startDate, durationMonths);
+
+      const payload = {
+        firstName,
+        lastName,
+        emailAddress,
+        startDate,
+        durationMonths,
+        endDate
+      };
+
+      createBtn.disabled = true;
+      createBtn.textContent = "Creating...";
+
+      try {
+        const res = await fetch(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const isJson = (res.headers.get("content-type") || "").includes("application/json");
+        const data = isJson ? await res.json() : await res.text();
+
+        if (!res.ok) {
+          const msg = typeof data === "string" ? data : (data.message || JSON.stringify(data, null, 2));
+          setStatus("err", `Error (${res.status}):\n${msg}`);
+          return;
+        }
+
+        const okMsg = typeof data === "string"
+          ? data
+          : (data.message || "Created successfully.\n\n" + JSON.stringify(data, null, 2));
+
+        setStatus("ok", okMsg);
+      } catch (err) {
+        setStatus("err", "Network / server error:\n" + (err?.message || String(err)));
+      } finally {
+        createBtn.disabled = false;
+        createBtn.textContent = "Create";
+      }
+    });
+
+    // Initialize end-date pill
+    updateComputedEndDate();
+  </script>
+</body>
+</html>

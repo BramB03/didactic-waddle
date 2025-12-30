@@ -10,14 +10,13 @@ import pytz
 import time
 
 availabilityRatio = 0.7
-ExtraDays = 40
+ExtraDays = 25
 
 ClientToken = os.getenv("DEMO_CLIENTTOKEN")
 #AccessToken = os.getenv("DAVID_ACCESSTOKEN")
-AccessToken = "8BD94EED3ACA4C218CAFB39B00BDF407-259ED45886DCC70D6703A3F07041780"
+AccessToken = "B59225A566844465B3F1B3AD00D87552-66D83848AD0DB75277653994BBF827D"
 
-stayServiceId = "5291ecd7-c75f-4281-bca0-ae94011b2f3a"
-stayServiceId = "023362ca-b557-4655-b228-afc7009cfe0a"
+stayServiceId = "c1bcdc5d-b995-4c18-b9dc-b36400abe878"
 Client = "Demo"
 
 #time.sleep(900)

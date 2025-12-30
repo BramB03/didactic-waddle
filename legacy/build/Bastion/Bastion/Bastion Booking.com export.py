@@ -25,6 +25,7 @@ def getReservationInformation(serviceId, count, travelAgencyId, startDate, endDa
             "Count":count
         }
     }
+
     response = requests.post(url + "reservations/getAll/2023-06-06", headers=headers, data=json.dumps(payload))
     if response.status_code != 200:
         print(json.dumps(payload))
@@ -114,9 +115,9 @@ serviceId = ""
 # Execution specific information
 # =====================================================
 reservationCount = 1000
-dateRange = 330
+dateRange = 365
 dayRange = 1
-start = "2026-01-01T00:00:00Z"
+start = "2025-12-29T00:00:00Z"
 travelAgencyId = "d988b779-31e5-4716-b21b-b24100a3a684"
 
 # Generic work
@@ -150,12 +151,12 @@ startUtc = datetime.fromisoformat(start.replace("Z", "+00:00"))
 for length in range(dateRange):
     if length in timeList:
         if length == 60:
-            dayRange =+ 1
-        if length == 120:
             dayRange += 1
-        if length == 180:
+        if length == 90:
+            dayRange += 1
+        if length == 100:
             dayRange += 2
-        time.sleep(30)
+        time.sleep(15)
 
     print("Processing week starting at:", startUtc.isoformat())
     endUtc = startUtc + timedelta(days=dayRange)

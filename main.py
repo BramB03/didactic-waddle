@@ -5,6 +5,7 @@ from werkzeug.middleware.dispatcher import DispatcherMiddleware
 # import your other sub-apps...
 import bookingengine.mainbookingengine as bookingengine_module
 import webapp as webapp_module
+import membershipengine.mainmembershipengine as membershipengine_app
 
 # import the revenue portal Flask app from the package
 from revenue_portal import app as revenue_portal_app
@@ -16,6 +17,7 @@ app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
     "/bookingengine": bookingengine_module.app,
     "/webapp": webapp_module.app,
     "/revenue-portal": revenue_portal_app,
+    "/membershipengine": membershipengine_app.app,  # Assuming membershipengine_app is defined elsewhere
 })
 
 @app.route("/")
