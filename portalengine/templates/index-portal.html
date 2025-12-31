@@ -192,10 +192,18 @@
         const accountId = escapeHtml(x.accountId || "");
         const endDate = isoToDutch(x.endDate);
         const customerName = escapeHtml(x.customerName || "—");
+        const membershipId = escapeHtml(x.membershipId || "");
 
         // Example: 2 buttons (you said you want 2 actions)
         return `
-          <tr>
+          <tr 
+              data-account-id="${escapeHtml(x.accountId || "")}"
+              data-membership-number="${escapeHtml(x.membershipNumber || "")}"
+              data-customer-name="${escapeHtml(x.customerName || "")}"
+              data-state="${escapeHtml(x.state || "")}"
+              data-end-date="${escapeHtml(x.endDate || "")}"
+              data-membership-id="${escapeHtml(x.membershipId || "")}"
+            >
             <td class="mono">${customerName}</td>
             <td>${membershipNumber}</td>
             <td>-</td>
@@ -204,7 +212,7 @@
             <td>€0.00</td>
             <td>
               <div class="actions">
-                <button class="btn" data-action="pause" data-account-id="${accountId}">Pause</button>
+                <button class="btn" data-action="pause" data-account-id="${accountId}">Pause next month</button>
                 <button class="btn danger" data-action="cancel" data-account-id="${accountId}">Cancel</button>
               </div>
             </td>
@@ -242,13 +250,18 @@
     refreshBtn.addEventListener("click", loadMemberships);
 
     // ✅ Button clicks (2 actions)
-    document.addEventListener("click", async (ev) => {
-      const btn = ev.target.closest("button");
-      if (!btn) return;
+      document.addEventListener("click", async (ev) => {
+        const btn = ev.target.closest("button");
+        if (!btn) return;
 
-      const action = btn.dataset.action;
-      const accountId = btn.dataset.accountId;
-      if (!action || !accountId) return;
+        const action = btn.dataset.action;
+
+        const row = btn.closest("tr");
+        if (!row) return;
+
+        const accountId = row.dataset.accountId;
+        const membershipId = row.dataset.membershipId;
+        const endDate = row.dataset.endDate;      if (!action || !accountId) return;
 
       try {
         if (action === "pause") {
@@ -258,7 +271,11 @@
           const res = await fetch("/portalengine/api/membership/pause", {
             method: "POST",
             headers: {"Content-Type":"application/json"},
-            body: JSON.stringify({ accountId })
+            body: JSON.stringify({ 
+              accountId,
+              membershipId,
+              endDate
+             })
           });
           const out = await res.json().catch(() => ({}));
           if (!res.ok) throw new Error(JSON.stringify(out, null, 2));
@@ -275,7 +292,7 @@
           const res = await fetch("/portalengine/api/membership/cancel", {
             method: "POST",
             headers: {"Content-Type":"application/json"},
-            body: JSON.stringify({ accountId })
+            body: JSON.stringify({ membershipId, accountId, endDate  })
           });
           const out = await res.json().catch(() => ({}));
           if (!res.ok) throw new Error(JSON.stringify(out, null, 2));
