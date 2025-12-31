@@ -1,4 +1,5 @@
 # main.py
+'''
 from flask import Flask, render_template, Response
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from a2wsgi import ASGIMiddleware  # ASGI -> WSGI adapter for mounting FastAPI into Flask
@@ -34,4 +35,4 @@ def app1():
 
 if __name__ == "__main__":
     # Dev only. For prod you’d use gunicorn, etc.
-    app.run(debug=True, host="0.0.0.0", port=8000)
+    app.run(debug=True, host="0.0.0.0", port=8000)'''

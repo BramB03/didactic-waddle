@@ -16,7 +16,9 @@
       --shadow: 0 10px 30px rgba(16,18,27,.08);
       --radius:16px;
     }
-    *{box-sizing:border-box;margin:0;padding:0}
+
+    *{ box-sizing:border-box; margin:0; padding:0; }
+
     body{
       font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial;
       background: var(--bg);
@@ -27,10 +29,22 @@
       justify-content:center;
       padding: 28px;
     }
-    .wrap{width: min(720px, 100%);}
-    .header{margin-bottom:14px;}
-    .header h1{font-size:22px; font-weight:750; letter-spacing:-.02em;}
-    .header p{margin-top:6px; color:var(--muted); font-size:14px; line-height:1.4;}
+
+    .wrap{ width: min(720px, 100%); }
+
+    .header{ margin-bottom: 14px; }
+    .header h1{
+      font-size: 22px;
+      font-weight: 750;
+      letter-spacing: -0.02em;
+    }
+    .header p{
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
     .card{
       background: var(--card);
       border: 1px solid var(--border);
@@ -38,24 +52,28 @@
       box-shadow: var(--shadow);
       padding: 18px;
     }
-    form{display:grid; gap:14px;}
+
+    form{ display:grid; gap: 14px; }
+
     .grid{
       display:grid;
       grid-template-columns: 1fr 1fr;
       gap: 14px;
+      align-items: start; /* ⬅️ was end */
     }
-    @media (max-width: 640px){
-      .grid{grid-template-columns: 1fr;}
-    }
+
+/* reserve equal vertical space for all mini helper rows */
     label{
       display:block;
-      font-size:13px;
+      font-size: 13px;
       color: var(--muted);
       margin-bottom: 6px;
     }
+
     input, select{
       width: 100%;
-      padding: 12px 12px;
+      height: 44px;              /* ✅ consistent control height */
+      padding: 0 12px;            /* consistent */
       border: 1px solid var(--border);
       border-radius: 12px;
       font-size: 14px;
@@ -63,51 +81,71 @@
       background: #fff;
       color: var(--text);
     }
+
     input:focus, select:focus{
       border-color:#c9cde0;
       box-shadow: 0 0 0 4px rgba(17, 24, 39, 0.06);
     }
+
+    /* ✅ Make the "pill" look like a real input and same size */
+    .pill{
+      width: 100%;
+      height: 44px;              /* ✅ same as inputs */
+      padding: 0 12px;           /* ✅ same as inputs */
+      border-radius: 12px;       /* ✅ same as inputs */
+      border: 1px solid var(--border);
+      background: #fff;
+      display:flex;              /* ✅ no inline sizing quirks */
+      align-items:center;
+      gap: 8px;
+      font-size: 14px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .row{
       display:flex;
       gap: 12px;
-      align-items:center;
-      justify-content:space-between;
+      align-items: center;
+      justify-content: space-between;
       flex-wrap: wrap;
     }
+
+    /* ✅ Center the create button nicely */
+    .actions{
+      display:flex;
+      justify-content:center;    /* ✅ centers button */
+      margin-top: 6px;
+    }
+
     .btn{
       appearance:none;
+      width: 100%;
       border:0;
       border-radius: 14px;
-      padding: 12px 14px;
+      padding: 12px 18px;
       background: var(--primary);
       color:#fff;
       font-weight: 650;
       cursor:pointer;
       transition: transform .04s ease, background .15s ease;
-      min-width: 160px;
+      min-width: 180px;
     }
-    .btn:hover{background: var(--primaryHover);}
-    .btn:active{transform: translateY(1px);}
-    .btn[disabled]{opacity:.6; cursor:not-allowed;}
+    .btn:hover{ background: var(--primaryHover); }
+    .btn:active{ transform: translateY(1px); }
+    .btn[disabled]{ opacity:.6; cursor:not-allowed; }
+
     .helper{
       font-size: 13px;
       color: var(--muted);
       line-height: 1.35;
     }
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: #fff;
-      font-size: 13px;
-      color: var(--muted);
-    }
+
     .status{
       margin-top: 12px;
-      padding: 12px 12px;
+      padding: 12px;
       border-radius: 14px;
       border: 1px solid var(--border);
       background: #fff;
@@ -115,12 +153,21 @@
       white-space: pre-wrap;
       display:none;
     }
-    .status.ok{border-color:#b7e3c1; background:#f0fbf3; color:#0f5132;}
-    .status.err{border-color:#f5c2c7; background:#fff0f1; color:#842029;}
+    .status.ok{ border-color:#b7e3c1; background:#f0fbf3; color:#0f5132; }
+    .status.err{ border-color:#f5c2c7; background:#fff0f1; color:#842029; }
+
     .mini{
-      font-size:12px;
+      font-size: 12px;
       color: var(--muted);
       margin-top: 6px;
+      min-height: 16px;   /* ⬅️ forces equal row height */
+    }
+
+    .grid-pair{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      align-items:start;
     }
   </style>
 </head>
@@ -156,7 +203,7 @@
           </div>
         </div>
 
-        <div class="grid">
+        <div class="grid-pair">
           <div>
             <label for="durationMonths">Duration</label>
             <select id="durationMonths" name="durationMonths" required>
@@ -166,17 +213,18 @@
             </select>
           </div>
 
-          <div class="row" style="align-items:flex-end;">
-            <div class="pill" id="computedRange">End date: —</div>
+          <div>
+            <label>End date</label>
+            <div class="pill" id="computedRange">—</div>
           </div>
         </div>
-
         <div class="row">
           <div class="helper">
             Backend endpoint (example): <code>POST /api/create</code><br />
             Payload: <code>{ firstName, lastName, emailAddress, startDate, durationMonths, endDate }</code>
           </div>
           <button class="btn" id="createBtn" type="submit">Create</button>
+          <button class="btn" id="portal" type="button">Membership management portal</button>
         </div>
 
         <div id="statusBox" class="status"></div>
@@ -186,8 +234,7 @@
 
   <script>
     // ---- Config: the API is the current base path + /api/create ----
-    const basePath = window.location.pathname.replace(/\/$/, "");
-    const apiUrl = `${basePath || ""}/membershipengine/api/create`;
+    const apiUrl = "/membershipengine/api/create";
 
     const bookingForm = document.getElementById("bookingForm");
     const firstNameEl = document.getElementById("firstName");
@@ -199,38 +246,69 @@
     const createBtn = document.getElementById("createBtn");
     const statusBox = document.getElementById("statusBox");
 
+    document.getElementById("portal").addEventListener("click", () => {
+      window.location.href = "/membershipengine/portal";
+    });
+
     function setStatus(type, message) {
       statusBox.className = "status " + (type || "");
       statusBox.textContent = message || "";
       statusBox.style.display = message ? "block" : "none";
     }
 
-    function toIsoDate(dateObj) {
-      // yyyy-mm-dd in local time
+    // ISO yyyy-mm-dd -> Date (local)
+    function isoToLocalDate(iso) {
+      const [y, m, d] = iso.split("-").map(Number);
+      return new Date(y, m - 1, d);
+    }
+
+    // Date -> ISO yyyy-mm-dd (local)
+    function localDateToIso(dateObj) {
       const yyyy = dateObj.getFullYear();
       const mm = String(dateObj.getMonth() + 1).padStart(2, "0");
       const dd = String(dateObj.getDate()).padStart(2, "0");
       return `${yyyy}-${mm}-${dd}`;
     }
 
-    function addMonthsKeepingDay(startIso, monthsToAdd) {
-      // Works for most booking use-cases; for month-end edge-cases it keeps JS date rollover behavior.
-      const [y, m, d] = startIso.split("-").map(Number);
-      const dateObj = new Date(y, m - 1, d);
-      const targetMonth = dateObj.getMonth() + Number(monthsToAdd);
-      dateObj.setMonth(targetMonth);
-      return toIsoDate(dateObj);
+    // Date -> NL display dd-mm-yyyy
+    function formatNl(dateObj) {
+      const dd = String(dateObj.getDate()).padStart(2, "0");
+      const mm = String(dateObj.getMonth() + 1).padStart(2, "0");
+      const yyyy = dateObj.getFullYear();
+      return `${dd}-${mm}-${yyyy}`;
+    }
+
+    // End date rule:
+    // end date = last day of the month that is (start month + durationMonths)
+    // Example: 2026-01-02 + 6 => 2026-07-31
+    function computeEndOfMonthIso(startIso, durationMonths) {
+      const start = isoToLocalDate(startIso);
+      const y = start.getFullYear();
+      const startMonthIndex = start.getMonth(); // 0-11
+      const endMonthIndex = startMonthIndex + Number(durationMonths);
+
+      // Day 0 of next month = last day of end month
+      const endDate = new Date(y, endMonthIndex + 1, 0);
+      return localDateToIso(endDate);
     }
 
     function updateComputedEndDate() {
       const startDate = startDateEl.value;
       const durationMonths = Number(durationMonthsEl.value || 0);
+
       if (!startDate || !durationMonths) {
         computedRangeEl.textContent = "End date: —";
+        computedRangeEl.dataset.endIso = "";
         return;
       }
-      const endDate = addMonthsKeepingDay(startDate, durationMonths);
-      computedRangeEl.textContent = `End date: ${endDate}`;
+
+      const endIso = computeEndOfMonthIso(startDate, durationMonths);
+      const endLocal = isoToLocalDate(endIso);
+
+      // ✅ show in D/M/Y (dd-mm-yyyy)
+      computedRangeEl.textContent = `End date: ${formatNl(endLocal)}`;
+      // keep ISO in case you want it
+      computedRangeEl.dataset.endIso = endIso;
     }
 
     startDateEl.addEventListener("change", updateComputedEndDate);
@@ -243,7 +321,7 @@
       const firstName = firstNameEl.value.trim();
       const lastName = lastNameEl.value.trim();
       const emailAddress = emailAddressEl.value.trim();
-      const startDate = startDateEl.value;
+      const startDate = startDateEl.value; // ISO yyyy-mm-dd
       const durationMonths = Number(durationMonthsEl.value);
 
       if (!firstName || !lastName || !emailAddress || !startDate || !durationMonths) {
@@ -251,7 +329,8 @@
         return;
       }
 
-      const endDate = addMonthsKeepingDay(startDate, durationMonths);
+      // ✅ end date always last day of end month (ISO)
+      const endDate = computeEndOfMonthIso(startDate, durationMonths);
 
       const payload = {
         firstName,
@@ -276,20 +355,42 @@
         const data = isJson ? await res.json() : await res.text();
 
         if (!res.ok) {
-          const msg = typeof data === "string" ? data : (data.message || JSON.stringify(data, null, 2));
+          const msg = typeof data === "string"
+            ? data
+            : (data.detail ? JSON.stringify(data.detail, null, 2) : (data.message || JSON.stringify(data, null, 2)));
           setStatus("err", `Error (${res.status}):\n${msg}`);
           return;
         }
 
-        const okMsg = typeof data === "string"
-          ? data
-          : (data.message || "Created successfully.\n\n" + JSON.stringify(data, null, 2));
+        // ✅ Render success as clickable links
+        statusBox.className = "status ok";
+        statusBox.style.display = "block";
 
-        setStatus("ok", okMsg);
+        if (typeof data === "string") {
+          statusBox.textContent = data;
+        } else {
+          const message = data.message || "Membership created successfully.";
+          const customerUrl = data.customerUrl || "";
+          const reservationUrl = data.reservationUrl || "";
+
+          statusBox.innerHTML = `
+            <div style="font-weight:650; margin-bottom:8px;">${message}</div>
+
+            ${customerUrl ? `
+              <div style="margin-bottom:6px;">
+                Customer: <a href="${customerUrl}" target="_blank" rel="noopener noreferrer">Open in Mews</a>
+              </div>` : ""}
+
+            ${reservationUrl ? `
+              <div>
+                Reservation: <a href="${reservationUrl}" target="_blank" rel="noopener noreferrer">Open in Mews</a>
+              </div>` : ""}
+          `;
+        }
       } catch (err) {
         setStatus("err", "Network / server error:\n" + (err?.message || String(err)));
       } finally {
-        createBtn.disabled = false;
+        createBtn.disabled = true;
         createBtn.textContent = "Create";
       }
     });

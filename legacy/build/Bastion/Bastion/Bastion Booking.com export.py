@@ -17,9 +17,6 @@ def getReservationInformation(serviceId, count, travelAgencyId, startDate, endDa
         ],
         "States": [
             "Confirmed",
-            "Processed",
-            "Started",
-            "Canceled"
         ],
         "Limitation":{
             "Count":count
@@ -115,10 +112,11 @@ serviceId = ""
 # Execution specific information
 # =====================================================
 reservationCount = 1000
-dateRange = 365
+dateRange = 1
 dayRange = 1
-start = "2025-12-29T00:00:00Z"
+start = "2025-12-31T00:00:00Z"
 travelAgencyId = "d988b779-31e5-4716-b21b-b24100a3a684"
+
 
 # Generic work
 # =====================================================
@@ -156,7 +154,7 @@ for length in range(dateRange):
             dayRange += 1
         if length == 100:
             dayRange += 2
-        time.sleep(15)
+        time.sleep(10)
 
     print("Processing week starting at:", startUtc.isoformat())
     endUtc = startUtc + timedelta(days=dayRange)
