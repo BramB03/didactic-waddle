@@ -452,7 +452,7 @@
         icon: "📊",
         category: "API - Requests",
         type: "url",
-        url: "/webapp"
+        url: "/webapp/"
       },
       {
         id: "bookingEngine",
@@ -461,7 +461,7 @@
         icon: "📅",
         category: "Tools",
         type: "url",
-        url: "/bookingengine"
+        url: "/bookingengine/"
       },
       {
         id: "revenuePortal",
@@ -470,19 +470,16 @@
         icon: "📚",
         category: "Knowledge",
         type: "url",
-        url: "/revenue-portal"
+        url: "/revenue-portal/"
       },
       {
-        id: "syncJob",
-        name: "Sync Job Trigger",
-        description: "POST to start nightly sync (idempotent).",
+        id: "membershipEngine",
+        name: "Membership Engine",
+        description: "Create reservations and memberships",
         icon: "🔁",
-        category: "Jobs",
-        type: "endpoint",
-        method: "POST",
-        url: "https://api.example.com/jobs/sync",
-        headers: { "Content-Type": "application/json", "Authorization": "Bearer {{token}}" },
-        body: { "force": true }
+        category: "Membership",
+        type: "url",
+        url: "/membershipengine/"
       },
       {
         id: "rebuildIndex",

@@ -185,8 +185,9 @@
   </div>
 
   <script>
-    // ---- Config: change this to your Python route ----
-    const apiUrl = "/api/create";
+    // ---- Config: the API is the current base path + /api/create ----
+    const basePath = window.location.pathname.replace(/\/$/, "");
+    const apiUrl = `${basePath || ""}/membershipengine/api/create`;
 
     const bookingForm = document.getElementById("bookingForm");
     const firstNameEl = document.getElementById("firstName");

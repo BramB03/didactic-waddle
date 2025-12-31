@@ -1,3 +1,5 @@
 Flask~=3.1
 gunicorn~=23.0
 requests~=2.32
+fastapi~=0.115
+asgiref>=3.7
