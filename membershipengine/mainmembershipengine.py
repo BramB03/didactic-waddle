@@ -284,6 +284,6 @@ def create(req: CreateRequest):
         "reservation": reservationResponse,
     }
 
-@app.get("/portal", response_class=HTMLResponse)
+'''@app.get("/portal", response_class=HTMLResponse)
 def membershipPortal(request: Request):
-    return templates.TemplateResponse("portal.html", {"request": request})
+    return templates.TemplateResponse("portal.html", {"request": request})'''

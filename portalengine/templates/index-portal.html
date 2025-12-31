@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Membership Management Portal</title>
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #f7f8fa;
+      --surface: #ffffff;
+      --text: #1a1d29;
+      --text-muted: #6b7280;
+      --border: #e7eaf0;
+      --brand: #111827;
+      --brand-600: #0b1220;
+      --row-hover: #f8fafc;
+      --shadow-sm: 0 1px 2px rgba(16,24,40,.06);
+      --shadow-md: 0 8px 24px rgba(16,24,40,.08);
+      --radius: 10px;
+    }
+
+    html, body { height: 100%; }
+    body{
+      margin:0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+    }
+
+    .container{ max-width: 1200px; margin: 32px auto; padding: 0 20px; }
+
+    .header{ display:flex; align-items:center; justify-content: space-between; margin-bottom: 16px; gap: 12px; flex-wrap: wrap; }
+    .title{ display:flex; align-items:baseline; gap:12px; }
+    .title h1{ margin:0; font-size: clamp(18px, 2.2vw, 24px); font-weight: 600; }
+    .subtitle{
+      color: var(--text-muted); font-size: 13px;
+      padding: 2px 8px; border: 1px solid var(--border); border-radius: 999px; background: #fff;
+    }
+
+    .toolbar{ display:flex; gap:10px; align-items:center; flex-wrap: wrap; }
+    .btn{
+      appearance:none; border:1px solid var(--border); background:#fff; color: var(--text);
+      padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor:pointer;
+      transition: background .15s ease, border-color .15s ease, transform .04s ease;
+      box-shadow: var(--shadow-sm);
+      display:inline-flex; align-items:center; gap:8px;
+      text-decoration:none;
+    }
+    .btn:hover{ background:#f9fafb; border-color:#dde3ea; }
+    .btn.primary{ background: var(--brand); border-color: var(--brand); color:#fff; }
+    .btn.primary:hover{ background: var(--brand-600); border-color: var(--brand-600); }
+    .btn.danger{ background:#991b1b; border-color:#991b1b; color:#fff; }
+    .btn.danger:hover{ background:#7f1d1d; border-color:#7f1d1d; }
+    .btn[disabled]{ opacity:.7; cursor:not-allowed; background:#f1f3f5; color:#9ca3af; border-color:#e5e7eb; box-shadow:none; }
+
+    .card{
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+
+    .table-wrap{ overflow:auto; }
+    table{ width:100%; border-collapse: collapse; font-size: 13.5px; min-width: 980px; }
+    thead th{
+      position: sticky; top:0; z-index:1;
+      text-align:left; font-weight:600;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 12px 14px; color: #111827;
+      white-space: nowrap;
+    }
+    tbody td{ padding: 12px 14px; border-bottom: 1px solid var(--border); color: #283041; vertical-align: middle; }
+    tbody tr:hover{ background: var(--row-hover); }
+
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    .muted{ color: var(--text-muted); }
+
+    .footer{
+      display:flex; align-items:center; justify-content: space-between;
+      padding: 10px 14px; color: var(--text-muted); font-size: 12px; background:#fff;
+      gap: 10px; flex-wrap: wrap;
+    }
+
+    .actions{ display:flex; gap:8px; flex-wrap: wrap; }
+
+    .status{
+      padding: 12px 14px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      background: #fff;
+      white-space: pre-wrap;
+      display:none;
+    }
+    .status.ok{ display:block; color:#0f5132; background:#f0fbf3; }
+    .status.err{ display:block; color:#842029; background:#fff0f1; }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="title">
+        <h1>Membership Management Portal</h1>
+        <span class="subtitle">Live view</span>
+      </div>
+
+      <div class="toolbar">
+        <button class="btn" id="lastSyncBtn" disabled>Last sync: —</button>
+        <button class="btn primary" id="refreshBtn" title="Reload data">⟲ Refresh</button>
+        <a class="btn" href="/membershipengine/">← Back</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="table-wrap">
+        <table aria-label="Membership overview table">
+          <thead>
+            <tr>
+              <th>Lastname</th>
+              <th>Membership no.</th>
+              <th>Tier</th>
+              <th>Expiration</th>
+              <th>Status</th>
+              <th>Open balance</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <tr><td colspan="6" class="muted">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="footer">
+        <span class="muted">Tip: Refresh to reload the list. Actions are status-aware.</span>
+        <span class="muted">Source: /membershipengine/api/portal/list</span>
+      </div>
+
+      <div id="statusBox" class="status"></div>
+    </div>
+  </div>
+  <script>
+    const tbody = document.getElementById("tbody");
+    const refreshBtn = document.getElementById("refreshBtn");
+    const lastSyncBtn = document.getElementById("lastSyncBtn");
+    const statusBox = document.getElementById("statusBox");
+
+    function setStatus(type, msg){
+      statusBox.className = "status " + (type || "");
+      statusBox.textContent = msg || "";
+      statusBox.style.display = msg ? "block" : "none";
+    }
+
+    function isoToDutch(dateStr){
+      if (!dateStr) return "—";
+
+      // Accepts: 2026-07-31, 2026-07-31T00:00:00Z, etc.
+      const d = new Date(dateStr);
+      if (isNaN(d)) return "—";
+
+      const pad = n => String(n).padStart(2,"0");
+      return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`;
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? "").replace(/[&<>"']/g, s => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
+      })[s]);
+    }
+
+    function formatDateTimeHuman(date) {
+      const pad = (n) => String(n).padStart(2, "0");
+      return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+    }
+
+    // ✅ This renders your membership list into the table
+    function renderRows(memberships){
+      if (!Array.isArray(memberships) || memberships.length === 0){
+        tbody.innerHTML = `<tr><td colspan="6" class="muted">No memberships found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = memberships.map((x) => {
+        const membershipNumber = escapeHtml(x.membershipNumber || "—");
+        const state = escapeHtml(x.state || "—");
+        const accountId = escapeHtml(x.accountId || "");
+        const endDate = isoToDutch(x.endDate);
+        const customerName = escapeHtml(x.customerName || "—");
+
+        // Example: 2 buttons (you said you want 2 actions)
+        return `
+          <tr>
+            <td class="mono">${customerName}</td>
+            <td>${membershipNumber}</td>
+            <td>-</td>
+            <td class="mono">${endDate}</td>
+            <td class="mono">${state}</td>
+            <td>€0.00</td>
+            <td>
+              <div class="actions">
+                <button class="btn" data-action="pause" data-account-id="${accountId}">Pause</button>
+                <button class="btn danger" data-action="cancel" data-account-id="${accountId}">Cancel</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    async function loadMemberships(){
+      setStatus("", "");
+      tbody.innerHTML = `<tr><td colspan="6" class="muted">Loading…</td></tr>`;
+
+      // ✅ Your portalengine endpoint
+      const res = await fetch("/portalengine/api/memberships");
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok){
+        setStatus("err", JSON.stringify(data, null, 2));
+        tbody.innerHTML = `<tr><td colspan="6" class="muted">Failed to load.</td></tr>`;
+        return;
+      }
+
+      // ✅ Your backend returns {"memberships": memberlist}
+      renderRows(data.memberships || []);
+
+      lastSyncBtn.textContent = `Last sync: ${formatDateTimeHuman(new Date())}`;
+    }
+
+    // ✅ Only call on page load
+    document.addEventListener("DOMContentLoaded", () => {
+      loadMemberships();
+    });
+
+    // ✅ Refresh button reloads list
+    refreshBtn.addEventListener("click", loadMemberships);
+
+    // ✅ Button clicks (2 actions)
+    document.addEventListener("click", async (ev) => {
+      const btn = ev.target.closest("button");
+      if (!btn) return;
+
+      const action = btn.dataset.action;
+      const accountId = btn.dataset.accountId;
+      if (!action || !accountId) return;
+
+      try {
+        if (action === "pause") {
+          if (!confirm(`Pause membership for accountId: ${accountId}?`)) return;
+
+          // TODO: create this endpoint in portalengine
+          const res = await fetch("/portalengine/api/membership/pause", {
+            method: "POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({ accountId })
+          });
+          const out = await res.json().catch(() => ({}));
+          if (!res.ok) throw new Error(JSON.stringify(out, null, 2));
+
+          setStatus("ok", "Paused. Reloading…");
+          await loadMemberships();
+          return;
+        }
+
+        if (action === "cancel") {
+          if (!confirm(`Cancel membership for accountId: ${accountId}?`)) return;
+
+          // TODO: create this endpoint in portalengine
+          const res = await fetch("/portalengine/api/membership/cancel", {
+            method: "POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({ accountId })
+          });
+          const out = await res.json().catch(() => ({}));
+          if (!res.ok) throw new Error(JSON.stringify(out, null, 2));
+
+          setStatus("ok", "Cancelled. Reloading…");
+          await loadMemberships();
+          return;
+        }
+      } catch (e) {
+        setStatus("err", `Action failed:\n${e.message}`);
+      }
+    });
+  </script>
+</body>
+</html>

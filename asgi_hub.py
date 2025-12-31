@@ -7,6 +7,7 @@ import bookingengine.mainbookingengine as bookingengine_module
 import webapp as webapp_module
 from revenue_portal import app as revenue_portal_app
 from membershipengine.mainmembershipengine import app as membershipengine_app
+from portalengine.portalengine import app as portalengine_app
 
 hub = FastAPI(title="ASGI Hub")
 
@@ -26,3 +27,4 @@ hub.mount("/membershipengine", membershipengine_app)
 hub.mount("/bookingengine", WSGIMiddleware(bookingengine_module.app))
 hub.mount("/webapp", WSGIMiddleware(webapp_module.app))
 hub.mount("/revenue-portal", WSGIMiddleware(revenue_portal_app))
+hub.mount("/portalengine", portalengine_app)
